@@ -27,23 +27,32 @@ jobs:
           make -j8
           make test
           make coverage
+      - uses: actions/cache@v2
+        if: ${{ matrix.compiler }} == gcc
+        with:
+          path: build/ccov/all-merged
+          key: ${{ github.sha }}
 
   python:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Tests
-      run: make test
-    - name: Coverage
-      run: make coverage_reports
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Tests
+        run: make test
+      - name: Coverage
+        run: make coverage_reports
+      - uses: actions/cache@v2
+        with:
+          path: tools/htmlcov
+          key: ${{ github.sha }}
 
   AsciiDoc:
     runs-on: ubuntu-latest
@@ -57,6 +66,10 @@ jobs:
           cd docs
           make html
           make pdf
+      - uses: actions/cache@v2
+        with:
+          path: docs/output
+          key: ${{ github.sha }}
 
   slides:
     runs-on: ubuntu-latest
@@ -66,6 +79,10 @@ jobs:
         run: |
           mkdir -p build && chmod -R 0777 build
           make slides
+      - uses: actions/cache@v2
+        with:
+          path: slides/build
+          key: ${{ github.sha }}
 
   deploy:
     needs:
@@ -76,8 +93,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            build/ccov/all-merged
+            tools/htmlcov
+            docs/output
+            slides/build
+          key: ${{ github.sha }}
       - name: Prepare Deploy
-        run: |  # TODO use cache to share generated documents: https://docs.github.com/en/actions/advanced-guides/caching-dependencies-to-speed-up-workflows
+        run: |
           mkdir -p public
           mv docs/output/* public
           mv slides/build/* public
