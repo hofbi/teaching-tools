@@ -28,11 +28,11 @@ jobs:
           make test
           make coverage
           cd ..
-      - uses: actions/cache@v2
+      - uses: actions/upload-artifact@v2
         if: ${{ matrix.compiler }} == gcc
         with:
           path: build/ccov/all-merged
-          key: ${{ github.sha }}-cpp
+          name: artifacts-cpp
 
   python:
     runs-on: ubuntu-latest
@@ -50,10 +50,10 @@ jobs:
         run: make test
       - name: Coverage
         run: make coverage_reports
-      - uses: actions/cache@v2
+      - uses: actions/upload-artifact@v2
         with:
           path: tools/htmlcov
-          key: ${{ github.sha }}-python
+          name: artifacts-python
 
   AsciiDoc:
     runs-on: ubuntu-latest
@@ -68,10 +68,10 @@ jobs:
           make html
           make pdf
           cd ..
-      - uses: actions/cache@v2
+      - uses: actions/upload-artifact@v2
         with:
           path: docs/output
-          key: ${{ github.sha }}-docs
+          name: artifacts-docs
 
   slides:
     runs-on: ubuntu-latest
@@ -81,10 +81,10 @@ jobs:
         run: |
           mkdir -p build && chmod -R 0777 build
           make slides
-      - uses: actions/cache@v2
+      - uses: actions/upload-artifact@v2
         with:
           path: slides/build
-          key: ${{ github.sha }}-slides
+          name: artifacts-slides
 
   deploy:
     needs:
@@ -95,15 +95,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-            build/ccov/all-merged
-            tools/htmlcov
-            docs/output
-            slides/build
-          key: ${{ github.sha }}
-          restore-keys: ${{ github.sha }}-
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
       - name: Prepare Deploy
         run: |
           mkdir -p public
@@ -120,7 +113,7 @@ jobs:
           echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4.2.3
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
           folder: public
