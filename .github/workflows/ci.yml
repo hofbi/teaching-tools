@@ -31,7 +31,7 @@ jobs:
         if: ${{ matrix.compiler }} == gcc
         with:
           path: build/ccov/all-merged
-          key: ${{ github.sha }}
+          key: ${{ github.sha }}-cpp
 
   python:
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: tools/htmlcov
-          key: ${{ github.sha }}
+          key: ${{ github.sha }}-python
 
   AsciiDoc:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: docs/output
-          key: ${{ github.sha }}
+          key: ${{ github.sha }}-docs
 
   slides:
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: slides/build
-          key: ${{ github.sha }}
+          key: ${{ github.sha }}-slides
 
   deploy:
     needs:
@@ -101,6 +101,7 @@ jobs:
             docs/output
             slides/build
           key: ${{ github.sha }}
+          restore-keys: ${{ github.sha }}
       - name: Prepare Deploy
         run: |
           mkdir -p public
