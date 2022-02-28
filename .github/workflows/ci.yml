@@ -27,6 +27,7 @@ jobs:
           make -j8
           make test
           make coverage
+          cd ..
       - uses: actions/cache@v2
         if: ${{ matrix.compiler }} == gcc
         with:
@@ -66,6 +67,7 @@ jobs:
           cd docs
           make html
           make pdf
+          cd ..
       - uses: actions/cache@v2
         with:
           path: docs/output
@@ -101,12 +103,12 @@ jobs:
             docs/output
             slides/build
           key: ${{ github.sha }}
-          restore-keys: ${{ github.sha }}
+          restore-keys: ${{ github.sha }}-
       - name: Prepare Deploy
         run: |
           mkdir -p public
-          mv docs/output/* public
           mv slides/build/* public
+          mv docs/output/* public
           mkdir -p public/export
           make package
           mv export/*.zip public/export
