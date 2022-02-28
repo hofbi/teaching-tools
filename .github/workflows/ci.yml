@@ -29,7 +29,7 @@ jobs:
           make coverage
           cd ..
       - uses: actions/upload-artifact@v2
-        if: ${{ matrix.compiler }} == gcc
+        if: ${{ matrix.compiler }} == 'gcc'
         with:
           path: build/ccov/all-merged
           name: artifacts-cpp
@@ -100,16 +100,16 @@ jobs:
       - name: Prepare Deploy
         run: |
           mkdir -p public
-          mv slides/build/* public
-          mv docs/output/* public
+          mv artifacts-slides/* public
+          mv artifacts-docs/* public
           mkdir -p public/export
           make package
           mv export/*.zip public/export
           make solution_package
           mv export/*.zip public/export
           mkdir -p public/coverage
-          mv build/ccov/all-merged public/coverage/cpp
-          mv tools/htmlcov/ public/coverage/python
+          mv artifacts-cpp public/coverage/cpp
+          mv artifacts-python/ public/coverage/python
           echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
