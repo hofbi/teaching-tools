@@ -68,17 +68,14 @@ jobs:
           make slides
 
   deploy:
-    runs-on: ubuntu-latest
     needs:
       - cpp
       - python
-      - super-lint
       - AsciiDoc
       - slides
-    if: github.ref == 'refs/heads/master'
-    setps:
-      - name: Install dependencies
-        run: apt-get update && apt-get install -y zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Prepare Deploy
         run: |  # TODO use cache to share generated documents: https://docs.github.com/en/actions/advanced-guides/caching-dependencies-to-speed-up-workflows
           mkdir -p public
