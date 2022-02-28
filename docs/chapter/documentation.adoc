@@ -1,0 +1,19 @@
+= Documentation
+
+This documents all important information required for maintaining this course.
+
+== Setup
+
+Find the setup instruction in the project landing page under {url-repo}#development[Development]
+
+== Tools
+
+We use several tools to automatically maintain and manage repeating processes in this lab.
+Details can be found in the {url-tools}[Tools].
+
+== Code Coverage
+
+Code coverage for the C++ and Python tooling code.
+
+* link:coverage/cpp[Coverage C++]
+* link:coverage/python[Coverage Python]

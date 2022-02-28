@@ -104,7 +104,7 @@ jobs:
           mv artifacts-docs/* public
           mkdir -p public/coverage
           mv artifacts-cpp public/coverage/cpp
-          mv artifacts-python/ public/coverage/python
+          mv artifacts-python public/coverage/python
           mkdir -p public/export
           make package
           mv export/*.zip public/export

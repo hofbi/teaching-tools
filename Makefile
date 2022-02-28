@@ -49,4 +49,4 @@ package: clean_export
 	$(call export_runner,source/example,example)
 
 solution_package: clean_export
-	$(call export_runner,source/example -k,example)
+	$(call export_runner,source/example -k,example_solution)
