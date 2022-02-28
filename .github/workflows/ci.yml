@@ -27,23 +27,33 @@ jobs:
           make -j8
           make test
           make coverage
+          cd ..
+      - uses: actions/upload-artifact@v2
+        if: ${{ matrix.compiler }} == 'gcc'
+        with:
+          path: build/ccov/all-merged
+          name: artifacts-cpp
 
   python:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Tests
-      run: make test
-    - name: Coverage
-      run: make coverage_reports
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Tests
+        run: make test
+      - name: Coverage
+        run: make coverage_reports
+      - uses: actions/upload-artifact@v2
+        with:
+          path: tools/htmlcov
+          name: artifacts-python
 
   AsciiDoc:
     runs-on: ubuntu-latest
@@ -57,6 +67,11 @@ jobs:
           cd docs
           make html
           make pdf
+          cd ..
+      - uses: actions/upload-artifact@v2
+        with:
+          path: docs/output
+          name: artifacts-docs
 
   slides:
     runs-on: ubuntu-latest
@@ -66,6 +81,10 @@ jobs:
         run: |
           mkdir -p build && chmod -R 0777 build
           make slides
+      - uses: actions/upload-artifact@v2
+        with:
+          path: slides/build
+          name: artifacts-slides
 
   deploy:
     needs:
@@ -76,23 +95,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
       - name: Prepare Deploy
-        run: |  # TODO use cache to share generated documents: https://docs.github.com/en/actions/advanced-guides/caching-dependencies-to-speed-up-workflows
+        run: |
           mkdir -p public
-          mv docs/output/* public
-          mv slides/build/* public
+          mv artifacts-slides/* public
+          mv artifacts-docs/* public
+          mkdir -p public/coverage
+          mv artifacts-cpp public/coverage/cpp
+          mv artifacts-python/ public/coverage/python
           mkdir -p public/export
           make package
           mv export/*.zip public/export
           make solution_package
           mv export/*.zip public/export
-          mkdir -p public/coverage
-          mv build/ccov/all-merged public/coverage/cpp
-          mv tools/htmlcov/ public/coverage/python
           echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4.2.3
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
           folder: public
