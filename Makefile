@@ -1,5 +1,7 @@
 file_finder = find . -type f \( $(1) \) -not \( -path '*/venv/*' -o -path '*/build/*' -o -path '*/cmake-build-debug/*' -o -path '*/workspace/*' \)
 
+export_runner = python3 tools/export_files.py $(1) -o export/$(2) && cd export && zip -r $(2).zip $(2)
+
 SLIDE_FILES = $(call file_finder,-name slide-deck.md)
 SLIDE_FILES_LIGHT = $(call file_finder,-name slide-deck-light.md)
 
@@ -32,6 +34,9 @@ docs:
 	cd docs && docker compose run html
 	cd docs && docker compose run pdf
 
+clean_export:
+	rm -rf export
+
 light_theme_slides:
 	$(SLIDE_FILES) | xargs -I '{}' sh -c 'v={}; cp $$v $${v%.md}-light.md'
 	$(SLIDE_FILES_LIGHT) | xargs sed -i '/class. invert/d'
@@ -39,9 +44,6 @@ light_theme_slides:
 
 clean_workspace:
 	rm -rf workspace
-
-clean_export:
-	rm -rf export
 
 package: clean_export
 	$(call export_runner,source/example,example)

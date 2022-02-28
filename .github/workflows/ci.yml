@@ -107,10 +107,10 @@ jobs:
           mv artifacts-python/ public/coverage/python
           mkdir -p public/export
           make package
-#          mv export/*.zip public/export
-#          make solution_package
-#          mv export/*.zip public/export
-#          echo "# This branch is for deployment only" >> public/README.md
+          mv export/*.zip public/export
+          make solution_package
+          mv export/*.zip public/export
+          echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@v4.2.5
