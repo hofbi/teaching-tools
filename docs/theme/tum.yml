@@ -1,0 +1,13 @@
+extends: default
+page:
+  margin: [3cm, 2cm, 2cm, 2cm]  # top right bottom left
+header:
+  height: 3cm
+  recto:
+    right:
+      content: image:TUM_Logo_blau_rgb_s.svg[pdfwidth=2cm]
+  verso:
+    right:
+      content: $header-recto-right-content
+heading:
+  font-color: #3070b3

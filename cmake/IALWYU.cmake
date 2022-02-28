@@ -1,0 +1,15 @@
+option(ENABLE_IWYU "Search for include-what-you-use and enable if available" ON)
+option(ENABLE_LWYU ON)
+
+if(ENABLE_IWYU)
+  find_program(IWYU NAMES "include-what-you-use")
+  if(IWYU)
+    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${IWYU}")
+  else()
+    message(STATUS "Couldn't find include-what-you-use")
+  endif()
+endif()
+
+if(ENABLE_LWYU)
+  set(CMAKE_LINK_WHAT_YOU_USE TRUE)
+endif()

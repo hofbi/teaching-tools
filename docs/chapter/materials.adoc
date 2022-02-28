@@ -1,0 +1,28 @@
+= Materials
+
+== Lectures
+
+The lecture slides are generated from {url-slides}[markdown files].
+
+|===
+| Lecture | Dark | Dark PDF | Light | Light PDF | Package | Solution
+
+| Example | link:example/slide-deck.html[Dark] | link:example/slide-deck.pdf[Dark PDF] | link:example/slide-deck-light.html[Light] | link:example/slide-deck-light.pdf[Light PDF] | link:export/example.zip[ZIP] | link:export/example_solution.zip[ZIP]
+|===
+
+== Homeworks
+
+[NOTE]
+====
+The homework slides will not directly shared with the students, so there is no issue that some of them exceed the content.
+They will be only used as structured reference to create the homework issues on Gitlab using the {url-tools}/#gitlab-issue-creation-from-homework-slides[Gitlab issue creation module].
+====
+
+link:export/homework.zip[Homework Package] to create the initial student homework repositories.
+This can be done automatically using for N groups using the {url-tools}/#gitlab-project-creation[Gitlab project creation module].
+
+|===
+| Homework | Dark | Dark PDF | Light | Light PDF
+
+| Homework Example | link:hw_example/slide-deck.html[Dark] | link:hw_example/slide-deck.pdf[Dark PDF] | link:hw_example/slide-deck-light.html[Light] | link:hw_example/slide-deck-light.pdf[Light PDF]
+|===

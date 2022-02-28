@@ -1,0 +1,166 @@
+image: makeappdev/cpp-dev
+
+stages:
+  - check
+  - build
+  - test
+  - deploy
+
+.no_schedule: &no_schedule
+  except:
+    - schedules
+
+.python_setup: &python_setup
+  before_script:
+    - python -V  # Debug info
+    - python -m pip install --upgrade pip
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+
+.build_template: &build_definition
+  <<: *no_schedule
+  stage: build
+  script:
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Debug ..
+    - make -j8
+    - make test
+    - make coverage
+
+pre-commit_checks:
+  <<: *no_schedule
+  <<: *python_setup
+  stage: check
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+  cache:
+    paths:
+      - ${PIP_CACHE_DIR}
+      - ${PRE_COMMIT_HOME}
+      - venv/
+  script:
+    - pre-commit run --from-ref origin/master --to-ref HEAD
+
+cpp_build_test_gcc:
+  <<: *build_definition
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build/ccov/all-merged/
+
+cpp_build_test_clang:
+  <<: *build_definition
+  before_script:
+    - use_clang.sh
+
+slides:
+  <<: *no_schedule
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache --update docker make curl && rm -rf /var/cache/apk/*
+    - mkdir -p ~/.docker/cli-plugins/
+    - curl -SL https://github.com/docker/compose/releases/download/v2.1.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+    - chmod +x ~/.docker/cli-plugins/docker-compose
+    - docker compose --version
+  script:
+    - mkdir -p build && chmod -R 0777 build
+    - make slides
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - slides/build
+
+docs:
+  <<: *no_schedule
+  stage: build
+  image: asciidoctor/docker-asciidoctor:latest
+  script:
+    - cd docs
+    - make html
+    - make pdf
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - docs/output
+
+python_tests:
+  <<: *no_schedule
+  <<: *python_setup
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+  cache:
+    paths:
+      - ${PIP_CACHE_DIR}
+      - ${PRE_COMMIT_HOME}
+      - venv/
+  script:
+    - make test
+    - make coverage_reports
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - tools/htmlcov
+    reports:
+      cobertura: tools/coverage.xml
+
+pages:
+  <<: *no_schedule
+  stage: deploy
+  dependencies:
+    - cpp_build_test_gcc
+    - python_tests
+    - slides
+    - docs
+  before_script:
+    - apt-get update
+    - apt-get install -y zip
+  script:
+    - mkdir -p public
+    - mv docs/output/* public
+    - mv slides/build/* public
+    - mkdir -p public/export
+    - make package
+    - mv export/*.zip public/export
+    - make solution_package
+    - mv export/*.zip public/export
+    - mkdir -p public/coverage
+    - mv build/ccov/all-merged public/coverage/cpp
+    - mv tools/htmlcov/ public/coverage/python
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - public
+  only:
+    - master
+
+student_code_evaluation:
+  <<: *python_setup
+  only:
+    - schedules
+  variables:
+    WORKSPACE: workspace
+    SEL_CI_MODE: $CI
+  script:
+    - mkdir -p $WORKSPACE
+    - echo "$REPO_INFO_FILE"     # has to be set in the schedule definition
+    - echo "$HOMEWORK_NUMBER"    # has to be set in the schedule definition
+    - echo "$LAST_HOMEWORK_DATE" # has to be set in the schedule definition
+    - python3 tools/gitlab_projects.py evaluate_code $REPO_INFO_FILE --gitlab-token $GITLAB_TOKEN --homework-number $HOMEWORK_NUMBER --date-last-homework $LAST_HOMEWORK_DATE --workspace $WORKSPACE
+    # GITLAB_TOKEN is a protected & masked variable set in this project and contains a gitlab API token with "read_api" scope
+  artifacts:
+    paths:
+      - $WORKSPACE/**/*-report.json
+      - $WORKSPACE/**/*-report.md
+      - $WORKSPACE/**/*-diff.csv
+      - $WORKSPACE/**/*.patch
+      - $WORKSPACE/**/*.html

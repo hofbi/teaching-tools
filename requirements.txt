@@ -1,0 +1,5 @@
+black
+coverage
+pre-commit
+
+-r tools/requirements.txt

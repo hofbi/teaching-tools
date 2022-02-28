@@ -1,0 +1,5 @@
+# Output dir
+output/
+
+# Generated images for stems
+stem-*.png

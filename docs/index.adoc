@@ -1,0 +1,17 @@
+= Teaching Tools
+Markus Hofbauer
+:description: Overview page for the {doctitle} and further documentation.
+:icons: font
+:sectnums:
+:toc: left
+:xrefstyle: short
+// Refs:
+:url-repo: https://github.com/hofbi/teaching-tools
+:url-slides: {url-repo}/tree/master/slides
+:url-tools: {url-repo}/tree/master/tools
+
+:leveloffset: +1
+
+include::chapter/materials.adoc[]
+
+:leveloffset: -1

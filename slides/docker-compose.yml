@@ -1,0 +1,21 @@
+version: '3'
+services:
+  generate:
+    image: marpteam/marp-cli:latest
+    volumes:
+      - ./:/home/marp/app
+    environment:
+      - LANG=de_DE.UTF-8
+      - MARP_USER=""
+    command: --input-dir ./lecture
+  serve:
+    image: marpteam/marp-cli:latest
+    volumes:
+      - ./:/home/marp/app
+    environment:
+      - LANG=de_DE.UTF-8
+      - MARP_USER=""
+    ports:
+      - 8080:8080
+      - 37717:37717
+    command: --watch --server ./lecture

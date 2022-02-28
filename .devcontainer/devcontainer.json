@@ -1,0 +1,16 @@
+{
+    "name": "Software Lab",
+    "image": "makeappdev/cpp-dev",
+    "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "eamodio.gitlens",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "cheshirekow.cmake-format",
+        "yzhang.markdown-all-in-one",
+        "ms-azuretools.vscode-docker"
+    ],
+    "settings": {
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    },
+}

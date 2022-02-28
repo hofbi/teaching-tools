@@ -1,0 +1,7 @@
+pyfakefs
+python-gitlab
+gitpython
+gcovr
+tqdm
+pandas
+Pygments

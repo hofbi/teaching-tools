@@ -1,0 +1,12 @@
+version: '3'
+services:
+  html:
+    image: asciidoctor/docker-asciidoctor:latest
+    volumes:
+      - "./:/documents"
+    command: make html
+  pdf:
+    image: asciidoctor/docker-asciidoctor:latest
+    volumes:
+      - "./:/documents"
+    command: make pdf
