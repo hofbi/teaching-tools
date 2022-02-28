@@ -102,15 +102,15 @@ jobs:
           mkdir -p public
           mv artifacts-slides/* public
           mv artifacts-docs/* public
-          mkdir -p public/export
-          make package
-          mv export/*.zip public/export
-          make solution_package
-          mv export/*.zip public/export
           mkdir -p public/coverage
           mv artifacts-cpp public/coverage/cpp
           mv artifacts-python/ public/coverage/python
-          echo "# This branch is for deployment only" >> public/README.md
+          mkdir -p public/export
+          make package
+#          mv export/*.zip public/export
+#          make solution_package
+#          mv export/*.zip public/export
+#          echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@v4.2.5
