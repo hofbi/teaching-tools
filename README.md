@@ -11,19 +11,21 @@ Find all documents [online](https://hofbi.github.io/teaching-tools/)
 
 ## Paper
 
-If you use our tools or templates please cite our paper.
-
-*TODO* [[PDF](https://www.researchgate.net/publication/TODO)]
+If you use our tools or templates please cite our [paper](https://www.researchgate.net/publication/359502253_Teaching_Software_Engineering_As_Programming_Over_Time).
 
 ```tex
 @inproceedings{hofbauer_2022,
-    title = {Teaching Software Engineering As Programming Over Time},
+    author    = {Hofbauer, Markus and  Bachhuber, Christoph and  Kuhn, Christopher and  Steinbach, Eckehard},
+    title     = {Teaching Software Engineering As Programming Over Time},
     booktitle = {IEEE/ACM 4th International Workshop on Software Engineering Education for the Next Generation},
-    address = {Virtual Event},
-    author = {Hofbauer, Markus and  Bachhuber, Christoph and  Kuhn, Christopher and  Steinbach, Eckehard},
-    month = {May},
-    year = {2022},
-    pages = {1--8},
+    address   = {Pittsburgh, PA, USA},
+    month     = {May},
+    year      = {2022},
+    pages     = {1--8},
+    isbn      = {978-1-4503-9336-2/22/05},
+    publisher = {Association for Computing Machinery},
+    url       = {https://doi.org/10.1145/3528231.3528353},
+    doi       = {10.1145/3528231.3528353}
 }
 ```
 
