@@ -14,8 +14,6 @@ def export_items(source: Path, repo_paths: List[Path], keep_solutions: bool) -> 
     for repo in repo_paths:
         # TODO maybe we need to make the repo clean
         copy_item(source, repo)
-        # TODO file visitor should probably ignore the .git folder
-        # https://gitlab.lrz.de/markusprojects/software-engineering/-/issues/82
         visit_exported_item(repo, keep_solutions)
 
 

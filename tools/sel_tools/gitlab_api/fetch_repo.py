@@ -7,7 +7,7 @@ from typing import List
 
 import gitlab
 from gitlab.v4.objects.projects import Project
-from sel_tools.config import GITLAB_SERVER_URL
+from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
 from sel_tools.utils.repo import GitlabProject, GitRepo
 from tqdm import tqdm
 
@@ -22,7 +22,7 @@ def fetch_repos(
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     return [
         fetch_repo(
-            GitRepo(workspace / student_repo["name"]),
+            GitRepo(workspace / student_repo["name"], GIT_MAIN_BRANCH),
             gitlab_instance.projects.get(student_repo["id"]),
         )
         for student_repo in tqdm(student_repos, desc="Fetching Repos")
