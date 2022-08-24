@@ -1,9 +1,8 @@
-"""Homework code evaluation module"""
+"""Homework code evaluation module."""
 
 import copy
 import itertools
 from datetime import date
-from typing import List, Optional, Type
 
 import git
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
@@ -14,12 +13,12 @@ from tqdm import tqdm
 
 
 def evaluate_code(
-    eval_job_factory: Type[EvaluationJobFactory],
-    gitlab_projects: List[GitlabProject],
+    eval_job_factory: type[EvaluationJobFactory],
+    gitlab_projects: list[GitlabProject],
     homework_number: int,
-    evaluation_date: Optional[date],
-) -> List[EvaluationReport]:
-    """Evaluate code for given repositories and homework number"""
+    evaluation_date: date | None,
+) -> list[EvaluationReport]:
+    """Evaluate code for given repositories and homework number."""
     evaluation_jobs = eval_job_factory.create(gitlab_projects, homework_number)
     return [
         CodeEvaluator(evaluation_jobs, gitlab_project).evaluate(evaluation_date)
@@ -30,15 +29,15 @@ def evaluate_code(
 
 
 class CodeEvaluator:
-    """Code evaluator class"""
+    """Code evaluator class."""
 
-    def __init__(self, jobs: List[EvaluationJob], gitlab_project: GitlabProject):
+    def __init__(self, jobs: list[EvaluationJob], gitlab_project: GitlabProject):
         # Perform a deepcopy to avoid artifact of old job runs
         self.__jobs = copy.deepcopy(jobs)
         self.__gitlab_project = gitlab_project
         self.__repo = git.Repo(gitlab_project.local_path)
 
-    def evaluate(self, evaluation_date: Optional[date]) -> EvaluationReport:
+    def evaluate(self, evaluation_date: date | None) -> EvaluationReport:
         self.__clean_repo()
         if evaluation_date is not None:
             self.__checkout_last_commit_before_eval_date(evaluation_date)

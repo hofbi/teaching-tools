@@ -1,4 +1,4 @@
-"""Cpp code evaluation jobs"""
+"""Cpp code evaluation jobs."""
 
 import re
 from pathlib import Path
@@ -15,7 +15,7 @@ from sel_tools.utils.files import FileTree, FileVisitor, is_cpp
 
 
 class CMakeBuildJob(EvaluationJob):
-    """Job for compiling the project"""
+    """Job for compiling the project."""
 
     name = "CMake Build"
 
@@ -36,7 +36,7 @@ class CMakeBuildJob(EvaluationJob):
 
 
 class MakeTestJob(EvaluationJob):
-    """Job for running make test"""
+    """Job for running make test."""
 
     name = "Make Test"
     dependencies = [CMakeBuildJob()]
@@ -54,7 +54,7 @@ class MakeTestJob(EvaluationJob):
 
 
 class ClangFormatTestJob(EvaluationJob):
-    """Job for checking the code format"""
+    """Job for checking the code format."""
 
     name = "Clang Format Check"
 
@@ -67,7 +67,7 @@ class ClangFormatTestJob(EvaluationJob):
 
 
 class CodeCoverageTestJob(EvaluationJob):
-    """Job for checking the code coverage"""
+    """Job for checking the code coverage."""
 
     name = "Code Coverage"
     dependencies = [CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
@@ -95,7 +95,7 @@ class CodeCoverageTestJob(EvaluationJob):
 
 
 class ClangTidyTestJob(EvaluationJob):
-    """Job for checking with clang tidy"""
+    """Job for checking with clang tidy."""
 
     name = "Clang Tidy Check"
 
@@ -112,12 +112,12 @@ class ClangTidyTestJob(EvaluationJob):
 
 
 class OOPTestJob(EvaluationJob):
-    """Job for checking if all OOP is used"""
+    """Job for checking if all OOP is used."""
 
     name = "OOP Check"
 
     class OOPVisitor(FileVisitor):
-        """Check if given cpp files are OOP"""
+        """Check if given cpp files are OOP."""
 
         def __init__(self) -> None:
             self.__struct_usages: int = 0
@@ -144,12 +144,12 @@ class OOPTestJob(EvaluationJob):
 
 
 class CleanRepoJob(EvaluationJob):
-    """Job for checking if build files were committed"""
+    """Job for checking if build files were committed."""
 
     name = "Clean Repo Check"
 
     class CleanRepoVisitor(FileVisitor):
-        """Check if build files are committed"""
+        """Check if build files are committed."""
 
         def __init__(self) -> None:
             self.__is_clean: bool = True
@@ -169,15 +169,12 @@ class CleanRepoJob(EvaluationJob):
                 file.name not in self.__dirty_file_names
                 and file.suffix not in self.__dirty_suffixes
                 and all(
-                    [
-                        directory not in str(file)
-                        for directory in self.__dirty_directories
-                    ]
+                    directory not in str(file) for directory in self.__dirty_directories
                 )
             )
 
     class SourceFilesCountVisitor(FileVisitor):
-        """Count the number of source files"""
+        """Count the number of source files."""
 
         def __init__(self, max_source_file_count: int):
             self.__max_source_file_count = max_source_file_count

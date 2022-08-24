@@ -1,9 +1,8 @@
-"""Perform actions on gitlab projects"""
+"""Perform actions on gitlab projects."""
 
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, Namespace
 from pathlib import Path
-from typing import List
 
 from sel_tools.code_evaluation.evaluate_code import evaluate_code
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
@@ -22,27 +21,27 @@ from sel_tools.utils.task import configure_tasks
 
 
 def edit_create_issues(args: Namespace) -> None:
-    """Default action for create_issues subcommand"""
+    """Default action for create_issues subcommand."""
     tasks = get_tasks_from_slides(Path(args.issue_md_slides.name))
     tasks = configure_tasks(tasks, args.due_date, args.homework_number)
     create_issues(tasks, Path(args.student_repo_info_file.name), args.gitlab_token)
 
 
 def edit_comment_issue(args: Namespace) -> None:
-    """Default action for comment_issue subcommand"""
+    """Default action for comment_issue subcommand."""
     comment = Comment.create(args.issue_number, args.message, args.state_event)
     comment_issues(comment, Path(args.student_repo_info_file.name), args.gitlab_token)
 
 
 def edit_fetch_code(args: Namespace) -> None:
-    """Default action for fetch_code subcommand"""
+    """Default action for fetch_code subcommand."""
     fetch_repos(
         args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
     )
 
 
 def edit_evaluate_code(args: Namespace) -> None:
-    """Default action for evaluate_code subcommand"""
+    """Default action for evaluate_code subcommand."""
     gitlab_projects = fetch_repos(
         args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
     )
@@ -62,14 +61,14 @@ def edit_evaluate_code(args: Namespace) -> None:
 
 
 def edit_upload_files(args: Namespace) -> None:
-    """Default action for upload_files subcommand"""
+    """Default action for upload_files subcommand."""
     upload_files(
         args.source_path, Path(args.student_repo_info_file.name), args.gitlab_token
     )
 
 
 def edit_commit_changes(args: Namespace) -> None:
-    """Default action for commit_changes subcommand"""
+    """Default action for commit_changes subcommand."""
     gitlab_projects = fetch_repos(
         args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
     )
@@ -78,16 +77,17 @@ def edit_commit_changes(args: Namespace) -> None:
     commit_changes(student_repos, args.message)
 
 
-def parse_arguments(arguments: List[str]) -> Namespace:
-    """Parse CLI arguments"""
+def parse_arguments(arguments: list[str]) -> Namespace:
+    """Parse CLI arguments."""
+    # pylint: disable=too-many-locals
 
-    parser = ArgumentParserFactory.DefaultParser(__doc__).parser
+    parser = ArgumentParserFactory.default_parser(__doc__).parser
     subparsers = parser.add_subparsers(
         title="actions", dest="actions", help="sub-command help", required=True
     )
 
     # Common arguments
-    factory = ArgumentParserFactory.ParentParser()
+    factory = ArgumentParserFactory.parent_parser()
     factory.add_student_repo_info_file()
     factory.add_gitlab_token()
 
@@ -178,7 +178,7 @@ def parse_arguments(arguments: List[str]) -> Namespace:
 
 
 def main() -> None:
-    """main"""
+    """main."""
     args = parse_arguments(sys.argv)
     args.func(args)
 

@@ -1,4 +1,4 @@
-"""Repository utilities"""
+"""Repository utilities."""
 
 import subprocess
 from dataclasses import dataclass
@@ -11,19 +11,19 @@ from sel_tools.config import GIT_MAIN_BRANCH
 
 @dataclass(frozen=True)
 class GitlabProject:
-    """Helper class for local gitlab project"""
+    """Helper class for local gitlab project."""
 
     local_path: Path
     gitlab_project: Project
 
 
 class GitRepo:
-    """Git repository helper class"""
+    """Git repository helper class."""
 
     HTTPS_LEAD = "https://"
 
     class PrintProgress(git.RemoteProgress):
-        """Write the progress on the console"""
+        """Write the progress on the console."""
 
         def line_dropped(self, line: str) -> None:
             print(line)

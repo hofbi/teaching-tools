@@ -10,11 +10,13 @@ misc*,
 modernize*,
 readability*,
 -modernize-use-trailing-return-type,
--readability-implicit-bool-conversion,
 -readability-magic-numbers,
 -llvmlibc-implementation-in-namespace,
 -llvmlibc-callee-namespace,
 -llvmlibc-restrict-system-libc-headers,
+-bugprone-easily-swappable-parameters,
+-readability-identifier-length,
+-readability-suspicious-call-argument,
 '
 
 WarningsAsErrors: '*'

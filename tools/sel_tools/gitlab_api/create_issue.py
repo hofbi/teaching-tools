@@ -1,9 +1,8 @@
-"""Create gitlab issues from tasks"""
+"""Create gitlab issues from tasks."""
 
 import json
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List
 
 import gitlab
 from gitlab.v4.objects.projects import Project
@@ -17,9 +16,9 @@ from tqdm import tqdm
 
 
 def create_issues(
-    tasks: List[Task], student_repos_file: Path, gitlab_token: str
+    tasks: list[Task], student_repos_file: Path, gitlab_token: str
 ) -> None:
-    """Create gitlab issues from tasks for all student repos"""
+    """Create gitlab issues from tasks for all student repos."""
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     student_repos = json.loads(student_repos_file.read_text())
     for student_repo in tqdm(student_repos, desc="Creating homework issues"):
@@ -29,7 +28,7 @@ def create_issues(
 
 
 def create_issue(task: Task, gitlab_project: Project) -> None:
-    """Create issue for gitlab project from task"""
+    """Create issue for gitlab project from task."""
     uploaded_files = upload_attachments(task.attachments, gitlab_project)
     task.description = replace_file_paths_with_urls(
         task.description, uploaded_files, task.attachments
@@ -38,8 +37,8 @@ def create_issue(task: Task, gitlab_project: Project) -> None:
     gitlab_project.issues.create(get_issue_dict(task))
 
 
-def get_issue_dict(task: Task) -> Dict:
-    """Get a dict that contains the fields to create an issue from a task"""
+def get_issue_dict(task: Task) -> dict:
+    """Get a dict that contains the fields to create an issue from a task."""
     return {
         "title": task.title,
         "description": task.description + "\n## Documentation\n" + task.documentation,

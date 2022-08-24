@@ -1,54 +1,52 @@
-"""Argparse helper module"""
+"""Argparse helper module."""
 
 import copy
 from argparse import Action, ArgumentDefaultsHelpFormatter, ArgumentParser, FileType
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from sel_tools.config import REPO_DIR
 
 
 def dir_path(path_string: str) -> Path:
-    """
-    Argparse type check if path is a directory
+    """Argparse type check if path is a directory.
+
     :param path_string:
     :return:
     """
     if Path(path_string).is_dir():
         return Path(path_string)
-    else:
-        raise NotADirectoryError(path_string)
+    raise NotADirectoryError(path_string)
 
 
 def file_path(path_string: str) -> Path:
-    """
-    Argparse type check if path is a file
+    """Argparse type check if path is a file.
+
     :param path_string:
     :return:
     """
     if Path(path_string).is_file():
         return Path(path_string)
-    else:
-        raise FileNotFoundError(path_string)
+    raise FileNotFoundError(path_string)
 
 
 class DateAction(Action):
-    """Parse dates from CLI arguments into datetime.date"""
+    """Parse dates from CLI arguments into datetime.date."""
 
     def __call__(self, arg_parser, args, values, option_string=None):  # type: ignore
         due_date = date.fromisoformat(f"{values[0]:04}-{values[1]:02}-{values[2]:02}")
         setattr(args, self.dest, due_date)
 
 
-class ArgumentParserFactory:
-    """Argument Parser Factory to setup common use arguments"""
+class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
+    """Argument Parser Factory to setup commonly used arguments."""
 
     def __init__(self, parser: ArgumentParser):
         self.__parser = parser
 
     @staticmethod
-    def DefaultParser(description: str) -> "ArgumentParserFactory":
+    def default_parser(description: str) -> "ArgumentParserFactory":
         return ArgumentParserFactory(
             ArgumentParser(
                 description=description,
@@ -57,11 +55,11 @@ class ArgumentParserFactory:
         )
 
     @staticmethod
-    def ParentParser() -> "ArgumentParserFactory":
+    def parent_parser() -> "ArgumentParserFactory":
         return ArgumentParserFactory(ArgumentParser(add_help=False))
 
     @staticmethod
-    def create_default_date_arg() -> Dict:
+    def create_default_date_arg() -> dict:
         return {
             "metavar": ("YEAR", "MONTH", "DAY"),
             "type": int,
@@ -71,7 +69,7 @@ class ArgumentParserFactory:
         }
 
     @staticmethod
-    def default_or_required_if_none(default: Any) -> Dict:
+    def default_or_required_if_none(default: Any) -> dict:
         return {"required": True} if default is None else {"default": default}
 
     @property
@@ -168,7 +166,7 @@ class ArgumentParserFactory:
             help="Changes the state of the issue to",
         )
 
-    def add_source_folder(self, default: Optional[Path]) -> None:
+    def add_source_folder(self, default: Path | None) -> None:
         self.__parser.add_argument(
             "-s",
             "--source-path",

@@ -1,14 +1,14 @@
-"""Copy file or folder with support for an ignore file"""
+"""Copy file or folder with support for an ignore file."""
 
 import shutil
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, List, Set
 
 from sel_tools.file_export.config import EXPORT_IGNORE
 
 
 def copy_item(source: Path, dest: Path) -> None:
-    """Copy file or folder 'source' with support for an ignore file to dest"""
+    """Copy file or folder 'source' with support for an ignore file to dest."""
     if source.is_file():
         shutil.copyfile(str(source), str(dest), follow_symlinks=False)
     else:
@@ -22,8 +22,8 @@ def copy_item(source: Path, dest: Path) -> None:
         )
 
 
-def get_ignored_items_from(folder: Path) -> Set[Path]:
-    """Get list of ignored items from export ignore file with absolute paths"""
+def get_ignored_items_from(folder: Path) -> set[Path]:
+    """Get list of ignored items from export ignore file with absolute paths."""
     ignore_file = folder / EXPORT_IGNORE
     if not ignore_file.exists():
         return set()
@@ -40,11 +40,11 @@ def get_ignored_items_from(folder: Path) -> Set[Path]:
     return {item.resolve() for item in ignore_list}
 
 
-def ignore_files(ignore_set: Set[Path]) -> Callable:
-    """Create callable for ignoring files with shutil.copytree"""
+def ignore_files(ignore_set: set[Path]) -> Callable:
+    """Create callable for ignoring files with shutil.copytree."""
 
-    def ignore_callable(directory: str, contents: List[str]) -> List[str]:
-        """Callable for ignoring files with shutil.copytree"""
+    def ignore_callable(directory: str, contents: list[str]) -> list[str]:
+        """Callable for ignoring files with shutil.copytree."""
         return [
             item
             for item in contents

@@ -17,7 +17,7 @@ jobs:
           - compiler: gcc
           - compiler: clang
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build ${{ matrix.compiler }}
         run: |
           use_${{ matrix.compiler }}.sh
@@ -28,7 +28,7 @@ jobs:
           make test
           make coverage
           cd ..
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ matrix.compiler }} == 'gcc'
         with:
           path: build/ccov/all-merged
@@ -37,11 +37,11 @@ jobs:
   python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.10
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -50,7 +50,7 @@ jobs:
         run: make test
       - name: Coverage
         run: make coverage_reports
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: tools/htmlcov
           name: artifacts-python
@@ -61,14 +61,14 @@ jobs:
     steps:
       - name: Install rsync
         run: apk add rsync
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build
         run: |
           cd docs
           make html
           make pdf
           cd ..
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: docs/output
           name: artifacts-docs
@@ -76,12 +76,12 @@ jobs:
   slides:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build
         run: |
           mkdir -p build && chmod -R 0777 build
           make slides
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: slides/build
           name: artifacts-slides
@@ -94,9 +94,9 @@ jobs:
       - slides
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
       - name: Prepare Deploy
         run: |
           mkdir -p public
@@ -113,7 +113,7 @@ jobs:
           echo "# This branch is for deployment only" >> public/README.md
       - name: Deploy Artifacts
         if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
         with:
           branch: gh-pages
           folder: public

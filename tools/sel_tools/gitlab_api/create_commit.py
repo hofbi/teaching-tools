@@ -1,9 +1,8 @@
-"""Create Gitlab commit"""
+"""Create Gitlab commit."""
 
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List
 
 import git
 import gitlab
@@ -13,8 +12,8 @@ from sel_tools.utils.files import FileTree, FileVisitor
 from tqdm import tqdm
 
 
-def commit_changes(repo_paths: List[Path], message: str) -> None:
-    """Commit and push changes to all repos"""
+def commit_changes(repo_paths: list[Path], message: str) -> None:
+    """Commit and push changes to all repos."""
     for repo_path in tqdm(repo_paths, desc="Committing changes"):
         repo = git.Repo(repo_path)
         repo.git.add("--all")
@@ -25,8 +24,8 @@ def commit_changes(repo_paths: List[Path], message: str) -> None:
 def upload_files(
     source_folder: Path, student_repos_file: Path, gitlab_token: str
 ) -> None:
-    """
-    Upload new files from source folder via commit to the repository.
+    """Upload new files from source folder via commit to the repository.
+
     For doing more than just adding new files refer to `commit_changes`
     """
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
@@ -39,16 +38,16 @@ def upload_files(
 
 
 def create_commit(source_folder: Path, message: str, gitlab_project: Project) -> None:
-    """Create commit in gitlab project from source folder with message"""
+    """Create commit in gitlab project from source folder with message."""
     gitlab_project.commits.create(
         create_gitlab_commit_data_with_all_files_from(source_folder, message)
     )
 
 
 @lru_cache
-def create_gitlab_commit_data_with_all_files_from(folder: Path, message: str) -> Dict:
-    """
-    Create gitlab commit with all files from folder.
+def create_gitlab_commit_data_with_all_files_from(folder: Path, message: str) -> dict:
+    """Create gitlab commit with all files from folder.
+
     Folder is assumed to be root of the repo committing to
     """
     file_tree = FileTree(folder)
@@ -67,10 +66,10 @@ def create_gitlab_commit_data_with_all_files_from(folder: Path, message: str) ->
 
 
 class InitialFileCommitActionsVisitor(FileVisitor):
-    """Create gitlab commit action for new file"""
+    """Create gitlab commit action for new file."""
 
     def __init__(self, root_folder: Path):
-        self.actions: List[Dict] = []
+        self.actions: list[dict] = []
         self.__root_folder = root_folder
 
     def visit_file(self, file: Path) -> None:

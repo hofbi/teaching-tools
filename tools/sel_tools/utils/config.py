@@ -1,4 +1,4 @@
-"""Utils config"""
+"""Utils config."""
 
 CMAKE_FILE_ENDING = ".cmake"
 CMAKELISTS_FILE_NAME = "CMakeLists.txt"

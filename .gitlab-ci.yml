@@ -111,7 +111,9 @@ python_tests:
     paths:
       - tools/htmlcov
     reports:
-      cobertura: tools/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: tools/coverage.xml
 
 pages:
   <<: *no_schedule

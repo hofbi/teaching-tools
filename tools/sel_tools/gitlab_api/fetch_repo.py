@@ -1,9 +1,8 @@
-"""Clone or pull repos into a local workspace"""
+"""Clone or pull repos into a local workspace."""
 
 import json
 import os
 from pathlib import Path
-from typing import List
 
 import gitlab
 from gitlab.v4.objects.projects import Project
@@ -14,8 +13,8 @@ from tqdm import tqdm
 
 def fetch_repos(
     workspace: Path, student_repos_file: Path, gitlab_token: str
-) -> List[GitlabProject]:
-    """Fetch the student repositories into the workspace"""
+) -> list[GitlabProject]:
+    """Fetch the student repositories into the workspace."""
     workspace.mkdir(parents=True, exist_ok=True)
 
     student_repos = json.loads(student_repos_file.read_text())
@@ -30,7 +29,7 @@ def fetch_repos(
 
 
 def fetch_repo(repo: GitRepo, gitlab_project: Project) -> GitlabProject:
-    """Clone or pull student repo"""
+    """Clone or pull student repo."""
     if os.environ.get("SEL_CI_MODE"):
         repo.fetch_from(gitlab_project.http_url_to_repo)
     elif repo.is_repo():

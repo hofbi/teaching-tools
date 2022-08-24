@@ -1,13 +1,13 @@
-"""Evaluation Job Creation Module"""
+"""Evaluation Job Creation Module."""
 
 import importlib.util
 import inspect
 import sys
 from abc import abstractmethod
+from collections.abc import Generator
 from contextlib import contextmanager
 from importlib.abc import Loader
 from pathlib import Path
-from typing import Generator, List, Type
 
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
 from sel_tools.utils.repo import GitlabProject
@@ -15,7 +15,7 @@ from sel_tools.utils.repo import GitlabProject
 
 @contextmanager
 def add_temporarily_to_pythonpath(folder: Path) -> Generator:
-    """Add folder temporarily to pythonpath"""
+    """Add folder temporarily to pythonpath."""
     folder_to_add = str(folder.resolve())
     sys.path.append(folder_to_add)
     yield
@@ -23,21 +23,21 @@ def add_temporarily_to_pythonpath(folder: Path) -> Generator:
 
 
 class EvaluationJobFactory:
-    """Evaluation Job Factory
+    """Evaluation Job Factory.
 
-    Implement the create function to return the list of evaluation jobs
-    that should be used for the given homework number.
+    Implement the create function to return the list of evaluation jobs that
+    should be used for the given homework number.
     """
 
     @staticmethod
     @abstractmethod
     def create(
-        gitlab_projects: List[GitlabProject], homework_number: int
-    ) -> List[EvaluationJob]:
+        gitlab_projects: list[GitlabProject], homework_number: int
+    ) -> list[EvaluationJob]:
         raise NotImplementedError("Don't call me, I'm abstract.")
 
     @staticmethod
-    def load_factory_from_file(module_path: Path) -> Type["EvaluationJobFactory"]:
+    def load_factory_from_file(module_path: Path) -> type["EvaluationJobFactory"]:
         spec = importlib.util.spec_from_file_location(module_path.stem, module_path)
         if spec is None:
             raise Exception(f"Failed to load module from file in {module_path}")

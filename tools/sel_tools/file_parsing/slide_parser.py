@@ -1,8 +1,7 @@
-"""Parse homework slides for tasks and documentation"""
+"""Parse homework slides for tasks and documentation."""
 
 import re
 from pathlib import Path
-from typing import List
 
 from sel_tools.config import REPO_DIR
 from sel_tools.file_parsing.config import (
@@ -13,8 +12,8 @@ from sel_tools.file_parsing.config import (
 from sel_tools.utils.task import Task
 
 
-def get_tasks_from_slides(slides_markdown_file: Path) -> List[Task]:
-    """Parse slides for tasks"""
+def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:
+    """Parse slides for tasks."""
     text = slides_markdown_file.read_text()
     minimal_length_between_markers_pattern = (
         TASK_HEADER_PATTERN + "(.*?)" + TASK_FOOTER_PATTERN
@@ -35,17 +34,17 @@ def get_tasks_from_slides(slides_markdown_file: Path) -> List[Task]:
     return tasks
 
 
-def fill_attachments(tasks: List[Task]) -> None:
-    """Fill attachments fields in tasks"""
+def fill_attachments(tasks: list[Task]) -> None:
+    """Fill attachments fields in tasks."""
     for task in tasks:
         task.attachments = get_attachments(task.description)
 
 
-def get_attachments(description: str) -> List[Path]:
-    """Get attachments from task description"""
+def get_attachments(description: str) -> list[Path]:
+    """Get attachments from task description."""
     markdown_local_file_link_pattern = r".*?\[[^\[]*?\]\(/(.*?)\).*?"
     matches = re.findall(markdown_local_file_link_pattern, description, re.DOTALL)
     if not matches:
-        return list()
+        return []
 
     return [REPO_DIR / file_path for file_path in matches]

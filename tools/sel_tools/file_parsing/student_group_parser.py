@@ -1,49 +1,51 @@
-"""Parse group formation for adding students to Gitlab repositories"""
+"""Parse group formation for adding students to Gitlab repositories."""
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
 import pandas as pd
+from gitlab.v4.objects import User
 
 INVALID_GROUP_CHOICES = ["Not answered yet", "Choice"]
 
 
 @dataclass
 class Student:
-    """Student information"""
+    """Student information."""
 
     first_name: str
     surname: str
     mail_addr: str
     choice: str
+    gitlab_user: User = None
 
     @property
     def name(self) -> str:
         return f"{self.first_name} {self.surname}"
 
     @property
-    def valid_chioce(self) -> bool:
+    def valid_choice(self) -> bool:
         return self.choice not in INVALID_GROUP_CHOICES
 
     @property
     def group_id(self) -> int:
-        if self.valid_chioce:
+        if self.valid_choice:
             return int(self.choice.split(" ")[1])
         return -1
 
-
-def get_student_groups_from_file(group_formation_file: Path) -> List[Student]:
-    """Parse CSV file for group formation"""
-    data = pd.read_csv(group_formation_file, delimiter=",|;")
-    students_arr = [
-        Student(
-            row["First name"],
-            row["Surname"],
-            row["Email address"],
-            row["Choice"],
+    @staticmethod
+    def from_dict(student_dict: dict) -> "Student":
+        return Student(
+            student_dict["First name"],
+            student_dict["Surname"],
+            student_dict["Email address"],
+            student_dict["Choice"],
         )
-        for _, row in data.iterrows()
-    ]
 
-    return [student for student in students_arr if student.valid_chioce]
+
+def get_student_groups_from_file(group_formation_file: Path) -> list[Student]:
+    """Parse CSV file for group formation."""
+    data = pd.read_csv(group_formation_file, delimiter=",|;", engine="python")
+    students_arr = [Student.from_dict(row) for _, row in data.iterrows()]
+
+    return [student for student in students_arr if student.valid_choice]

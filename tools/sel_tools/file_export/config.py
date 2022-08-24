@@ -1,4 +1,4 @@
-"""File export config"""
+"""File export config."""
 
 EXPORT_IGNORE = ".exportignore"
 EXPORT_BEGIN = "LMT_SEL_BEGIN"

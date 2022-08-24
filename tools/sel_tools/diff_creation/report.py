@@ -1,8 +1,7 @@
-"""Git diff report"""
+"""Git diff report."""
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
 import pandas as pd
 from pygments import highlight
@@ -12,7 +11,7 @@ from pygments.lexers.diff import DiffLexer
 
 @dataclass
 class Diff:
-    """Git diff model"""
+    """Git diff model."""
 
     hexsha: str
     author: str
@@ -22,9 +21,9 @@ class Diff:
 
 @dataclass
 class DiffReport:
-    """Git diff model"""
+    """Git diff model."""
 
-    def __init__(self, repo_path: Path, diffs: List[Diff]):
+    def __init__(self, repo_path: Path, diffs: list[Diff]):
         self.repo_path = repo_path
         self.diffs = diffs
 
@@ -53,8 +52,8 @@ class DiffReport:
         )
 
 
-def write_diff_reports(reports: List[DiffReport], report_base_name: str) -> None:
-    """Write diff reports to disk"""
+def write_diff_reports(reports: list[DiffReport], report_base_name: str) -> None:
+    """Write diff reports to disk."""
     for report in reports:
         report.generate_overview_table().to_csv(
             report.repo_path.joinpath(report_base_name).with_suffix(".csv")

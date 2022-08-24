@@ -1,4 +1,5 @@
-"""Remove block(s) within delimiters defined in config file from file or multiline string"""
+"""Remove block(s) within delimiters defined in config file from file or multiline
+string."""
 
 import re
 from pathlib import Path
@@ -8,7 +9,8 @@ from sel_tools.utils.files import FileVisitor, is_cpp
 
 
 class SolutionsRemoverVisitor(FileVisitor):
-    """Remove
+    """Remove.
+
     - block(s) within delimiters defined in config file from file
     - clang tidy comments
     """
@@ -25,7 +27,8 @@ class SolutionsRemoverVisitor(FileVisitor):
 
 
 def remove_lines_within_limiters_from_string(multiline_string: str) -> str:
-    """Remove block(s) within delimiters defined in config file from multiline string"""
+    """Remove block(s) within delimiters defined in config file from multiline
+    string."""
     minimal_length_between_markers_pattern = (
         r"\n[\S ]*" + EXPORT_BEGIN + r".*?[\S ]*" + EXPORT_END
     )
@@ -35,7 +38,7 @@ def remove_lines_within_limiters_from_string(multiline_string: str) -> str:
 
 
 def remove_clang_tidy_comment_lines(multiline_string: str) -> str:
-    """Remove clang-tidy comments from multiline string"""
+    """Remove clang-tidy comments from multiline string."""
     clang_tidy_nolint_end_of_line = "  // NOLINT.*?\n"
     multiline_string = re.sub(
         clang_tidy_nolint_end_of_line, "\n", multiline_string, flags=re.DOTALL

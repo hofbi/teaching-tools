@@ -1,24 +1,27 @@
-"""Common evaluation job interface and utilities"""
+"""Common evaluation job interface and utilities."""
 
 import itertools
 import subprocess
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from typing import List, Tuple
 
 from sel_tools.code_evaluation.report import EvaluationResult
 
 
 class EvaluationJob:
-    """Interface for evaluation job. Children implement _run"""
+    """Interface for evaluation job.
+
+    Children implement _run
+    """
 
     __metaclass__ = ABCMeta
 
     def __init__(self, weight: int = 1) -> None:
         self.__weight: int = weight
         self._comment: str = ""
+        self._message: str = ""
 
-    def run(self, repo_path: Path) -> List[EvaluationResult]:
+    def run(self, repo_path: Path) -> list[EvaluationResult]:
         deps_results = [job.run(repo_path) for job in self.dependencies]
         print(f"\nRunning {self.name} on {repo_path}")
         job_result_score = self._run(repo_path)
@@ -36,7 +39,7 @@ class EvaluationJob:
         return self._comment
 
     @property
-    def dependencies(self) -> List["EvaluationJob"]:
+    def dependencies(self) -> list["EvaluationJob"]:
         return []
 
     @abstractmethod
@@ -45,7 +48,7 @@ class EvaluationJob:
 
 
 def run_shell_command(command: str, cwd: Path) -> int:
-    """Run shell command"""
+    """Run shell command."""
     try:
         subprocess.check_call(command, shell=True, cwd=cwd)
     except subprocess.CalledProcessError:
@@ -53,8 +56,8 @@ def run_shell_command(command: str, cwd: Path) -> int:
     return 1
 
 
-def run_shell_command_with_output(command: str, cwd: Path) -> Tuple[int, str]:
-    """Run shell command and get the output"""
+def run_shell_command_with_output(command: str, cwd: Path) -> tuple[int, str]:
+    """Run shell command and get the output."""
     try:
         data = subprocess.check_output(command, shell=True, cwd=cwd)
     except subprocess.CalledProcessError as ex:

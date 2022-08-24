@@ -1,4 +1,4 @@
-"""SEL Tools config"""
+"""SEL Tools config."""
 
 from pathlib import Path
 

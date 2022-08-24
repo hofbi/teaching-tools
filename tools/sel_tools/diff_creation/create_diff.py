@@ -1,8 +1,7 @@
-"""Diff creation module"""
+"""Diff creation module."""
 
 from datetime import date
 from pathlib import Path
-from typing import List, Optional
 
 import git
 from git.objects.commit import Commit
@@ -11,11 +10,11 @@ from tqdm import tqdm
 
 
 def create_diff(
-    repo_paths: List[Path],
-    date_last_homework: Optional[date],
-    evaluation_date: Optional[date],
-) -> List[DiffReport]:
-    """Create diff for given repositories since the last homework date"""
+    repo_paths: list[Path],
+    date_last_homework: date | None,
+    evaluation_date: date | None,
+) -> list[DiffReport]:
+    """Create diff for given repositories since the last homework date."""
     return (
         []
         if date_last_homework is None
@@ -29,15 +28,15 @@ def create_diff(
 
 
 class DiffCreator:
-    """Diff creator class"""
+    """Diff creator class."""
 
-    def __init__(self, repo_path: Path, exclude: Optional[str] = None):
+    def __init__(self, repo_path: Path, exclude: str | None = None):
         self.__path = repo_path
         self.__repo = git.Repo(self.__path)
         self.__exclude = exclude
 
     def create(
-        self, date_last_homework: date, evaluation_date: Optional[date]
+        self, date_last_homework: date, evaluation_date: date | None
     ) -> DiffReport:
         commits_since_last_homework = list(
             self.__repo.iter_commits(
@@ -65,7 +64,7 @@ class DiffCreator:
             patch,
         )
 
-    def __create_diff_per_commit(self, commits: List[Commit]) -> List[Diff]:
+    def __create_diff_per_commit(self, commits: list[Commit]) -> list[Diff]:
         return [
             Diff(
                 commit.hexsha,

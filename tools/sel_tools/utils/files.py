@@ -1,8 +1,7 @@
-"""File utils for software engineering tools"""
+"""File utils for software engineering tools."""
 
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from typing import List
 
 from sel_tools.utils.config import (
     CMAKE_FILE_ENDING,
@@ -12,7 +11,10 @@ from sel_tools.utils.config import (
 
 
 class FileVisitor:
-    """Interface for file visitor. Children implement visit_file"""
+    """Interface for file visitor.
+
+    Children implement visit_file
+    """
 
     __metaclass__ = ABCMeta
 
@@ -22,8 +24,11 @@ class FileVisitor:
 
 
 class FileTree:
-    """Caller of the visitor pattern. Accepts visitors on it's file tree,
-    applies FileVisitor.visit_file() to each file in item"""
+    """Caller of the visitor pattern.
+
+    Accepts visitors on it is file tree, applies FileVisitor.visit_file() to each
+    file in item
+    """
 
     def __init__(self, item: Path):
         self._item = item
@@ -38,7 +43,7 @@ class FileTree:
         else:
             raise FileNotFoundError(f"Path {self._item} does not exist")
 
-    def rglob_but(self, ignore_folder: str) -> List[Path]:
+    def rglob_but(self, ignore_folder: str) -> list[Path]:
         return sorted(
             set(self._item.rglob("*"))
             - set(self._item.rglob(ignore_folder))
@@ -47,10 +52,10 @@ class FileTree:
 
 
 def is_cmake(file: Path) -> bool:
-    """Return true if the file is a cmake file, otherwise false"""
+    """Return true if the file is a cmake file, otherwise false."""
     return (file.name == CMAKELISTS_FILE_NAME) or (file.suffix == CMAKE_FILE_ENDING)
 
 
 def is_cpp(file: Path) -> bool:
-    """Return true if the file is a cpp file, otherwise false"""
+    """Return true if the file is a cpp file, otherwise false."""
     return file.suffix in CPP_FILE_ENDINGS

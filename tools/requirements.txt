@@ -1,7 +1,7 @@
-pyfakefs
-python-gitlab
-gitpython
 gcovr
-tqdm
+gitpython
 pandas
+pyfakefs
 Pygments
+python-gitlab
+tqdm

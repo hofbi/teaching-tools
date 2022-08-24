@@ -1,8 +1,7 @@
-"""Create GitLab repositories from folder"""
+"""Create GitLab repositories from folder."""
 
 import sys
 from argparse import Namespace
-from typing import List
 
 from sel_tools.config import REPO_DIR
 from sel_tools.gitlab_api.create_repo import (
@@ -12,9 +11,9 @@ from sel_tools.gitlab_api.create_repo import (
 from sel_tools.utils.args import ArgumentParserFactory
 
 
-def parse_arguments(arguments: List[str]) -> Namespace:
-    """Parse CLI arguments"""
-    factory = ArgumentParserFactory.DefaultParser(__doc__)
+def parse_arguments(arguments: list[str]) -> Namespace:
+    """Parse CLI arguments."""
+    factory = ArgumentParserFactory.default_parser(__doc__)
     factory.add_repo_base_name()
     factory.add_group_id()
     factory.add_repo_info_dir()
@@ -26,7 +25,7 @@ def parse_arguments(arguments: List[str]) -> Namespace:
 
 
 def main() -> None:
-    """main"""
+    """main."""
     arguments = parse_arguments(sys.argv)
     student_repos, group_name = create_repos(
         arguments.source_path,
