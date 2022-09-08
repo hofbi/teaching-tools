@@ -1,7 +1,5 @@
 """Comment module."""
 
-from __future__ import annotations  # noqa: F407
-
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -20,7 +18,7 @@ class Comment:
     @staticmethod
     def create(
         issue_id: int, message_or_file_path: str, state_event: str | None
-    ) -> Comment:
+    ) -> "Comment":
         file_path = Path(message_or_file_path)
         message = file_path.read_text() if file_path.is_file() else message_or_file_path
         return Comment(issue_id, message, state_event, get_attachments(message))

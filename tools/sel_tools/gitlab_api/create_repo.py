@@ -39,8 +39,7 @@ def create_repos(
 def configure_project(gitlab_project: Project) -> None:
     """Configure gitlab project."""
     gitlab_project.runners.create({"runner_id": RUNNER_ID})
-    # TODO remove PL123 (has been introduced with pyfakefs>=4.6.1, maybe resolved in the future
-    with open(AVATAR_PATH, "rb") as avatar:  # noqa: PL123
+    with AVATAR_PATH.open("rb") as avatar:
         gitlab_project.avatar = avatar
     gitlab_project.save()
 
