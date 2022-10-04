@@ -42,4 +42,4 @@ They can used via local links relative to the repo root, e.g. the [README.md](/t
 
 - [CMake Documentation](https://cmake.org/cmake/help/latest/)
 - [CMake Tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/) (Step 1 and 2 might be interesting)
-- [`add_libary`](https://cmake.org/cmake/help/latest/command/add_library.html)
+- [`add_library`](https://cmake.org/cmake/help/latest/command/add_library.html)

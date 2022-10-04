@@ -5,6 +5,6 @@ options:
     breaks: true       # newlines in paragraphs are rendered as <br>
 bespoke:
   progress: true
-output: "./build/"
-themeSet: "./themes"
+output: ./build/
+themeSet: ./themes
 theme: tum

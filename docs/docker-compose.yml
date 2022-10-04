@@ -3,10 +3,10 @@ services:
   html:
     image: asciidoctor/docker-asciidoctor:latest
     volumes:
-      - "./:/documents"
+      - ./:/documents
     command: make html
   pdf:
     image: asciidoctor/docker-asciidoctor:latest
     volumes:
-      - "./:/documents"
+      - ./:/documents
     command: make pdf
