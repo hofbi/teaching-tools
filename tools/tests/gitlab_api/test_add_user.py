@@ -107,11 +107,10 @@ class AddUserTest(TestCase):
     def test_add_users_invalid_group_id(self) -> None:
         content = DataFrame([STUDENT1, STUDENT_MISSING_GROUP])
         content.to_csv("group_formation.csv")
-        with patch("gitlab.Gitlab", MagicMock(return_value=self.mock_instance)):
-            with self.assertRaises(KeyError):
-                add_users(
-                    Path("group_formation.csv"), self.mock_repos, "my_gitlab_token"
-                )
+        with patch(
+            "gitlab.Gitlab", MagicMock(return_value=self.mock_instance)
+        ), self.assertRaises(KeyError):
+            add_users(Path("group_formation.csv"), self.mock_repos, "my_gitlab_token")
 
         self.mock_repo1.members.create.assert_has_calls(
             [

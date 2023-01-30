@@ -36,7 +36,9 @@ class EvaluationResult:
 class EvaluationReport:
     """Evaluation report."""
 
-    def __init__(self, gitlab_project: GitlabProject, results: list[EvaluationResult]):
+    def __init__(
+        self, gitlab_project: GitlabProject, results: list[EvaluationResult]
+    ) -> None:
         self.repo_path = gitlab_project.local_path
         self.url = gitlab_project.gitlab_project.web_url
         self.score = sum(result.score for result in set(results))

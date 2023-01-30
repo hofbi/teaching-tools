@@ -34,7 +34,7 @@ def file_path(path_string: str) -> Path:
 class DateAction(Action):
     """Parse dates from CLI arguments into datetime.date."""
 
-    def __call__(self, arg_parser, args, values, option_string=None):  # type: ignore
+    def __call__(self, arg_parser, args, values, option_string=None):  # type: ignore[no-untyped-def]
         due_date = date.fromisoformat(f"{values[0]:04}-{values[1]:02}-{values[2]:02}")
         setattr(args, self.dest, due_date)
 
@@ -42,7 +42,7 @@ class DateAction(Action):
 class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
     """Argument Parser Factory to setup commonly used arguments."""
 
-    def __init__(self, parser: ArgumentParser):
+    def __init__(self, parser: ArgumentParser) -> None:
         self.__parser = parser
 
     @staticmethod

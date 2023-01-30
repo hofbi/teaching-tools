@@ -241,12 +241,11 @@ class CodeCoverageTestJobTest(TestCase):
 
     def test_parse_total_coverage(self) -> None:
         for coverage in [0, 30, 95]:
-            with self.subTest(coverage):
-                with patch(
-                    "pathlib.Path.read_text",
-                    MagicMock(return_value=coverage_file_content(coverage)),
-                ):
-                    self.assertEqual(coverage, self.unit.parse_total_coverage(Path()))
+            with self.subTest(coverage), patch(
+                "pathlib.Path.read_text",
+                MagicMock(return_value=coverage_file_content(coverage)),
+            ):
+                self.assertEqual(coverage, self.unit.parse_total_coverage(Path()))
 
     @patch("pathlib.Path.read_text", MagicMock(return_value=""))
     def test_parse_total_coverage_empty_file(self) -> None:
@@ -274,8 +273,9 @@ class CleanRepoJobTest(TestCase):
             self.repo_path / "CMakeFiles" / "DependInfo.cmake",
             self.repo_path / "foo.dir" / "DependInfo.cmake",
         ]
-        self.clean_files_with_build_folder = self.clean_files + [
-            self.repo_path / HW_BUILD_FOLDER / "cmake_install.cmake"
+        self.clean_files_with_build_folder = [
+            *self.clean_files,
+            self.repo_path / HW_BUILD_FOLDER / "cmake_install.cmake",
         ]
 
     def __create_repo(self, files: list[Path]) -> None:

@@ -40,7 +40,7 @@ class EvaluationJobFactory:
     def load_factory_from_file(module_path: Path) -> type["EvaluationJobFactory"]:
         spec = importlib.util.spec_from_file_location(module_path.stem, module_path)
         if spec is None:
-            raise Exception(f"Failed to load module from file in {module_path}")
+            raise ImportError(f"Failed to load module from file in {module_path}")
         module = importlib.util.module_from_spec(spec)
         # To enable loading files with additionally required python files lying besides them
         with add_temporarily_to_pythonpath(module_path.parent):
@@ -55,4 +55,6 @@ class EvaluationJobFactory:
                 and name != "EvaluationJobFactory"
             ):
                 return attribute
-        raise Exception(f"No subclass of EvaluationJobFactory in {module_path}")
+        raise ModuleNotFoundError(
+            f"No subclass of EvaluationJobFactory in {module_path}"
+        )

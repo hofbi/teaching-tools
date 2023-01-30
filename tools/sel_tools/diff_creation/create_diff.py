@@ -30,7 +30,7 @@ def create_diff(
 class DiffCreator:
     """Diff creator class."""
 
-    def __init__(self, repo_path: Path, exclude: str | None = None):
+    def __init__(self, repo_path: Path, exclude: str | None = None) -> None:
         self.__path = repo_path
         self.__repo = git.Repo(self.__path)
         self.__exclude = exclude
@@ -44,8 +44,10 @@ class DiffCreator:
             )
         )
         diffs = (
-            [self.__create_overall_diff(commits_since_last_homework[-1])]
-            + self.__create_diff_per_commit(commits_since_last_homework)
+            [
+                self.__create_overall_diff(commits_since_last_homework[-1]),
+                *self.__create_diff_per_commit(commits_since_last_homework),
+            ]
             if commits_since_last_homework
             else []
         )

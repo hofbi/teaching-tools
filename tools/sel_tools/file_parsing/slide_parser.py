@@ -23,11 +23,11 @@ def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:
     if not matches:
         raise LookupError(f"Couldn't find any task in {slides_markdown_file}!")
 
-    documentation = re.search(DOCUMENTATION_PATTERN, text, re.DOTALL)
-    documentation = documentation.group(1) if documentation else ""  # type: ignore
+    documentation_match = re.search(DOCUMENTATION_PATTERN, text, re.DOTALL)
+    documentation = documentation_match.group(1) if documentation_match else ""
 
-    tasks = [
-        Task(title, description, documentation) for (title, description) in matches  # type: ignore
+    tasks: list[Task] = [
+        Task(title, description, documentation) for (title, description) in matches
     ]
     fill_attachments(tasks)
 

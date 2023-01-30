@@ -23,7 +23,7 @@ class Diff:
 class DiffReport:
     """Git diff model."""
 
-    def __init__(self, repo_path: Path, diffs: list[Diff]):
+    def __init__(self, repo_path: Path, diffs: list[Diff]) -> None:
         self.repo_path = repo_path
         self.diffs = diffs
 

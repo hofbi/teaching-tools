@@ -106,6 +106,7 @@ python_tests:
   script:
     - make test
     - make coverage_reports
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     expire_in: 1 week
     paths:
@@ -154,9 +155,9 @@ student_code_evaluation:
     SEL_CI_MODE: $CI
   script:
     - mkdir -p $WORKSPACE
-    - echo "$REPO_INFO_FILE"     # has to be set in the schedule definition
-    - echo "$HOMEWORK_NUMBER"    # has to be set in the schedule definition
-    - echo "$LAST_HOMEWORK_DATE" # has to be set in the schedule definition
+    - echo "$REPO_INFO_FILE"  # has to be set in the schedule definition
+    - echo "$HOMEWORK_NUMBER"  # has to be set in the schedule definition
+    - echo "$LAST_HOMEWORK_DATE"  # has to be set in the schedule definition
     - python3 tools/gitlab_projects.py evaluate_code $REPO_INFO_FILE --gitlab-token $GITLAB_TOKEN --homework-number $HOMEWORK_NUMBER --date-last-homework $LAST_HOMEWORK_DATE --workspace $WORKSPACE
     # GITLAB_TOKEN is a protected & masked variable set in this project and contains a gitlab API token with "read_api" scope
   artifacts:

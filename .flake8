@@ -1,2 +1,3 @@
 [flake8]
 max-line-length = 120
+known-modules = :[sel_tools,tests,gitlab_projects,create_gitlab_projects,export_files]

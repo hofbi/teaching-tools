@@ -52,16 +52,15 @@ class FormatterTest(TestCase):
 
     def test_clang_format__is_cpp__should_format(self) -> None:
         for file in ["foo.h", "bar.hpp", "blub.cpp"]:
-            with self.subTest(file):
-                with patch(
-                    "sel_tools.file_export.formatter.apply_clang_format"
-                ) as clang_format_mock:
-                    self.fs.create_file(file)
+            with self.subTest(file), patch(
+                "sel_tools.file_export.formatter.apply_clang_format"
+            ) as clang_format_mock:
+                self.fs.create_file(file)
 
-                    unit = FormatterVisitor()
-                    unit.visit_file(Path(file))
+                unit = FormatterVisitor()
+                unit.visit_file(Path(file))
 
-                    clang_format_mock.assert_called_once_with(Path(file))
+                clang_format_mock.assert_called_once_with(Path(file))
 
     @patch("sel_tools.file_export.formatter.apply_clang_format")
     def test_clang_format__is_not_cpp__should_not_format(

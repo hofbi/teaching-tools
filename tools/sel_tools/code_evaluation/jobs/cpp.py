@@ -19,7 +19,7 @@ class CMakeBuildJob(EvaluationJob):
 
     name = "CMake Build"
 
-    def __init__(self, weight: int = 1, cmake_options: str = ""):
+    def __init__(self, weight: int = 1, cmake_options: str = "") -> None:
         super().__init__(weight)
         self.__cmake_options = cmake_options
 
@@ -72,7 +72,7 @@ class CodeCoverageTestJob(EvaluationJob):
     name = "Code Coverage"
     dependencies = [CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
 
-    def __init__(self, weight: int = 1, min_coverage: int = 75):
+    def __init__(self, weight: int = 1, min_coverage: int = 75) -> None:
         super().__init__(weight)
         self.__min_coverage = min_coverage
 
@@ -176,7 +176,7 @@ class CleanRepoJob(EvaluationJob):
     class SourceFilesCountVisitor(FileVisitor):
         """Count the number of source files."""
 
-        def __init__(self, max_source_file_count: int):
+        def __init__(self, max_source_file_count: int) -> None:
             self.__max_source_file_count = max_source_file_count
             self.__source_file_count = 0
             self.__build_folder = f"/{HW_BUILD_FOLDER}/"

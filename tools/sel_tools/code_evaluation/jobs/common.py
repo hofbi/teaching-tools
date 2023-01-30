@@ -25,8 +25,9 @@ class EvaluationJob:
         deps_results = [job.run(repo_path) for job in self.dependencies]
         print(f"\nRunning {self.name} on {repo_path}")
         job_result_score = self._run(repo_path)
-        return list(itertools.chain(*deps_results)) + [
-            EvaluationResult(self.name, self.__weight * job_result_score, self.comment)
+        return [
+            *list(itertools.chain(*deps_results)),
+            EvaluationResult(self.name, self.__weight * job_result_score, self.comment),
         ]
 
     @property

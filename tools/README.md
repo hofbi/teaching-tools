@@ -2,6 +2,21 @@
 
 Tools to automatically run repeating processes.
 
+<!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
+
+- [File Export](#file-export)
+- [GitLab Project Creation](#gitlab-project-creation)
+- [Working with the GitLab Projects](#working-with-the-gitlab-projects)
+  - [GitLab issue creation from homework slides](#gitlab-issue-creation-from-homework-slides)
+  - [Comment Gitlab issues and change their state](#comment-gitlab-issues-and-change-their-state)
+  - [Fetch the student code](#fetch-the-student-code)
+  - [Evaluate the student code](#evaluate-the-student-code)
+    - [Define Evaluation Jobs](#define-evaluation-jobs)
+  - [Upload new files to the student code](#upload-new-files-to-the-student-code)
+  - [Commit changes to the student code](#commit-changes-to-the-student-code)
+
+<!-- mdformat-toc end -->
+
 ## File Export
 
 Export files for student homework assignments and lecture templates.

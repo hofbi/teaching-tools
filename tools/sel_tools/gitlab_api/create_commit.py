@@ -68,7 +68,7 @@ def create_gitlab_commit_data_with_all_files_from(folder: Path, message: str) ->
 class InitialFileCommitActionsVisitor(FileVisitor):
     """Create gitlab commit action for new file."""
 
-    def __init__(self, root_folder: Path):
+    def __init__(self, root_folder: Path) -> None:
         self.actions: list[dict] = []
         self.__root_folder = root_folder
 

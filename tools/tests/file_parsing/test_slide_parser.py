@@ -3,12 +3,9 @@
 from pathlib import Path
 
 from pyfakefs.fake_filesystem_unittest import TestCase
-from sel_tools.file_parsing.slide_parser import (
-    REPO_DIR,
-    Task,
-    get_attachments,
-    get_tasks_from_slides,
-)
+from sel_tools.config import REPO_DIR
+from sel_tools.file_parsing.slide_parser import get_attachments, get_tasks_from_slides
+from sel_tools.utils.task import Task
 
 FILE_WITHOUT_TASK = "# Header\n\nsome content\n\n---"
 TASK_1_DESCRIPTION = "\nDo something clever\n\n```shell\n# Comment\n$ make\n```\n\n"

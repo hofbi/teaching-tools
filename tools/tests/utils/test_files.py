@@ -13,7 +13,7 @@ class FileVisitorTest(unittest.TestCase):
 
     def test_abstract(self) -> None:
         with self.assertRaises(NotImplementedError):
-            unit = FileVisitor()  # type: ignore
+            unit = FileVisitor()  # type: ignore[abstract]
             unit.visit_file(Path())
 
 

@@ -7,11 +7,11 @@ from pathlib import Path
 import gitlab
 from gitlab.v4.objects.projects import Project
 from sel_tools.config import GITLAB_SERVER_URL
-from sel_tools.file_parsing.slide_parser import Task
 from sel_tools.gitlab_api.attachments import (
     replace_file_paths_with_urls,
     upload_attachments,
 )
+from sel_tools.utils.task import Task
 from tqdm import tqdm
 
 

@@ -30,7 +30,7 @@ class FileTree:
     file in item
     """
 
-    def __init__(self, item: Path):
+    def __init__(self, item: Path) -> None:
         self._item = item
 
     def accept(self, visitor: FileVisitor) -> None:

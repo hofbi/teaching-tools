@@ -14,7 +14,7 @@ class Task:
     documentation: str
     due_date: date | None = None
     label: str | None = None
-    attachments: list[Path] = field(default_factory=lambda: [])
+    attachments: list[Path] = field(default_factory=list)
 
     def add_homework_label(self, label: int) -> None:
         self.label = f"homework::{label}"

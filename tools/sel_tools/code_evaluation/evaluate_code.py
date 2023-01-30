@@ -31,7 +31,9 @@ def evaluate_code(
 class CodeEvaluator:
     """Code evaluator class."""
 
-    def __init__(self, jobs: list[EvaluationJob], gitlab_project: GitlabProject):
+    def __init__(
+        self, jobs: list[EvaluationJob], gitlab_project: GitlabProject
+    ) -> None:
         # Perform a deepcopy to avoid artifact of old job runs
         self.__jobs = copy.deepcopy(jobs)
         self.__gitlab_project = gitlab_project

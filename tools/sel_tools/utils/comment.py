@@ -13,7 +13,7 @@ class Comment:
     issue_id: int
     message: str
     state_event: str | None = None
-    attachments: list[Path] = field(default_factory=lambda: [])
+    attachments: list[Path] = field(default_factory=list)
 
     @staticmethod
     def create(
