@@ -42,7 +42,6 @@ def get_ignored_items_from(folder: Path) -> set[Path]:
 
 def ignore_files(ignore_set: set[Path]) -> Callable:
     """Create callable for ignoring files with shutil.copytree."""
-
     def ignore_callable(directory: str, contents: list[str]) -> list[str]:
         """Callable for ignoring files with shutil.copytree."""
         return [
