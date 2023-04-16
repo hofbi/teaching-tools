@@ -101,6 +101,6 @@ class GitlabUserManagerFake:
     user_list: list[GitlabUserFake]
 
     def list(self, search: str = "") -> list[GitlabUserFake]:
-        if search == "":
-            return []
-        return [user for user in self.user_list if search in user.email]
+        return (
+            [user for user in self.user_list if search in user.email] if search else []
+        )

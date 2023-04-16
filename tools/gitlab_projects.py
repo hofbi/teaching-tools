@@ -11,6 +11,7 @@ from sel_tools.diff_creation.create_diff import create_diff
 from sel_tools.diff_creation.report import write_diff_reports
 from sel_tools.file_export.export_item import export_items
 from sel_tools.file_parsing.slide_parser import get_tasks_from_slides
+from sel_tools.gitlab_api.add_user import add_users
 from sel_tools.gitlab_api.comment_issue import comment_issues
 from sel_tools.gitlab_api.create_commit import commit_changes, upload_files
 from sel_tools.gitlab_api.create_issue import create_issues
@@ -75,6 +76,15 @@ def edit_commit_changes(args: Namespace) -> None:
     student_repos = [project.local_path for project in gitlab_projects]
     export_items(args.source_path, student_repos, args.keep_solutions)
     commit_changes(student_repos, args.message)
+
+
+def edit_add_users(args: Namespace) -> None:
+    """Default action for add_users subcommand."""
+    add_users(
+        Path(args.student_repo_info_file.name),
+        Path(args.student_group_info_file.name),
+        args.gitlab_token,
+    )
 
 
 def parse_arguments(arguments: list[str]) -> Namespace:
@@ -173,6 +183,18 @@ def parse_arguments(arguments: list[str]) -> Namespace:
         help="Copy source folder to workspace and commit the changes",
     )
     parser_commit_changes.set_defaults(func=edit_commit_changes)
+
+    # Add users parser
+    add_users_factory = factory.copy()
+    add_users_factory.add_student_group_info_file()
+    parser_add_users = subparsers.add_parser(
+        "add_users",
+        parents=[add_users_factory.parser],
+        formatter_class=ArgumentDefaultsHelpFormatter,
+        description="Add all users to their respective repositories",
+        help="Add all users to their respective repositories",
+    )
+    parser_add_users.set_defaults(func=edit_add_users)
 
     return parser.parse_args(arguments[1:])
 

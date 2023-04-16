@@ -1,5 +1,11 @@
 [tool.ruff]
-# TODO test "ANN", "S", "DTZ", "EM", "ISC", "TRY"
+
+fix = true
+ignore = []
+line-length = 120
+target-version = "py310"
+
+# TODO enable "A", "S", "DTZ", "ISC"
 select = [
     "B",
     "BLE",
@@ -7,6 +13,7 @@ select = [
     "C4",
     "C90",
     "E",
+    "EM",
     "ERA",
     "EXE",
     "F",
@@ -14,6 +21,7 @@ select = [
     "ICN",
     "N",
     "PGH",
+    "PD",
     "PIE",
     "PL",
     "PTH",
@@ -22,16 +30,13 @@ select = [
     "RUF",
     "SIM",
     "T10",
+    "TCH",
+    "TID",
+    "TRY",
     "UP",
     "W",
     "YTT"
 ]
-ignore = []
-
-line-length = 120
-
-# Assume Python 3.10.
-target-version = "py310"
 
 [tool.isort]
 profile = "black"
@@ -42,3 +47,27 @@ in-place = true
 recursive = true
 wrap-summaries = 88
 wrap-descriptions = 81
+
+[tool.pylint.MASTER]
+# Add files or directories to the blacklist. They should be base names, not paths.
+ignore = ["venv"]
+
+[tool.pylint.BASIC]
+# Stick to snake case, but accept setUp and tearDown from unittest
+method-rgx = "(([a-z_][a-z0-9_]*)|(setUp)|(tearDown))$"
+
+[tool.pylint."MESSAGES CONTROL"]
+# Only show warnings with the listed confidence levels. Leave empty to show
+# all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED
+confidence = ""
+
+disable = [
+    "missing-function-docstring",
+    "import-error", # disabled since pre-commit runs pylint in a separate venv
+    "unspecified-encoding",
+    "fixme",
+    "too-few-public-methods"
+]
+
+[tool.pylint.FORMAT]
+max-line-length = 120

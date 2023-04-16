@@ -20,7 +20,8 @@ class FileVisitor:
 
     @abstractmethod
     def visit_file(self, file: Path) -> None:
-        raise NotImplementedError("Don't call me, I'm abstract.")
+        msg = "Don't call me, I'm abstract."
+        raise NotImplementedError(msg)
 
 
 class FileTree:
@@ -41,7 +42,8 @@ class FileTree:
                 if sub_item.is_file():
                     visitor.visit_file(sub_item)
         else:
-            raise FileNotFoundError(f"Path {self._item} does not exist")
+            msg = f"Path {self._item} does not exist"
+            raise FileNotFoundError(msg)
 
     def rglob_but(self, ignore_folder: str) -> list[Path]:
         return sorted(

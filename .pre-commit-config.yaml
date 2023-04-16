@@ -44,7 +44,7 @@ repos:
           - mdformat-config
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.10.3
+    rev: v3.11.1
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
@@ -56,13 +56,13 @@ repos:
         args: [--mapping=2, --sequence=4, --offset=2, --implicit_start, --preserve-quotes]
         exclude: (?x)( .gitlab-ci.yml | .clang-format | .clang-tidy )
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.29.0
+    rev: v1.30.0
     hooks:
       - id: yamllint
         args: [--strict]
         exclude: (?x)( .clang-format | .clang-tidy | docs/theme/tum.yml )
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
         language_version: python3
@@ -88,10 +88,9 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.254
+    rev: v0.0.261
     hooks:
       - id: ruff
-        args: [--fix]
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
@@ -115,12 +114,12 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.0.1
+    rev: v1.2.0
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
   - repo: https://github.com/PyCQA/pylint
-    rev: v2.16.4
+    rev: v3.0.0a6
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -129,7 +128,7 @@ repos:
       - id: pyupgrade
         args: [--py310-plus, --keep-runtime-typing]
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.1
+    rev: v2.0.2
     hooks:
       - id: autoflake
   - repo: https://github.com/asottile/yesqa
@@ -141,10 +140,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.21.0
+    rev: 0.22.0
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.13.18
+    rev: v1.14.6
     hooks:
       - id: typos

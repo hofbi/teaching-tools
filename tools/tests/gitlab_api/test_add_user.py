@@ -1,15 +1,12 @@
 """Test add user module."""
 
-from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, call
 
 import gitlab
-from pandas import DataFrame
 from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.file_parsing.student_group_parser import Student
 from sel_tools.gitlab_api.add_user import (
     add_students_to_repos,
-    add_users,
     find_gitlab_users_of_students,
 )
 from tests.helper import STUDENT1, STUDENT2, GitlabUserFake, GitlabUserManagerFake
@@ -73,52 +70,6 @@ class AddUserTest(TestCase):
         self.mock_repo2 = MagicMock()
         self.mock_repo2.name = "sel-homework_2"
         self.mock_repo2.members.create = MagicMock()
-        self.mock_repos = [self.mock_repo1, self.mock_repo2]
-
-    def test_add_users(self) -> None:
-        content = DataFrame([STUDENT1, STUDENT2])
-        content.to_csv("group_formation.csv")
-        with patch("gitlab.Gitlab", MagicMock(return_value=self.mock_instance)):
-            add_users(Path("group_formation.csv"), self.mock_repos, "my_gitlab_token")
-        self.mock_repo1.members.create.assert_has_calls(
-            [
-                call(
-                    {"user_id": "12345", "access_level": gitlab.const.DEVELOPER_ACCESS}
-                ),
-            ]
-        )
-        self.mock_repo2.members.create.assert_has_calls(
-            [call({"user_id": "35711", "access_level": gitlab.const.DEVELOPER_ACCESS})]
-        )
-
-    def test_add_users_invalid_user(self) -> None:
-        content = DataFrame([STUDENT1, STUDENT_NO_GITLAB_ACC])
-        content.to_csv("group_formation.csv")
-        with patch("gitlab.Gitlab", MagicMock(return_value=self.mock_instance)):
-            add_users(Path("group_formation.csv"), self.mock_repos, "my_gitlab_token")
-        self.mock_repo1.members.create.assert_has_calls(
-            [
-                call(
-                    {"user_id": "12345", "access_level": gitlab.const.DEVELOPER_ACCESS}
-                ),
-            ]
-        )
-
-    def test_add_users_invalid_group_id(self) -> None:
-        content = DataFrame([STUDENT1, STUDENT_MISSING_GROUP])
-        content.to_csv("group_formation.csv")
-        with patch(
-            "gitlab.Gitlab", MagicMock(return_value=self.mock_instance)
-        ), self.assertRaises(KeyError):
-            add_users(Path("group_formation.csv"), self.mock_repos, "my_gitlab_token")
-
-        self.mock_repo1.members.create.assert_has_calls(
-            [
-                call(
-                    {"user_id": "12345", "access_level": gitlab.const.DEVELOPER_ACCESS}
-                ),
-            ]
-        )
 
     def test_find_gitlab_users_of_students(self) -> None:
         students = [Student.from_dict(STUDENT1), Student.from_dict(STUDENT2)]
@@ -153,7 +104,9 @@ class AddUserTest(TestCase):
             find_gitlab_users_of_students(self.mock_instance, students),
         )
 
-    def test_add_students_to_repos(self) -> None:
+    def test_add_students_to_repos__for_two_valid_students_should_add_both(
+        self,
+    ) -> None:
         students = [
             self._create_student_with_gitlab_user(
                 STUDENT1,
@@ -180,3 +133,20 @@ class AddUserTest(TestCase):
                 ),
             ]
         )
+
+    def test_add_students_to_repos__for_an_invalid_students_should_raise(
+        self,
+    ) -> None:
+        students = [
+            self._create_student_with_gitlab_user(
+                STUDENT1,
+                self.mock_instance.user1,
+            ),
+            self._create_student_with_gitlab_user(
+                STUDENT_MISSING_GROUP,
+                self.mock_instance.user3,
+            ),
+        ]
+        repo_from_group_id = {1: self.mock_repo1, 2: self.mock_repo2}
+        with self.assertRaises(KeyError):
+            add_students_to_repos(students, repo_from_group_id)

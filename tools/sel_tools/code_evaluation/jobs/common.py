@@ -33,7 +33,8 @@ class EvaluationJob:
     @property
     @abstractmethod
     def name(self) -> str:
-        raise NotImplementedError("Don't call me, I'm abstract.")
+        msg = "Don't call me, I'm abstract."
+        raise NotImplementedError(msg)
 
     @property
     def comment(self) -> str:
@@ -45,7 +46,8 @@ class EvaluationJob:
 
     @abstractmethod
     def _run(self, repo_path: Path) -> int:
-        raise NotImplementedError("Don't call me, I'm abstract.")
+        msg = "Don't call me, I'm abstract."
+        raise NotImplementedError(msg)
 
 
 def run_shell_command(command: str, cwd: Path) -> int:

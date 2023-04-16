@@ -21,7 +21,8 @@ def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:
 
     matches = re.findall(minimal_length_between_markers_pattern, text, re.DOTALL)
     if not matches:
-        raise LookupError(f"Couldn't find any task in {slides_markdown_file}!")
+        msg = f"Couldn't find any task in {slides_markdown_file}!"
+        raise LookupError(msg)
 
     documentation_match = re.search(DOCUMENTATION_PATTERN, text, re.DOTALL)
     documentation = documentation_match.group(1) if documentation_match else ""

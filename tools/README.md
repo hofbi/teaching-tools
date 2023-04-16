@@ -14,6 +14,7 @@ Tools to automatically run repeating processes.
     - [Define Evaluation Jobs](#define-evaluation-jobs)
   - [Upload new files to the student code](#upload-new-files-to-the-student-code)
   - [Commit changes to the student code](#commit-changes-to-the-student-code)
+  - [Add students to their respective repositories](#add-students-to-their-respective-repositories)
 
 <!-- mdformat-toc end -->
 
@@ -138,4 +139,12 @@ Clone or pull all student repositories in the config file into workspace `-w`/`-
 
 ```shell script
 python3 gitlab_projects.py commit_changes config/demo.json --source-path your_source --gitlab-token your_token
+```
+
+### Add students to their respective repositories
+
+Add students to their respective repositories by extracting the student groups from a csv file exported from the Moodle survey.
+
+```shell script
+python3 gitlab_projects.py add_users config/demo.json student_group.csv --gitlab-token your_token
 ```

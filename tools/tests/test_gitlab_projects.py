@@ -13,7 +13,15 @@ from sel_tools.config import REPO_DIR
 class ArgumentParserTest(TestCase):
     """Tests for gitlab projects CLI argument parser."""
 
-    SUB_COMMANDS = ["create_issues", "comment_issue", "fetch_code", "evaluate_code"]
+    SUB_COMMANDS = [
+        "create_issues",
+        "comment_issue",
+        "fetch_code",
+        "evaluate_code",
+        "upload_files",
+        "commit_changes",
+        "add_users",
+    ]
 
     def setUp(self) -> None:
         self.setUpPyfakefs()
@@ -259,3 +267,21 @@ class CommitChangesArgumentParserTest(TestCase):
         self.assertEqual(args.message, "message")
         self.assertEqual(args.workspace, Path("workspace"))
         self.assertTrue(args.keep_solutions)
+
+
+class AddUsersArgumentParserTest(TestCase):
+    """Tests for add_users subparser."""
+
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+        self.fs.create_file("config_file.json")
+        self.fs.create_file("student_group.csv")
+
+    def test_add_users_minimal_valid_parameters(self) -> None:
+        args = parse_arguments(
+            "foo.py add_users -t 123 config_file.json student_group.csv".split(" ")
+        )
+
+        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_group_info_file.file_path, "student_group.csv")
+        self.assertEqual(args.gitlab_token, "123")

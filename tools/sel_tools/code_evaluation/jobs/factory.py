@@ -34,13 +34,15 @@ class EvaluationJobFactory:
     def create(
         gitlab_projects: list[GitlabProject], homework_number: int
     ) -> list[EvaluationJob]:
-        raise NotImplementedError("Don't call me, I'm abstract.")
+        msg = "Don't call me, I'm abstract."
+        raise NotImplementedError(msg)
 
     @staticmethod
     def load_factory_from_file(module_path: Path) -> type["EvaluationJobFactory"]:
         spec = importlib.util.spec_from_file_location(module_path.stem, module_path)
         if spec is None:
-            raise ImportError(f"Failed to load module from file in {module_path}")
+            msg = f"No subclass of EvaluationJobFactory in {module_path}"
+            raise ImportError(msg)
         module = importlib.util.module_from_spec(spec)
         # To enable loading files with additionally required python files lying besides them
         with add_temporarily_to_pythonpath(module_path.parent):
@@ -55,6 +57,5 @@ class EvaluationJobFactory:
                 and name != "EvaluationJobFactory"
             ):
                 return attribute
-        raise ModuleNotFoundError(
-            f"No subclass of EvaluationJobFactory in {module_path}"
-        )
+        msg = f"No subclass of EvaluationJobFactory in {module_path}"
+        raise ModuleNotFoundError(msg)

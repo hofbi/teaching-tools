@@ -247,3 +247,10 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
             / "sel.py",
             help="Path to the python module containing the evaluation job factory",
         )
+
+    def add_student_group_info_file(self) -> None:
+        self.__parser.add_argument(
+            "student_group_info_file",
+            type=FileType("r"),
+            help="File which contains the student groups info",
+        )

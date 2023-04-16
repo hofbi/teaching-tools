@@ -44,7 +44,7 @@ class MakeTestJob(EvaluationJob):
     def _run(self, repo_path: Path) -> int:
         build_folder = repo_path / HW_BUILD_FOLDER
         score, output = run_shell_command_with_output("make test", build_folder)
-        if score != 0 and output == "":
+        if score != 0 and not output:
             self._comment = "No tests registered"
             return 0
         if score != 0 and "No tests were found" in output:
