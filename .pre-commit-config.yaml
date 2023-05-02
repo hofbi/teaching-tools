@@ -44,7 +44,7 @@ repos:
           - mdformat-config
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.11.1
+    rev: v3.11.2
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
@@ -56,7 +56,7 @@ repos:
         args: [--mapping=2, --sequence=4, --offset=2, --implicit_start, --preserve-quotes]
         exclude: (?x)( .gitlab-ci.yml | .clang-format | .clang-tidy )
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.30.0
+    rev: v1.31.0
     hooks:
       - id: yamllint
         args: [--strict]
@@ -67,12 +67,12 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.5.1
+    rev: v1.6.4
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v15.0.7
+    rev: v16.0.2
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -88,7 +88,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.261
+    rev: v0.0.263
     hooks:
       - id: ruff
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -123,12 +123,12 @@ repos:
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+    rev: v3.3.2
     hooks:
       - id: pyupgrade
         args: [--py310-plus, --keep-runtime-typing]
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.2
+    rev: v2.1.1
     hooks:
       - id: autoflake
   - repo: https://github.com/asottile/yesqa
@@ -144,6 +144,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.14.6
+    rev: v1.14.8
     hooks:
       - id: typos
