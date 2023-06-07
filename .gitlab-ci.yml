@@ -1,7 +1,6 @@
 image: makeappdev/cpp-dev
 
 stages:
-  - check
   - build
   - test
   - deploy
@@ -11,13 +10,21 @@ stages:
     - schedules
 
 .python_setup: &python_setup
+  variables:
+    PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
+    PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   before_script:
     - python -V  # Debug info
     - python -m pip install --upgrade pip
     - pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
-    - pip install -r requirements.txt
+    - pip install --upgrade -r requirements.txt
+  cache:
+    paths:
+      - .cache/pip
+      - .cache/pre-commit
+      - venv/
 
 .build_template: &build_definition
   <<: *no_schedule
@@ -33,15 +40,7 @@ stages:
 pre-commit_checks:
   <<: *no_schedule
   <<: *python_setup
-  stage: check
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
-  cache:
-    paths:
-      - ${PIP_CACHE_DIR}
-      - ${PRE_COMMIT_HOME}
-      - venv/
+  stage: build
   script:
     - pre-commit run --from-ref origin/master --to-ref HEAD
 
@@ -95,14 +94,7 @@ docs:
 python_tests:
   <<: *no_schedule
   <<: *python_setup
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
-  cache:
-    paths:
-      - ${PIP_CACHE_DIR}
-      - ${PRE_COMMIT_HOME}
-      - venv/
+  stage: build
   script:
     - make test
     - make coverage_reports

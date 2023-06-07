@@ -1,73 +1,95 @@
-[tool.ruff]
-
-fix = true
-ignore = []
-line-length = 120
-target-version = "py310"
-
-# TODO enable "A", "S", "DTZ", "ISC"
-select = [
-    "B",
-    "BLE",
-    "C",
-    "C4",
-    "C90",
-    "E",
-    "EM",
-    "ERA",
-    "EXE",
-    "F",
-    "G",
-    "ICN",
-    "N",
-    "PGH",
-    "PD",
-    "PIE",
-    "PL",
-    "PTH",
-    "Q",
-    "RET",
-    "RUF",
-    "SIM",
-    "T10",
-    "TCH",
-    "TID",
-    "TRY",
-    "UP",
-    "W",
-    "YTT"
-]
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-
 [tool.docformatter]
 in-place = true
 recursive = true
 wrap-summaries = 88
 wrap-descriptions = 81
 
-[tool.pylint.MASTER]
-# Add files or directories to the blacklist. They should be base names, not paths.
-ignore = ["venv"]
+[tool.flake8]
+max-line-length = 120
+
+[tool.flake8.known-modules]
+"" = ["sel_tools", "tests", "gitlab_projects", "create_gitlab_projects", "export_files"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pylint.BASIC]
 # Stick to snake case, but accept setUp and tearDown from unittest
 method-rgx = "(([a-z_][a-z0-9_]*)|(setUp)|(tearDown))$"
 
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint.MASTER]
+# Add files or directories to the blacklist. They should be base names, not paths.
+ignore = ["venv"]
+
 [tool.pylint."MESSAGES CONTROL"]
 # Only show warnings with the listed confidence levels. Leave empty to show
 # all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED
 confidence = ""
-
 disable = [
-    "missing-function-docstring",
-    "import-error", # disabled since pre-commit runs pylint in a separate venv
-    "unspecified-encoding",
-    "fixme",
-    "too-few-public-methods"
+  "missing-function-docstring",
+  "import-error", # disabled since pre-commit runs pylint in a separate venv
+  "unspecified-encoding",
+  "fixme",
+  "too-few-public-methods"
 ]
 
-[tool.pylint.FORMAT]
-max-line-length = 120
+[tool.ruff]
+fix = true
+ignore = []
+line-length = 120
+target-version = "py310"
+# TODO enable "A", "S", "DTZ", "ISC"
+select = [
+  "B",
+  "BLE",
+  "C",
+  "C4",
+  "C90",
+  "E",
+  "EM",
+  "ERA",
+  "EXE",
+  "F",
+  "G",
+  "ICN",
+  "N",
+  "PGH",
+  "PD",
+  "PIE",
+  "PL",
+  "PTH",
+  "Q",
+  "RET",
+  "RUF",
+  "SIM",
+  "T10",
+  "TCH",
+  "TID",
+  "TRY",
+  "UP",
+  "W",
+  "YTT"
+]

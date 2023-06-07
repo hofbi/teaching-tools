@@ -1,4 +1,5 @@
 
 -r tools/requirements.txt
 coverage
+identify
 pre-commit

@@ -39,8 +39,7 @@ def create_repos(
 def configure_project(gitlab_project: Project) -> None:
     """Configure gitlab project."""
     gitlab_project.runners.create({"runner_id": RUNNER_ID})
-    with AVATAR_PATH.open("rb") as avatar:
-        gitlab_project.avatar = avatar
+    gitlab_project.avatar = AVATAR_PATH.read_bytes()
     gitlab_project.save()
 
 

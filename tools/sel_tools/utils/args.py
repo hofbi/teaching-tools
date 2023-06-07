@@ -10,22 +10,14 @@ from sel_tools.config import REPO_DIR
 
 
 def dir_path(path_string: str) -> Path:
-    """Argparse type check if path is a directory.
-
-    :param path_string:
-    :return:
-    """
+    """Argparse type check if path is a directory."""
     if Path(path_string).is_dir():
         return Path(path_string)
     raise NotADirectoryError(path_string)
 
 
 def file_path(path_string: str) -> Path:
-    """Argparse type check if path is a file.
-
-    :param path_string:
-    :return:
-    """
+    """Argparse type check if path is a file."""
     if Path(path_string).is_file():
         return Path(path_string)
     raise FileNotFoundError(path_string)
