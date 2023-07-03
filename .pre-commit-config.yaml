@@ -83,12 +83,12 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.1
+    rev: v1.7.3
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v16.0.4
+    rev: v16.0.6
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -103,8 +103,8 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.270
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.276
     hooks:
       - id: ruff
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -131,7 +131,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
+    rev: v1.4.1
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
@@ -140,16 +140,16 @@ repos:
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.4.0
+    rev: v3.8.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus, --keep-runtime-typing]
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.1.1
+    rev: v2.2.0
     hooks:
       - id: autoflake
   - repo: https://github.com/asottile/yesqa
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: yesqa
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -157,10 +157,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.23.1
+    rev: 0.23.2
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.14.12
+    rev: typos-dict-v0.10.6
     hooks:
       - id: typos
