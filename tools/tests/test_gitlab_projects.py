@@ -4,6 +4,7 @@ import contextlib
 import datetime
 import io
 from pathlib import Path
+from typing import ClassVar
 
 from gitlab_projects import parse_arguments
 from pyfakefs.fake_filesystem_unittest import TestCase
@@ -13,7 +14,7 @@ from sel_tools.config import REPO_DIR
 class ArgumentParserTest(TestCase):
     """Tests for gitlab projects CLI argument parser."""
 
-    SUB_COMMANDS = [
+    SUB_COMMANDS: ClassVar[list[str]] = [
         "create_issues",
         "comment_issue",
         "fetch_code",

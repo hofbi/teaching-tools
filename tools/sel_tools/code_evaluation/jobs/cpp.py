@@ -2,6 +2,7 @@
 
 import re
 from pathlib import Path
+from typing import ClassVar
 
 from sel_tools.code_evaluation.jobs.common import (
     EvaluationJob,
@@ -39,7 +40,7 @@ class MakeTestJob(EvaluationJob):
     """Job for running make test."""
 
     name = "Make Test"
-    dependencies = [CMakeBuildJob()]
+    dependencies: ClassVar[list[EvaluationJob]] = [CMakeBuildJob()]
 
     def _run(self, repo_path: Path) -> int:
         build_folder = repo_path / HW_BUILD_FOLDER
@@ -70,7 +71,9 @@ class CodeCoverageTestJob(EvaluationJob):
     """Job for checking the code coverage."""
 
     name = "Code Coverage"
-    dependencies = [CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
+    dependencies: ClassVar[list[EvaluationJob]] = [
+        CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")
+    ]
 
     def __init__(self, weight: int = 1, min_coverage: int = 75) -> None:
         super().__init__(weight)

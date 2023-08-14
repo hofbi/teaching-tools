@@ -24,6 +24,22 @@ Author Name
 
 ---
 
+# Novel Topic
+
+---
+
 ## Slide Features
 
 - Find a feature demo at https://github.com/hofbi/tum-marp-template
+
+---
+
+# Summary
+
+---
+
+## Key Takeaways
+
+- Having slides in markdown is awesome
+
+---

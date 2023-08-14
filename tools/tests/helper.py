@@ -4,6 +4,7 @@ import shutil
 import unittest
 from dataclasses import dataclass
 from pathlib import Path
+from typing import ClassVar
 
 import git
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
@@ -65,7 +66,10 @@ class ComplexJob(EvaluationJob):
     """Test job."""
 
     name = "complex"
-    dependencies = [SimpleFailingJob(), SimplePassingJob(2)]
+    dependencies: ClassVar[list[EvaluationJob]] = [
+        SimpleFailingJob(),
+        SimplePassingJob(2),
+    ]
 
     def _run(self, repo_path: Path) -> int:
         return 3
