@@ -9,4 +9,5 @@ sudo apt-get install -y \
     iwyu \
     cmake \
     lcov \
+    zip \
     python3-pip

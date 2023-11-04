@@ -105,12 +105,11 @@ class ClangTidyTestJob(EvaluationJob):
     def _run(self, repo_path: Path) -> int:
         copy_item(CMAKE_MODULE_PATH, repo_path)
         cmake_lists = repo_path / CMAKELISTS_FILE_NAME
-        with cmake_lists.open("a") as file_ptr:
-            file_ptr.write(
-                "\n"
-                + f"list(APPEND CMAKE_MODULE_PATH ${{PROJECT_SOURCE_DIR}}/{CMAKE_MODULE_PATH.stem})\n"
-                + "include(ClangTidy)"
-            )
+        content = cmake_lists.read_text()
+        content += "\n"
+        content += f"list(APPEND CMAKE_MODULE_PATH ${{PROJECT_SOURCE_DIR}}/{CMAKE_MODULE_PATH.stem})\n"
+        content += "include(ClangTidy)\n"
+        cmake_lists.write_text(content)
         return CMakeBuildJob().run(repo_path)[-1].score
 
 

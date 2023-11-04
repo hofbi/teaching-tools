@@ -12,7 +12,6 @@ max-line-length = 120
 
 [tool.isort]
 profile = "black"
-multi_line_output = 3
 
 [tool.mypy]
 check_untyped_defs = true
@@ -58,38 +57,23 @@ disable = [
 
 [tool.ruff]
 fix = true
-ignore = []
 line-length = 120
 target-version = "py310"
-# TODO enable "A", "S", "DTZ", "ISC"
-select = [
-  "B",
-  "BLE",
-  "C",
-  "C4",
-  "C90",
-  "E",
-  "EM",
-  "ERA",
-  "EXE",
-  "F",
-  "G",
-  "ICN",
-  "N",
-  "PGH",
-  "PD",
-  "PIE",
-  "PL",
-  "PTH",
-  "Q",
-  "RET",
-  "RUF",
-  "SIM",
-  "T10",
-  "TCH",
-  "TID",
-  "TRY",
-  "UP",
-  "W",
-  "YTT"
+select = ["ALL"]
+ignore = [
+  "A",
+  "ANN",
+  "ARG",
+  "COM", # Done via black
+  "D",
+  "DTZ001", # TODO: Enable
+  "FBT",
+  "FIX",
+  "I", # Done via isort
+  "INP",
+  "PERF203",
+  "PT", # We don't use pytest here
+  "S",
+  "T",
+  "TD"
 ]

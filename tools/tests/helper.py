@@ -102,7 +102,7 @@ class GitlabUserFake:
 class GitlabUserManagerFake:
     """Fake for the Gitlab User Manager Object."""
 
-    user_list: list[GitlabUserFake]
+    user_list: list[GitlabUserFake]  # pylint: disable=E0601
 
     def list(self, search: str = "") -> list[GitlabUserFake]:
         return (
