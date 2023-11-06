@@ -88,7 +88,7 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v17.0.3
+    rev: v17.0.4
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -103,8 +103,8 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.1.3
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.4
     hooks:
       - id: ruff
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -157,10 +157,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.0
+    rev: 0.27.1
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.16.21
+    rev: typos-dict-v0.11.3
     hooks:
       - id: typos
