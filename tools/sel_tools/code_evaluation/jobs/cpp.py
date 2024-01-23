@@ -105,6 +105,11 @@ class ClangTidyTestJob(EvaluationJob):
     def _run(self, repo_path: Path) -> int:
         copy_item(CMAKE_MODULE_PATH, repo_path)
         cmake_lists = repo_path / CMAKELISTS_FILE_NAME
+
+        if not cmake_lists.exists():
+            self._comment = f"{CMAKELISTS_FILE_NAME} not found"
+            return 0
+
         content = cmake_lists.read_text()
         content += "\n"
         content += f"list(APPEND CMAKE_MODULE_PATH ${{PROJECT_SOURCE_DIR}}/{CMAKE_MODULE_PATH.stem})\n"

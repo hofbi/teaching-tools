@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import gitlab
+
 from sel_tools.config import GITLAB_SERVER_URL
 from sel_tools.file_parsing.student_group_parser import (
     Student,
@@ -37,11 +38,13 @@ def find_gitlab_users_of_students(
             ]
         except IndexError:
             student.gitlab_user = None
+            print(f"Student {student.name} with {student.mail_addr} not found!")
     return [student for student in students if student.gitlab_user is not None]
 
 
 def add_students_to_repos(students: list[Student], repo_from_group_id: dict) -> None:
     """Add students to repositories."""
+    print(f"Adding {len(students)} to their projects!")
     for student in students:
         repo = repo_from_group_id[student.group_id]
         repo.members.create(

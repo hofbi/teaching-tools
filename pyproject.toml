@@ -10,9 +10,6 @@ max-line-length = 120
 [tool.flake8.known-modules]
 "" = ["sel_tools", "tests", "gitlab_projects", "create_gitlab_projects", "export_files"]
 
-[tool.isort]
-profile = "black"
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_incomplete_defs = true
@@ -57,19 +54,18 @@ disable = [
 
 [tool.ruff]
 fix = true
-line-length = 120
 target-version = "py310"
 select = ["ALL"]
 ignore = [
   "A",
   "ANN",
   "ARG",
-  "COM", # Done via black
+  "COM", # Done via formatter
   "D",
   "DTZ001", # TODO: Enable
+  "E501", # Done via formatter
   "FBT",
   "FIX",
-  "I", # Done via isort
   "INP",
   "PERF203",
   "PT", # We don't use pytest here

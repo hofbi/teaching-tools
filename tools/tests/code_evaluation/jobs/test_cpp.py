@@ -5,13 +5,15 @@ from unittest.mock import MagicMock, patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.code_evaluation.jobs.cpp import (
+    ClangTidyTestJob,
     CleanRepoJob,
     CMakeBuildJob,
     CodeCoverageTestJob,
     MakeTestJob,
     OOPTestJob,
 )
-from sel_tools.config import HW_BUILD_FOLDER
+from sel_tools.config import CMAKE_MODULE_PATH, HW_BUILD_FOLDER
+from sel_tools.utils.config import CMAKELISTS_FILE_NAME
 
 
 def coverage_file_content(total_coverage: int) -> str:
@@ -71,6 +73,40 @@ class CMakeBuildJobTest(TestCase):
         unit.run(self.repo_path)
         self.assertIn("-DARG_TEST=ON", mock.call_args_list[0].args[0])
         self.assertEqual(2, len(mock.call_args_list))
+
+
+class ClangTidyTestJobTest(TestCase):
+    """Tests for the clang-tidy test job."""
+
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+        self.unit = ClangTidyTestJob()
+        self.repo_path = Path("repo")
+        self.build_folder = self.repo_path / HW_BUILD_FOLDER
+        self.fs.create_dir(CMAKE_MODULE_PATH)
+
+    @patch(
+        "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
+        MagicMock(return_value=1),
+    )
+    def test_run_impl_success(self) -> None:
+        cmake_list = self.repo_path / CMAKELISTS_FILE_NAME
+        self.fs.create_file(cmake_list)
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(1, result[0].score)
+        self.assertIn(
+            "include(ClangTidy)",
+            cmake_list.read_text(),
+        )
+
+    @patch(
+        "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
+        MagicMock(return_value=1),
+    )
+    def test_run_impl_fail_cmake_list_does_not_exist(self) -> None:
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(0, result[0].score)
+        self.assertEqual("CMakeLists.txt not found", result[0].comment)
 
 
 class MakeTestJobTest(TestCase):

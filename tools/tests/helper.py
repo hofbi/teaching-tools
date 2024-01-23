@@ -11,7 +11,7 @@ from sel_tools.code_evaluation.jobs.common import EvaluationJob
 from sel_tools.config import GIT_MAIN_BRANCH
 
 STUDENT1 = {
-    "Surname": "xyz",
+    "Last name": "xyz",
     "First name": "uvw",
     "matriculation-id": "09876543",
     "Email address": "uvw.xyz@mytum.de",
@@ -19,7 +19,7 @@ STUDENT1 = {
     "Choice": "Group 1",
 }
 STUDENT2 = {
-    "Surname": "äöü",
+    "Last name": "äöü",
     "First name": "opq",
     "matriculation-id": "02358113",
     "Email address": "aeoeue.rst@tum.de",

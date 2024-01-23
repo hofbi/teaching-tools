@@ -9,10 +9,11 @@ from sel_tools.gitlab_api.add_user import (
     add_students_to_repos,
     find_gitlab_users_of_students,
 )
+
 from tests.helper import STUDENT1, STUDENT2, GitlabUserFake, GitlabUserManagerFake
 
 STUDENT_NO_GITLAB_ACC = {
-    "Surname": "rst",
+    "Last name": "rst",
     "First name": "abc",
     "matriculation-id": "01234567",
     "Email address": "abc.rst@mytum.de",
@@ -20,7 +21,7 @@ STUDENT_NO_GITLAB_ACC = {
     "Choice": "Group 2",
 }
 STUDENT_MISSING_GROUP = {
-    "Surname": "rst",
+    "Last name": "rst",
     "First name": "opq",
     "matriculation-id": "01235813",
     "Email address": "opq.rst@tum.de",
@@ -45,17 +46,17 @@ class AddUserTest(TestCase):
         self.mock_instance.user1 = GitlabUserFake(
             "12345",
             STUDENT1["Email address"],
-            f"{STUDENT1['First name']} {STUDENT1['Surname']}",
+            f"{STUDENT1['First name']} {STUDENT1['Last name']}",
         )
         self.mock_instance.user2 = GitlabUserFake(
             "35711",
             STUDENT2["Email address"],
-            f"{STUDENT2['First name']} {STUDENT2['Surname']}",
+            f"{STUDENT2['First name']} {STUDENT2['Last name']}",
         )
         self.mock_instance.user3 = GitlabUserFake(
             "35711",
             STUDENT_MISSING_GROUP["Email address"],
-            f"{STUDENT_MISSING_GROUP['First name']} {STUDENT_MISSING_GROUP['Surname']}",
+            f"{STUDENT_MISSING_GROUP['First name']} {STUDENT_MISSING_GROUP['Last name']}",
         )
         self.mock_instance.users = GitlabUserManagerFake(
             [

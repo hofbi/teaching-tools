@@ -103,33 +103,19 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.14
     hooks:
       - id: ruff
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.10.0
-    hooks:
-      - id: python-check-blanket-noqa
-      - id: python-check-blanket-type-ignore
-      - id: python-check-mock-methods
-      - id: python-no-eval
-      - id: python-no-log-warn
-      - id: python-use-type-annotations
+      - id: ruff-format
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 7.0.0
     hooks:
       - id: flake8
         additional_dependencies:
           - flake8-pyproject
-          - flake8-use-pathlib
-          - flake8-bugbear
-          - flake8-comprehensions
-          - flake8-requirements
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
+          - flake8-bugbear  # Ruff does not implement all of bugbear
+          - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
     hooks:
@@ -144,14 +130,6 @@ repos:
     hooks:
       - id: pyupgrade
         args: [--py310-plus, --keep-runtime-typing]
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.1
-    hooks:
-      - id: autoflake
-  - repo: https://github.com/asottile/yesqa
-    rev: v1.5.0
-    hooks:
-      - id: yesqa
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.9.0.6
     hooks:
@@ -161,6 +139,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.16.26
+    rev: v1.17.2
     hooks:
       - id: typos

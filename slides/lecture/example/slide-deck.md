@@ -40,6 +40,8 @@ Author Name
 
 ## Key Takeaways
 
-- Having slides in markdown is awesome
+<!-- Question: What are your key takeaways? -->
+
+* Having slides in markdown is awesome
 
 ---

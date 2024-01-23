@@ -14,14 +14,14 @@ class Student:
     """Student information."""
 
     first_name: str
-    surname: str
+    last_name: str
     mail_addr: str
     choice: str
     gitlab_user: User = None
 
     @property
     def name(self) -> str:
-        return f"{self.first_name} {self.surname}"
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def valid_choice(self) -> bool:
@@ -37,7 +37,7 @@ class Student:
     def from_dict(student_dict: dict) -> "Student":
         return Student(
             student_dict["First name"],
-            student_dict["Surname"],
+            student_dict["Last name"],
             student_dict["Email address"],
             student_dict["Choice"],
         )

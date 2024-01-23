@@ -8,18 +8,11 @@ from sel_tools.file_parsing.student_group_parser import (
     Student,
     get_student_groups_from_file,
 )
+
 from tests.helper import STUDENT1, STUDENT2
 
-HEADERS_GERMAN = [
-    "Nachname",
-    "Vorname",
-    "Matrikelnummer",
-    "E-Mail-Adresse",
-    "Gruppe",
-    "Abstimmung",
-]
 STUDENT_NOT_ANSWERED = {
-    "Surname": "def",
+    "Last name": "def",
     "First name": "abc",
     "matriculation-id": "01234567",
     "Email address": "abc.def@tum.de",
@@ -39,7 +32,7 @@ class ParserTest(TestCase):
             Student.from_dict(STUDENT1),
             Student(
                 STUDENT1["First name"],
-                STUDENT1["Surname"],
+                STUDENT1["Last name"],
                 STUDENT1["Email address"],
                 STUDENT1["Choice"],
             ),
@@ -86,7 +79,15 @@ class ParserTest(TestCase):
 
     def test_file_in_german(self) -> None:
         content = DataFrame([STUDENT1, STUDENT2])
-        content.to_csv("group_formation.csv", header=HEADERS_GERMAN)
+        headers_german = [
+            "Nachname",
+            "Vorname",
+            "Matrikelnummer",
+            "E-Mail-Adresse",
+            "Gruppe",
+            "Abstimmung",
+        ]
+        content.to_csv("group_formation.csv", header=headers_german)
         self.assertRaises(
             KeyError, get_student_groups_from_file, Path("group_formation.csv")
         )
