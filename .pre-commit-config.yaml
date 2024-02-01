@@ -77,11 +77,6 @@ repos:
     rev: v0.23.1
     hooks:
       - id: toml-sort-fix
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-      - id: black
-        language_version: python3
   - repo: https://github.com/PyCQA/docformatter
     rev: v1.7.5
     hooks:
@@ -104,7 +99,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.1.14
+    rev: v0.1.15
     hooks:
       - id: ruff
       - id: ruff-format
@@ -135,7 +130,7 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.3
+    rev: 0.27.4
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos

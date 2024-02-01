@@ -5,8 +5,9 @@ from pathlib import Path
 
 import git
 from git.objects.commit import Commit
-from sel_tools.diff_creation.report import Diff, DiffReport
 from tqdm import tqdm
+
+from sel_tools.diff_creation.report import Diff, DiffReport
 
 
 def create_diff(

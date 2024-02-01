@@ -7,9 +7,10 @@ from pathlib import Path
 import git
 import gitlab
 from gitlab.v4.objects.projects import Project
+from tqdm import tqdm
+
 from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
 from sel_tools.utils.files import FileTree, FileVisitor
-from tqdm import tqdm
 
 
 def commit_changes(repo_paths: list[Path], message: str) -> None:

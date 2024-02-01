@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from sel_tools.config import GIT_MAIN_BRANCH
 from sel_tools.utils.repo import GitRepo
+
 from tests.helper import GitTestCase
 
 

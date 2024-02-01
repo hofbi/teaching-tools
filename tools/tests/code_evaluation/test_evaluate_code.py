@@ -4,6 +4,7 @@ from datetime import date, datetime
 
 from sel_tools.code_evaluation.evaluate_code import CodeEvaluator
 from sel_tools.utils.repo import GitlabProject
+
 from tests.helper import ComplexJob, GitlabProjectFake, GitTestCase, SimplePassingJob
 
 

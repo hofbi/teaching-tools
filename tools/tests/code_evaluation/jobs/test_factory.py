@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
+
 from tests.helper import SimplePassingJob
 
 

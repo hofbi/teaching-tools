@@ -11,6 +11,7 @@ from sel_tools.gitlab_api.create_repo import (
     get_repo_settings,
     store_student_repo_info_to_config_file,
 )
+
 from tests.helper import GitlabGroupFake
 
 

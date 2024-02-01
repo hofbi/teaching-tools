@@ -5,9 +5,10 @@ from pathlib import Path
 
 import gitlab
 from gitlab.v4.objects.projects import Project
+from tqdm import tqdm
+
 from sel_tools.config import AVATAR_PATH, GIT_MAIN_BRANCH, GITLAB_SERVER_URL, RUNNER_ID
 from sel_tools.gitlab_api.create_commit import create_commit
-from tqdm import tqdm
 
 
 def create_repos(

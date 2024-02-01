@@ -11,6 +11,7 @@ from sel_tools.code_evaluation.report import (
     write_evaluation_reports,
 )
 from sel_tools.utils.repo import GitlabProject
+
 from tests.helper import GitlabProjectFake
 
 

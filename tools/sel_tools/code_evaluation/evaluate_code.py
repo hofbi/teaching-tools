@@ -5,11 +5,12 @@ import itertools
 from datetime import date
 
 import git
+from tqdm import tqdm
+
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
 from sel_tools.code_evaluation.report import EvaluationReport
 from sel_tools.utils.repo import GitlabProject
-from tqdm import tqdm
 
 
 def evaluate_code(

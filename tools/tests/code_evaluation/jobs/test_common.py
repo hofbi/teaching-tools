@@ -11,6 +11,7 @@ from sel_tools.code_evaluation.jobs.common import (
     run_shell_command_with_output,
 )
 from sel_tools.code_evaluation.report import EvaluationResult
+
 from tests.helper import ComplexJob, SimpleFailingJob, SimplePassingJob
 
 
