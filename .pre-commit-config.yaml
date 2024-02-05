@@ -98,8 +98,8 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.1.15
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.0
     hooks:
       - id: ruff
       - id: ruff-format
@@ -134,6 +134,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.17.2
+    rev: v1.18.1
     hooks:
       - id: typos
