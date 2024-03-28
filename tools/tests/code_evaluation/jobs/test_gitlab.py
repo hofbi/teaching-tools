@@ -11,9 +11,7 @@ from sel_tools.utils.repo import GitlabProject
 class CIStatusTestJobTest(unittest.TestCase):
     """Tests for CI statis job."""
 
-    def __create_fake_project_with_status(
-        self, path: Path, status: str
-    ) -> GitlabProject:
+    def __create_fake_project_with_status(self, path: Path, status: str) -> GitlabProject:
         project_mock = MagicMock()
         status_mock = MagicMock()
         status_mock.status = status
@@ -27,18 +25,14 @@ class CIStatusTestJobTest(unittest.TestCase):
             unit.run(Path("test"))
 
     def test_run_impl__valid_project_failing_ci__should_be_zero(self) -> None:
-        mock_gitlab_project = self.__create_fake_project_with_status(
-            Path("test"), "fail"
-        )
+        mock_gitlab_project = self.__create_fake_project_with_status(Path("test"), "fail")
         unit = CIStatusTestJob([mock_gitlab_project])
 
         result = unit.run(Path("test"))
         self.assertEqual(0, result[0].score)
 
     def test_run_impl__valid_project_passing_ci__should_be_one(self) -> None:
-        mock_gitlab_project = self.__create_fake_project_with_status(
-            Path("test"), "success"
-        )
+        mock_gitlab_project = self.__create_fake_project_with_status(Path("test"), "success")
         unit = CIStatusTestJob([mock_gitlab_project])
 
         result = unit.run(Path("test"))

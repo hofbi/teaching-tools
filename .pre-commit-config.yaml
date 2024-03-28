@@ -68,7 +68,7 @@ repos:
         args: [--mapping=2, --sequence=4, --offset=2, --implicit_start, --preserve-quotes]
         exclude: (?x)( .gitlab-ci.yml | .clang-format | .clang-tidy )
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.33.0
+    rev: v1.35.1
     hooks:
       - id: yamllint
         args: [--strict]
@@ -83,7 +83,7 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v17.0.6
+    rev: v18.1.2
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -99,7 +99,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.0
+    rev: v0.3.4
     hooks:
       - id: ruff
       - id: ruff-format
@@ -112,28 +112,28 @@ repos:
           - flake8-bugbear  # Ruff does not implement all of bugbear
           - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v1.9.0
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.0.3
+    rev: v3.1.0
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
         args: [--py310-plus, --keep-runtime-typing]
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
+    rev: v0.10.0.1
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.4
+    rev: 0.28.0
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.18.1
+    rev: v1.19.0
     hooks:
       - id: typos

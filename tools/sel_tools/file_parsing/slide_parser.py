@@ -15,9 +15,7 @@ from sel_tools.utils.task import Task
 def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:
     """Parse slides for tasks."""
     text = slides_markdown_file.read_text()
-    minimal_length_between_markers_pattern = (
-        TASK_HEADER_PATTERN + "(.*?)" + TASK_FOOTER_PATTERN
-    )
+    minimal_length_between_markers_pattern = TASK_HEADER_PATTERN + "(.*?)" + TASK_FOOTER_PATTERN
 
     matches = re.findall(minimal_length_between_markers_pattern, text, re.DOTALL)
     if not matches:
@@ -27,9 +25,7 @@ def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:
     documentation_match = re.search(DOCUMENTATION_PATTERN, text, re.DOTALL)
     documentation = documentation_match.group(1) if documentation_match else ""
 
-    tasks: list[Task] = [
-        Task(title, description, documentation) for (title, description) in matches
-    ]
+    tasks: list[Task] = [Task(title, description, documentation) for (title, description) in matches]
     fill_attachments(tasks)
 
     return tasks

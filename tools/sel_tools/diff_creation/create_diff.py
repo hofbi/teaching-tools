@@ -21,9 +21,7 @@ def create_diff(
         if date_last_homework is None
         else [
             DiffCreator(repo_path, "build").create(date_last_homework, evaluation_date)
-            for repo_path in tqdm(
-                repo_paths, desc=f"Create diff since {date_last_homework}"
-            )
+            for repo_path in tqdm(repo_paths, desc=f"Create diff since {date_last_homework}")
         ]
     )
 
@@ -36,13 +34,9 @@ class DiffCreator:
         self.__repo = git.Repo(self.__path)
         self.__exclude = exclude
 
-    def create(
-        self, date_last_homework: date, evaluation_date: date | None
-    ) -> DiffReport:
+    def create(self, date_last_homework: date, evaluation_date: date | None) -> DiffReport:
         commits_since_last_homework = list(
-            self.__repo.iter_commits(
-                since=date_last_homework, before=evaluation_date, no_merges=True
-            )
+            self.__repo.iter_commits(since=date_last_homework, before=evaluation_date, no_merges=True)
         )
         diffs = (
             [

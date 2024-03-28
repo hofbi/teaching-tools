@@ -71,9 +71,7 @@ class CodeCoverageTestJob(EvaluationJob):
     """Job for checking the code coverage."""
 
     name = "Code Coverage"
-    dependencies: ClassVar[list[EvaluationJob]] = [
-        CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")
-    ]
+    dependencies: ClassVar[list[EvaluationJob]] = [CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
 
     def __init__(self, weight: int = 1, min_coverage: int = 75) -> None:
         super().__init__(weight)
@@ -87,7 +85,7 @@ class CodeCoverageTestJob(EvaluationJob):
         return int(coverage.group(1)) if coverage else 0
 
     def _run(self, repo_path: Path) -> int:
-        coverage_file = repo_path / HW_BUILD_FOLDER / "report.txt"
+        coverage_file = repo_path.resolve() / HW_BUILD_FOLDER / "report.txt"
         score = run_shell_command(f"gcovr -o {coverage_file}", repo_path)
         if score == 0:
             self._comment = "Coverage failed"
@@ -175,9 +173,7 @@ class CleanRepoJob(EvaluationJob):
             self.__is_clean = self.__is_clean and (
                 file.name not in self.__dirty_file_names
                 and file.suffix not in self.__dirty_suffixes
-                and all(
-                    directory not in str(file) for directory in self.__dirty_directories
-                )
+                and all(directory not in str(file) for directory in self.__dirty_directories)
             )
 
     class SourceFilesCountVisitor(FileVisitor):

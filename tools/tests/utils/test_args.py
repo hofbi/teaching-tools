@@ -46,9 +46,7 @@ class ArgumentParserFactoryTest(unittest.TestCase):
     def test_default_or_required_if_none__for_none_should_be_required_true(
         self,
     ) -> None:
-        self.assertDictEqual(
-            {"required": True}, ArgumentParserFactory.default_or_required_if_none(None)
-        )
+        self.assertDictEqual({"required": True}, ArgumentParserFactory.default_or_required_if_none(None))
 
     def test_default_or_required_if_none__for_not_none_should_be_default(self) -> None:
         self.assertDictEqual(

@@ -36,9 +36,7 @@ class EvaluationResult:
 class EvaluationReport:
     """Evaluation report."""
 
-    def __init__(
-        self, gitlab_project: GitlabProject, results: list[EvaluationResult]
-    ) -> None:
+    def __init__(self, gitlab_project: GitlabProject, results: list[EvaluationResult]) -> None:
         self.repo_path = gitlab_project.local_path
         self.url = gitlab_project.gitlab_project.web_url
         self.score = sum(result.score for result in set(results))
@@ -59,9 +57,7 @@ class EvaluationReport:
         return MD_EVALUATION_REPORT % (self.url, self.to_json())
 
 
-def write_evaluation_reports(
-    reports: list[EvaluationReport], report_base_name: str
-) -> None:
+def write_evaluation_reports(reports: list[EvaluationReport], report_base_name: str) -> None:
     """Write evaluation reports to disk."""
     for report in reports:
         report_path = report.repo_path / report_base_name

@@ -41,9 +41,7 @@ class FileTreeTest(FsTestCase):
     def test_call_recursive_solution_remover_on_folder(self) -> None:
         unit = FileTree(self.folder)
         unit.accept(self.visitor_mock)
-        self.visitor_mock.visit_file.assert_has_calls(
-            [call(self.file1), call(self.file2)]
-        )
+        self.visitor_mock.visit_file.assert_has_calls([call(self.file1), call(self.file2)])
 
     def test_call_recursive_solution_remover_on_folder_ignore_git(self) -> None:
         git_folder = self.folder / ".git"
@@ -78,9 +76,7 @@ class FileTreeTest(FsTestCase):
         paths = list(FileTree(self.folder).rglob_but(".git"))
         self.assertListEqual(
             paths,
-            sorted(
-                [self.file1, self.file2, self.folder / ".gitignore", self.nested_folder]
-            ),
+            sorted([self.file1, self.file2, self.folder / ".gitignore", self.nested_folder]),
         )
 
 

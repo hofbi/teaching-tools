@@ -55,6 +55,9 @@ disable = [
 [tool.ruff]
 fix = true
 target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
   "A",
@@ -67,6 +70,7 @@ ignore = [
   "FBT",
   "FIX",
   "INP",
+  "ISC001", # Done via formatter
   "PERF203",
   "PT", # We don't use pytest here
   "S",

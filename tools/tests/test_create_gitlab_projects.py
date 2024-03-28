@@ -26,14 +26,13 @@ class ArgumentParserTest(TestCase):
         self.assertEqual(args.source_path, expected_source_dir)
         expected_repo_info_dir = REPO_DIR / "config"
         self.assertEqual(args.repo_info_dir, expected_repo_info_dir)
+        self.assertFalse(args.publish_solutions)
 
     def test_maximum_parameter_set(self) -> None:
         self.fs.create_dir("config_folder")
         self.fs.create_dir("output/homework")
         args = parse_arguments(
-            "foo.py swe -g 1245 -r config_folder -t 456 -n 4 -s output/homework".split(
-                " "
-            )
+            "foo.py swe -g 1245 -r config_folder -t 456 -n 4 -s output/homework --publish-solutions".split(" ")
         )
 
         self.assertEqual(args.repo_base_name, "swe")
@@ -42,3 +41,4 @@ class ArgumentParserTest(TestCase):
         self.assertEqual(args.number_of_repos, 4)
         self.assertEqual(args.source_path, Path("output/homework"))
         self.assertEqual(args.repo_info_dir, Path("config_folder"))
+        self.assertTrue(args.publish_solutions)

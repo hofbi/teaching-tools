@@ -28,9 +28,7 @@ class AttachmentsTest(TestCase):
         self.fs.create_file(txt_file)
         self.fs.create_file(cpp_file)
 
-        revised_description = replace_file_paths_with_urls(
-            description, uploaded_files, attachments
-        )
+        revised_description = replace_file_paths_with_urls(description, uploaded_files, attachments)
         self.assertEqual(
             revised_description,
             """Some text with [a file](gitlab.com/file1) and some
@@ -48,9 +46,7 @@ class AttachmentsTest(TestCase):
     def test_upload_attachments_one_attachment_one_uploaded_file_path(self) -> None:
         attachments = [Path("/path/to/file.txt")]
         gitlab_project = MagicMock()
-        gitlab_project.upload = MagicMock(
-            return_value={"url": "/uploads/hash/file.txt"}
-        )
+        gitlab_project.upload = MagicMock(return_value={"url": "/uploads/hash/file.txt"})
 
         results = upload_attachments(attachments, gitlab_project)
 

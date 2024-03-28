@@ -42,9 +42,7 @@ class GitRepo:
 
     @staticmethod
     def authenticate_http_url(url: str) -> str:
-        return url.replace(
-            GitRepo.HTTPS_LEAD, f"{GitRepo.HTTPS_LEAD}gitlab-ci-token:$GITLAB_TOKEN@"
-        )
+        return url.replace(GitRepo.HTTPS_LEAD, f"{GitRepo.HTTPS_LEAD}gitlab-ci-token:$GITLAB_TOKEN@")
 
     def fetch_from(self, url: str) -> None:
         # The reason for this process here is to avoid that git writes the token
@@ -59,9 +57,7 @@ class GitRepo:
         )
 
     def clone(self, url: str) -> None:
-        git.Repo.clone_from(
-            url, self.path, progress=GitRepo.PrintProgress(), branch=self.__branch
-        )
+        git.Repo.clone_from(url, self.path, progress=GitRepo.PrintProgress(), branch=self.__branch)
 
     def pull(self) -> None:
         git.Repo(self.path).remote().pull(progress=GitRepo.PrintProgress())

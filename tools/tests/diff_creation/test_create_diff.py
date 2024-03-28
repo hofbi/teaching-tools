@@ -75,14 +75,10 @@ class DiffCreatorTest(GitTestCase):
     ) -> None:
         self.repo_path.joinpath("test.txt").touch()
         self.repo.index.add(["test.txt"])
-        self.repo.index.commit(
-            "add test.txt", commit_date=datetime(2021, 11, 13).isoformat()
-        )
+        self.repo.index.commit("add test.txt", commit_date=datetime(2021, 11, 13).isoformat())
         self.repo_path.joinpath("test.txt").write_text("line 1\nline 2\nline 3\n")
         self.repo.index.add(["test.txt"])
-        self.repo.index.commit(
-            "edit test.txt", commit_date=datetime(2021, 11, 14).isoformat()
-        )
+        self.repo.index.commit("edit test.txt", commit_date=datetime(2021, 11, 14).isoformat())
         unit = DiffCreator(self.repo_path)
 
         result = unit.create(date(2021, 11, 12), None)
@@ -109,9 +105,7 @@ class DiffCreatorTest(GitTestCase):
         self.repo_path.joinpath("test.txt").write_text("should be there\n")
         self.repo_path.joinpath("ignore.txt").write_text("ignore me\n")
         self.repo.index.add(["test.txt", "ignore.txt"])
-        self.repo.index.commit(
-            "add files", commit_date=datetime(2021, 11, 14).isoformat()
-        )
+        self.repo.index.commit("add files", commit_date=datetime(2021, 11, 14).isoformat())
         unit = DiffCreator(self.repo_path, exclude="ignore.txt")
 
         result = unit.create(date(2021, 11, 12), None)
@@ -134,9 +128,7 @@ class DiffCreatorTest(GitTestCase):
         build_folder.joinpath("ignore.txt").write_text("ignore me\n")
         build_folder.joinpath("test.txt").write_text("me too\n")
         self.repo.index.add(["test.txt", "build"])
-        self.repo.index.commit(
-            "add files and build", commit_date=datetime(2021, 11, 14).isoformat()
-        )
+        self.repo.index.commit("add files and build", commit_date=datetime(2021, 11, 14).isoformat())
 
         unit = DiffCreator(self.repo_path, exclude="build")
         result = unit.create(date(2021, 11, 12), None)

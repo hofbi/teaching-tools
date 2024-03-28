@@ -105,6 +105,4 @@ class GitlabUserManagerFake:
     user_list: list[GitlabUserFake]  # pylint: disable=E0601
 
     def list(self, search: str = "") -> list[GitlabUserFake]:
-        return (
-            [user for user in self.user_list if search in user.email] if search else []
-        )
+        return [user for user in self.user_list if search in user.email] if search else []

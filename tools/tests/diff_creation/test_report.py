@@ -31,11 +31,7 @@ class ReportTest(TestCase):
         self.fs.create_dir("report")
 
         write_diff_reports(
-            [
-                DiffReport(
-                    Path("report"), [Diff("a", "a", "a", "a"), Diff("b", "b", "b", "b")]
-                )
-            ],
+            [DiffReport(Path("report"), [Diff("a", "a", "a", "a"), Diff("b", "b", "b", "b")])],
             "base",
         )
 
@@ -90,9 +86,7 @@ class DiffReportTest(TestCase):
     def test_write_diff_patches_for_two_diffs_should_write_2_patches_and_2_html(
         self,
     ) -> None:
-        unit = DiffReport(
-            self.path, [Diff("a", "a", "a", "a"), Diff("b", "b", "b", "b")]
-        )
+        unit = DiffReport(self.path, [Diff("a", "a", "a", "a"), Diff("b", "b", "b", "b")])
 
         unit.write_diff_patches()
 

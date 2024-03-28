@@ -36,23 +36,15 @@ def edit_comment_issue(args: Namespace) -> None:
 
 def edit_fetch_code(args: Namespace) -> None:
     """Default action for fetch_code subcommand."""
-    fetch_repos(
-        args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
-    )
+    fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
 
 
 def edit_evaluate_code(args: Namespace) -> None:
     """Default action for evaluate_code subcommand."""
-    gitlab_projects = fetch_repos(
-        args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
-    )
+    gitlab_projects = fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
     factory = EvaluationJobFactory.load_factory_from_file(args.job_factory)
-    evaluation_reports = evaluate_code(
-        factory, gitlab_projects, args.homework_number, args.evaluation_date
-    )
-    write_evaluation_reports(
-        evaluation_reports, f"homework-{args.homework_number}-report"
-    )
+    evaluation_reports = evaluate_code(factory, gitlab_projects, args.homework_number, args.evaluation_date)
+    write_evaluation_reports(evaluation_reports, f"homework-{args.homework_number}-report")
     diff_reports = create_diff(
         [project.local_path for project in gitlab_projects],
         args.date_last_homework,
@@ -63,16 +55,12 @@ def edit_evaluate_code(args: Namespace) -> None:
 
 def edit_upload_files(args: Namespace) -> None:
     """Default action for upload_files subcommand."""
-    upload_files(
-        args.source_path, Path(args.student_repo_info_file.name), args.gitlab_token
-    )
+    upload_files(args.source_path, Path(args.student_repo_info_file.name), args.gitlab_token)
 
 
 def edit_commit_changes(args: Namespace) -> None:
     """Default action for commit_changes subcommand."""
-    gitlab_projects = fetch_repos(
-        args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token
-    )
+    gitlab_projects = fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
     student_repos = [project.local_path for project in gitlab_projects]
     export_items(args.source_path, student_repos, args.keep_solutions)
     commit_changes(student_repos, args.message)
@@ -92,9 +80,7 @@ def parse_arguments(arguments: list[str]) -> Namespace:
     # pylint: disable=too-many-locals
 
     parser = ArgumentParserFactory.default_parser(__doc__).parser
-    subparsers = parser.add_subparsers(
-        title="actions", dest="actions", help="sub-command help", required=True
-    )
+    subparsers = parser.add_subparsers(title="actions", dest="actions", help="sub-command help", required=True)
 
     # Common arguments
     factory = ArgumentParserFactory.parent_parser()

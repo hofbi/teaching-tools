@@ -12,9 +12,7 @@ from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
 from sel_tools.utils.repo import GitlabProject, GitRepo
 
 
-def fetch_repos(
-    workspace: Path, student_repos_file: Path, gitlab_token: str
-) -> list[GitlabProject]:
+def fetch_repos(workspace: Path, student_repos_file: Path, gitlab_token: str) -> list[GitlabProject]:
     """Fetch the student repositories into the workspace."""
     workspace.mkdir(parents=True, exist_ok=True)
 

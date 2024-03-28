@@ -31,11 +31,7 @@ def get_ignored_items_from(folder: Path) -> set[Path]:
     ignore_file_lines = ignore_file.read_text().splitlines()
     non_empty_lines = list(filter(None, ignore_file_lines))
     non_empty_lines.append(f"**/{EXPORT_IGNORE}")
-    ignore_list = [
-        file
-        for ignore_file_line in non_empty_lines
-        for file in folder.glob(ignore_file_line)
-    ]
+    ignore_list = [file for ignore_file_line in non_empty_lines for file in folder.glob(ignore_file_line)]
 
     return {item.resolve() for item in ignore_list}
 
@@ -45,10 +41,6 @@ def ignore_files(ignore_set: set[Path]) -> Callable:
 
     def ignore_callable(directory: str, contents: list[str]) -> list[str]:
         """Callable for ignoring files with shutil.copytree."""
-        return [
-            item
-            for item in contents
-            if Path(directory).joinpath(item).resolve() in ignore_set
-        ]
+        return [item for item in contents if Path(directory).joinpath(item).resolve() in ignore_set]
 
     return ignore_callable

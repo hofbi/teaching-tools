@@ -33,9 +33,7 @@ STUDENT_MISSING_GROUP = {
 class AddUserTest(TestCase):
     """Tests for adding GitLab users to projects."""
 
-    def _create_student_with_gitlab_user(
-        self, student_dict: dict, gl_user: GitlabUserFake
-    ) -> Student:
+    def _create_student_with_gitlab_user(self, student_dict: dict, gl_user: GitlabUserFake) -> Student:
         student = Student.from_dict(student_dict)
         student.gitlab_user = gl_user
         return student
@@ -122,16 +120,12 @@ class AddUserTest(TestCase):
         add_students_to_repos(students, repo_from_group_id)
         self.mock_repo1.members.create.assert_has_calls(
             [
-                call(
-                    {"user_id": "12345", "access_level": gitlab.const.DEVELOPER_ACCESS}
-                ),
+                call({"user_id": "12345", "access_level": gitlab.const.DEVELOPER_ACCESS}),
             ]
         )
         self.mock_repo2.members.create.assert_has_calls(
             [
-                call(
-                    {"user_id": "35711", "access_level": gitlab.const.DEVELOPER_ACCESS}
-                ),
+                call({"user_id": "35711", "access_level": gitlab.const.DEVELOPER_ACCESS}),
             ]
         )
 

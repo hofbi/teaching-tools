@@ -218,6 +218,13 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
             help="Keep solution blocks from exported files",
         )
 
+    def add_publish_solutions(self) -> None:
+        self.__parser.add_argument(
+            "--publish-solutions",
+            action="store_true",
+            help="Publish code that contains solution code",
+        )
+
     def add_evaluation_date(self) -> None:
         self.__parser.add_argument(
             "-e",
@@ -231,12 +238,7 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
             "-j",
             "--job-factory",
             type=file_path,
-            default=REPO_DIR
-            / "tools"
-            / "sel_tools"
-            / "code_evaluation"
-            / "jobs"
-            / "sel.py",
+            default=REPO_DIR / "tools" / "sel_tools" / "code_evaluation" / "jobs" / "sel.py",
             help="Path to the python module containing the evaluation job factory",
         )
 

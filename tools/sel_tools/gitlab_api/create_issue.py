@@ -16,9 +16,7 @@ from sel_tools.gitlab_api.attachments import (
 from sel_tools.utils.task import Task
 
 
-def create_issues(
-    tasks: list[Task], student_repos_file: Path, gitlab_token: str
-) -> None:
+def create_issues(tasks: list[Task], student_repos_file: Path, gitlab_token: str) -> None:
     """Create gitlab issues from tasks for all student repos."""
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     student_repos = json.loads(student_repos_file.read_text())
@@ -31,9 +29,7 @@ def create_issues(
 def create_issue(task: Task, gitlab_project: Project) -> None:
     """Create issue for gitlab project from task."""
     uploaded_files = upload_attachments(task.attachments, gitlab_project)
-    task.description = replace_file_paths_with_urls(
-        task.description, uploaded_files, task.attachments
-    )
+    task.description = replace_file_paths_with_urls(task.description, uploaded_files, task.attachments)
 
     gitlab_project.issues.create(get_issue_dict(task))
 

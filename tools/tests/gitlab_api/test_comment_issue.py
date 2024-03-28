@@ -43,9 +43,7 @@ class CommentIssueTest(TestCase):
         issue_mock = MagicMock()
         gitlab_project_mock.issues.get.return_value = issue_mock
         issue_mock.notes.create = MagicMock()
-        create_comment(
-            Comment(42, "message", state_event="reopen"), gitlab_project_mock
-        )
+        create_comment(Comment(42, "message", state_event="reopen"), gitlab_project_mock)
 
         issue_mock.notes.create.assert_called_once_with({"body": "message"})
         self.assertEqual("reopen", issue_mock.state_event)
@@ -62,12 +60,8 @@ class CommentIssueTest(TestCase):
         with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
             comment_issues(comment, student_repos_file, "my_gitlab_token")
 
-        mock_gitlab.assert_called_once_with(
-            GITLAB_SERVER_URL, private_token="my_gitlab_token"
-        )
-        expected_calls = [
-            call(42, comment, student_repo_id) for student_repo_id in [234, 567]
-        ]
+        mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
+        expected_calls = [call(42, comment, student_repo_id) for student_repo_id in [234, 567]]
         mock_comment_issue.has_calls(expected_calls, any_order=True)
 
     def test_comment_issues_does_not_modify_comment(self) -> None:
@@ -82,8 +76,9 @@ class CommentIssueTest(TestCase):
             comment.message += "additional text"
 
         original_comment = deepcopy(comment)
-        with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())), patch(
-            "sel_tools.gitlab_api.comment_issue.create_comment", modify_comment_message
+        with (
+            patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())),
+            patch("sel_tools.gitlab_api.comment_issue.create_comment", modify_comment_message),
         ):
             comment_issues(comment, student_repos_file, "my_gitlab_token")
 

@@ -56,14 +56,8 @@ class IssueCreatorTest(TestCase):
         with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
             create_issues(TASKS, student_repos_file, "my_gitlab_token")
 
-        mock_gitlab.assert_called_once_with(
-            GITLAB_SERVER_URL, private_token="my_gitlab_token"
-        )
-        expected_calls = [
-            call(task, student_repo_id)
-            for student_repo_id in [234, 567]
-            for task in TASKS
-        ]
+        mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
+        expected_calls = [call(task, student_repo_id) for student_repo_id in [234, 567] for task in TASKS]
         mock_create_issue.has_calls(expected_calls, any_order=True)
 
     def test_create_issues_does_not_modify_tasks(self) -> None:
@@ -77,8 +71,9 @@ class IssueCreatorTest(TestCase):
             task.description += "additional text"
 
         original_tasks = deepcopy(TASKS)
-        with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())), patch(
-            "sel_tools.gitlab_api.create_issue.create_issue", modify_task_description
+        with (
+            patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())),
+            patch("sel_tools.gitlab_api.create_issue.create_issue", modify_task_description),
         ):
             create_issues(TASKS, student_repos_file, "my_gitlab_token")
 

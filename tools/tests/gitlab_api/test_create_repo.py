@@ -27,9 +27,7 @@ class CreateRepoTest(TestCase):
     def test_create_repos(self) -> None:
         mock_instance = MagicMock()
         mock_instance.groups.get.return_value = GitlabGroupFake("group")
-        with patch(
-            "gitlab.Gitlab", MagicMock(return_value=mock_instance)
-        ) as mock_gitlab:
+        with patch("gitlab.Gitlab", MagicMock(return_value=mock_instance)) as mock_gitlab:
             student_repos, group_name = create_repos(
                 self.input_dir,
                 "base_name",
@@ -38,9 +36,7 @@ class CreateRepoTest(TestCase):
                 "my_gitlab_token",
             )
 
-        mock_gitlab.assert_called_once_with(
-            GITLAB_SERVER_URL, private_token="my_gitlab_token"
-        )
+        mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
 
         self.assertEqual(len(student_repos), 3)
         self.assertEqual("group", group_name)
@@ -52,9 +48,7 @@ class CreateRepoTest(TestCase):
         repo_info_dir = Path("config")
         self.fs.create_dir(repo_info_dir)
 
-        store_student_repo_info_to_config_file(
-            repo_info_dir, "group_name", [{"id": 1}, {"id": 2}]
-        )
+        store_student_repo_info_to_config_file(repo_info_dir, "group_name", [{"id": 1}, {"id": 2}])
 
         config_file = repo_info_dir / "group_name.json"
         self.assertTrue(config_file.is_file())

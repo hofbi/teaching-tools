@@ -10,9 +10,7 @@ class TestFactory(EvaluationJobFactory):
     """Test factory."""
 
     @staticmethod
-    def create(
-        gitlab_projects: list[GitlabProject], homework_number: int
-    ) -> list[EvaluationJob]:
+    def create(gitlab_projects: list[GitlabProject], homework_number: int) -> list[EvaluationJob]:
         evaluation_map: dict[int, list[EvaluationJob]] = {
             1: [],
             2: [SimplePassingJob()],

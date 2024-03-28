@@ -47,15 +47,11 @@ class DiffReport:
 
     @staticmethod
     def highlight_diff(patch: str) -> str:
-        return str(
-            highlight(patch, DiffLexer(), HtmlFormatter(full=True, style="manni"))
-        )
+        return str(highlight(patch, DiffLexer(), HtmlFormatter(full=True, style="manni")))
 
 
 def write_diff_reports(reports: list[DiffReport], report_base_name: str) -> None:
     """Write diff reports to disk."""
     for report in reports:
-        report.generate_overview_table().to_csv(
-            report.repo_path.joinpath(report_base_name).with_suffix(".csv")
-        )
+        report.generate_overview_table().to_csv(report.repo_path.joinpath(report_base_name).with_suffix(".csv"))
         report.write_diff_patches()

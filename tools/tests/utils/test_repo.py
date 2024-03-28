@@ -1,6 +1,5 @@
 """Repo utils test."""
 
-
 import shutil
 from unittest.mock import MagicMock, patch
 
@@ -69,9 +68,7 @@ class GitRepoTest(GitTestCase):
         self.assertTrue(unit.path.joinpath("test.txt").exists())
 
     @patch("subprocess.check_call")
-    def test_fetch_from__url__should_have_pull_call_with_args(
-        self, clone_mock: MagicMock
-    ) -> None:
+    def test_fetch_from__url__should_have_pull_call_with_args(self, clone_mock: MagicMock) -> None:
         GitRepo(self.repo_path).fetch_from("https://url.git")
         clone_mock.assert_called_with(
             f"git pull https://gitlab-ci-token:$GITLAB_TOKEN@url.git {GIT_MAIN_BRANCH}",

@@ -23,18 +23,14 @@ def evaluate_code(
     evaluation_jobs = eval_job_factory.create(gitlab_projects, homework_number)
     return [
         CodeEvaluator(evaluation_jobs, gitlab_project).evaluate(evaluation_date)
-        for gitlab_project in tqdm(
-            gitlab_projects, desc=f"Evaluating Homework {homework_number}"
-        )
+        for gitlab_project in tqdm(gitlab_projects, desc=f"Evaluating Homework {homework_number}")
     ]
 
 
 class CodeEvaluator:
     """Code evaluator class."""
 
-    def __init__(
-        self, jobs: list[EvaluationJob], gitlab_project: GitlabProject
-    ) -> None:
+    def __init__(self, jobs: list[EvaluationJob], gitlab_project: GitlabProject) -> None:
         # Perform a deepcopy to avoid artifact of old job runs
         self.__jobs = copy.deepcopy(jobs)
         self.__gitlab_project = gitlab_project
@@ -46,11 +42,7 @@ class CodeEvaluator:
             self.__checkout_last_commit_before_eval_date(evaluation_date)
         return EvaluationReport(
             self.__gitlab_project,
-            list(
-                itertools.chain(
-                    *[job.run(self.__gitlab_project.local_path) for job in self.__jobs]
-                )
-            ),
+            list(itertools.chain(*[job.run(self.__gitlab_project.local_path) for job in self.__jobs])),
         )
 
     def __clean_repo(self) -> None:
@@ -58,9 +50,7 @@ class CodeEvaluator:
         self.__repo.git.clean("-xdf")
 
     def __checkout_last_commit_before_eval_date(self, evaluation_date: date) -> None:
-        commits_before_eval_date = list(
-            self.__repo.iter_commits(before=evaluation_date)
-        )
+        commits_before_eval_date = list(self.__repo.iter_commits(before=evaluation_date))
         if commits_before_eval_date:
             self.__repo.git.checkout(commits_before_eval_date[0])
             self.__clean_repo()

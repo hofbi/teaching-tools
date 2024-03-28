@@ -19,9 +19,7 @@ class CodeEvaluatorTest(GitTestCase):
         self.repo.index.add(["test.txt"])
         self.repo.index.commit("init", commit_date=datetime(2021, 11, 11).isoformat())
 
-    def __write_to_test_file_and_commit(
-        self, file_content: str, commit_date: date
-    ) -> None:
+    def __write_to_test_file_and_commit(self, file_content: str, commit_date: date) -> None:
         self.test_file.write_text(file_content)
         self.repo.index.add([self.test_file.name])
         self.repo.index.commit("edit test.txt", commit_date=commit_date.isoformat())
@@ -39,26 +37,20 @@ class CodeEvaluatorTest(GitTestCase):
         self.assertEqual(1, len(report.results))
 
     def test_evaluate_two_jobs(self) -> None:
-        report = CodeEvaluator(
-            [SimplePassingJob(), ComplexJob(2)], self.gitlab_project
-        ).evaluate(None)
+        report = CodeEvaluator([SimplePassingJob(), ComplexJob(2)], self.gitlab_project).evaluate(None)
         self.assertEqual(self.repo_path, report.repo_path)
         self.assertEqual(9, report.score)
         self.assertEqual(4, len(report.results))
 
     def test_evaluate_one_job_with_eval_date(self) -> None:
         self.__write_to_test_file_and_commit("line 1\nline 2", datetime(2021, 11, 14))
-        CodeEvaluator([SimplePassingJob()], self.gitlab_project).evaluate(
-            date(2021, 11, 13)
-        )
+        CodeEvaluator([SimplePassingJob()], self.gitlab_project).evaluate(date(2021, 11, 13))
         self.assertEqual("", self.test_file.read_text())
 
     def test_evaluate_one_job_with_eval_date_and_two_prior_commits(self) -> None:
         self.__write_to_test_file_and_commit("line 1\nline 2", datetime(2021, 11, 12))
         self.__write_to_test_file_and_commit("some other stuff", datetime(2021, 11, 15))
-        CodeEvaluator([SimplePassingJob()], self.gitlab_project).evaluate(
-            date(2021, 11, 14)
-        )
+        CodeEvaluator([SimplePassingJob()], self.gitlab_project).evaluate(date(2021, 11, 14))
         self.assertEqual("line 1\nline 2", self.test_file.read_text())
 
     def test_evaluate_one_job_without_eval_date_should_be_at_latest_commit(

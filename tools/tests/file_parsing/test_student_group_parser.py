@@ -40,9 +40,7 @@ class ParserTest(TestCase):
 
     def test_no_csv_file(self) -> None:
         self.fs.create_file("group_formation.txt", contents="")
-        self.assertRaises(
-            ValueError, get_student_groups_from_file, Path("group_formation.txt")
-        )
+        self.assertRaises(ValueError, get_student_groups_from_file, Path("group_formation.txt"))
 
     def test_get_students_from_file(self) -> None:
         content = DataFrame([STUDENT1, STUDENT2])
@@ -88,9 +86,7 @@ class ParserTest(TestCase):
             "Abstimmung",
         ]
         content.to_csv("group_formation.csv", header=headers_german)
-        self.assertRaises(
-            KeyError, get_student_groups_from_file, Path("group_formation.csv")
-        )
+        self.assertRaises(KeyError, get_student_groups_from_file, Path("group_formation.csv"))
 
     def test_vowel_mutation(self) -> None:
         content = DataFrame([STUDENT1, STUDENT2])
@@ -107,6 +103,4 @@ class ParserTest(TestCase):
     def test_not_utf8_encoded(self) -> None:
         content = DataFrame([STUDENT1, STUDENT2])
         content.to_csv("group_formation.csv", encoding="latin_1")
-        self.assertRaises(
-            UnicodeError, get_student_groups_from_file, Path("group_formation.csv")
-        )
+        self.assertRaises(UnicodeError, get_student_groups_from_file, Path("group_formation.csv"))

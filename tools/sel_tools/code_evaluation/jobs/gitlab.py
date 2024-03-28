@@ -19,10 +19,7 @@ class CIStatusTestJob(EvaluationJob):
         weight: int = 1,
     ) -> None:
         super().__init__(weight)
-        self.__gitlab_projects = {
-            project.local_path.stem: project.gitlab_project
-            for project in gitlab_projects
-        }
+        self.__gitlab_projects = {project.local_path.stem: project.gitlab_project for project in gitlab_projects}
         self.__branch = branch
 
     def _run(self, repo_path: Path) -> int:

@@ -44,8 +44,8 @@ class SolutionsRemoverVisitorTest(FsTestCase):
         self.assertEqual("some_data", Path("foo.txt").read_text())
 
 
-class ContentRemoverTest(unittest.TestCase):
-    """Tests for solution remover visitor."""
+class FileContentRemoverTest(unittest.TestCase):
+    """Tests for file content remover module."""
 
     def test_cpp_block_removal(self) -> None:
         cpp_file_content = f"""#include <vector>
@@ -126,38 +126,23 @@ more stuff;
 
     def test_file_without_block(self) -> None:
         file_content = "some\nstuff and some\n\nmore stuff;\n// comment\n"
-        self.assertEqual(
-            remove_lines_within_limiters_from_string(file_content), file_content
-        )
+        self.assertEqual(remove_lines_within_limiters_from_string(file_content), file_content)
 
     def test_file_with_incomplete_block(self) -> None:
-        file_content = (
-            f"some\nstuff and some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
-        )
-        self.assertEqual(
-            remove_lines_within_limiters_from_string(file_content), file_content
-        )
+        file_content = f"some\nstuff and some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
+        self.assertEqual(remove_lines_within_limiters_from_string(file_content), file_content)
 
     def test_file_with_inverted_block(self) -> None:
-        file_content = (
-            f"some\n{EXPORT_END}stuff and "
-            f"some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
-        )
-        self.assertEqual(
-            remove_lines_within_limiters_from_string(file_content), file_content
-        )
+        file_content = f"some\n{EXPORT_END}stuff and " f"some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
+        self.assertEqual(remove_lines_within_limiters_from_string(file_content), file_content)
 
     def test_remove_clang_tidy_comment_at_end_of_line(self) -> None:
         file_content = "badcode;  // NOLINT\ngoodcode;\n"
-        self.assertEqual(
-            remove_clang_tidy_comment_lines(file_content), "badcode;\ngoodcode;\n"
-        )
+        self.assertEqual(remove_clang_tidy_comment_lines(file_content), "badcode;\ngoodcode;\n")
 
     def test_remove_specific_clang_tidy_comment_at_end_of_line(self) -> None:
         file_content = "badcode;  // NOLINT(some-test, some-other-test)\ngoodcode;"
-        self.assertEqual(
-            remove_clang_tidy_comment_lines(file_content), "badcode;\ngoodcode;"
-        )
+        self.assertEqual(remove_clang_tidy_comment_lines(file_content), "badcode;\ngoodcode;")
 
     def test_do_not_remove_wrongly_formatted_clang_tidy_comment_at_end_of_line(
         self,

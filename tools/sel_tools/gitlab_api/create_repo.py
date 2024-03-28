@@ -22,12 +22,8 @@ def create_repos(
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
 
     student_repos = []
-    for repo_number in tqdm(
-        range(1, number_of_repos + 1), desc="Creating Student Repos"
-    ):
-        project = gitlab_instance.projects.create(
-            get_repo_settings(group_id, repo_base_name, repo_number)
-        )
+    for repo_number in tqdm(range(1, number_of_repos + 1), desc="Creating Student Repos"):
+        project = gitlab_instance.projects.create(get_repo_settings(group_id, repo_base_name, repo_number))
         configure_project(project)
         configure_main_branch(project)
         create_commit(source_folder, "Initial commit", project)
@@ -74,6 +70,4 @@ def store_student_repo_info_to_config_file(
     Existing config files will be overwritten.
     """
     student_repos_file = repo_info_dir.joinpath(group_name).with_suffix(".json")
-    student_repos_file.write_text(
-        json.dumps(student_repo_infos, sort_keys=True, indent=2)
-    )
+    student_repos_file.write_text(json.dumps(student_repo_infos, sort_keys=True, indent=2))

@@ -31,9 +31,7 @@ class EvaluationJobFactory:
 
     @staticmethod
     @abstractmethod
-    def create(
-        gitlab_projects: list[GitlabProject], homework_number: int
-    ) -> list[EvaluationJob]:
+    def create(gitlab_projects: list[GitlabProject], homework_number: int) -> list[EvaluationJob]:
         msg = "Don't call me, I'm abstract."
         raise NotImplementedError(msg)
 
@@ -52,10 +50,7 @@ class EvaluationJobFactory:
             # Feel free to adapt the below conditions to your use case
             if name.startswith("_") or not inspect.isclass(attribute):
                 continue
-            if (
-                issubclass(attribute, EvaluationJobFactory)
-                and name != "EvaluationJobFactory"
-            ):
+            if issubclass(attribute, EvaluationJobFactory) and name != "EvaluationJobFactory":
                 return attribute
         msg = f"No subclass of EvaluationJobFactory in {module_path}"
         raise ModuleNotFoundError(msg)

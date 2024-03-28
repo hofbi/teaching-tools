@@ -45,12 +45,8 @@ class ArgumentParserTest(TestCase):
             with self.subTest(actions):
                 stderr = io.StringIO()
                 with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
-                    parse_arguments(
-                        f"foo.py {actions} -t 123 missing_config_file.json".split(" ")
-                    )
-                self.assertTrue(
-                    "can't open 'missing_config_file.json'" in stderr.getvalue()
-                )
+                    parse_arguments(f"foo.py {actions} -t 123 missing_config_file.json".split(" "))
+                self.assertTrue("can't open 'missing_config_file.json'" in stderr.getvalue())
 
     def test_common_missing_token(self) -> None:
         for actions in ArgumentParserTest.SUB_COMMANDS:
@@ -71,11 +67,7 @@ class CreateIssuesArgumentParserTest(TestCase):
         self.fs.create_file("issue_slide.md")
 
     def test_create_issues_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py create_issues -t 123 config_file.json -i issue_slide.md -n 1".split(
-                " "
-            )
-        )
+        args = parse_arguments("foo.py create_issues -t 123 config_file.json -i issue_slide.md -n 1".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -85,9 +77,7 @@ class CreateIssuesArgumentParserTest(TestCase):
 
     def test_create_issues_with_due_date(self) -> None:
         args = parse_arguments(
-            "foo.py create_issues -t 12 config_file.json -i issue_slide.md -n 1 -d 2021 1 28".split(
-                " "
-            )
+            "foo.py create_issues -t 12 config_file.json -i issue_slide.md -n 1 -d 2021 1 28".split(" ")
         )
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
@@ -99,11 +89,7 @@ class CreateIssuesArgumentParserTest(TestCase):
     def test_create_issues_out_of_allowed_homework_number_range(self) -> None:
         stderr = io.StringIO()
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
-            parse_arguments(
-                "foo.py create_issues -t 123 config_file.json -i not_there.md".split(
-                    " "
-                )
-            )
+            parse_arguments("foo.py create_issues -t 123 config_file.json -i not_there.md".split(" "))
         self.assertIn("can't open 'not_there.md'", stderr.getvalue())
 
 
@@ -115,9 +101,7 @@ class CommentIssuesArgumentParserTest(TestCase):
         self.fs.create_file("config_file.json")
 
     def test_comment_issue_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py comment_issue -t 123 config_file.json -i 42 -m message".split(" ")
-        )
+        args = parse_arguments("foo.py comment_issue -t 123 config_file.json -i 42 -m message".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -126,11 +110,7 @@ class CommentIssuesArgumentParserTest(TestCase):
         self.assertIsNone(args.state_event)
 
     def test_comment_issue_close(self) -> None:
-        args = parse_arguments(
-            "foo.py comment_issue -t 123 config_file.json -i 42 -m message -s close".split(
-                " "
-            )
-        )
+        args = parse_arguments("foo.py comment_issue -t 123 config_file.json -i 42 -m message -s close".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -139,11 +119,7 @@ class CommentIssuesArgumentParserTest(TestCase):
         self.assertEqual(args.state_event, "close")
 
     def test_comment_issue_reopen(self) -> None:
-        args = parse_arguments(
-            "foo.py comment_issue -t 123 config_file.json -i 42 -m message -s reopen".split(
-                " "
-            )
-        )
+        args = parse_arguments("foo.py comment_issue -t 123 config_file.json -i 42 -m message -s reopen".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -168,9 +144,7 @@ class FetchCodeArgumentParserTest(TestCase):
         self.assertEqual(args.workspace, REPO_DIR / "workspace")
 
     def test_fetch_code_max_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py fetch_code -t 123 config_file.json -w workspace".split(" ")
-        )
+        args = parse_arguments("foo.py fetch_code -t 123 config_file.json -w workspace".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -186,9 +160,7 @@ class EvaluateCodeArgumentParserTest(TestCase):
         self.fs.create_dir("workspace")
 
     def test_evaluate_code_minimal_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py evaluate_code -t 123 -n 1 config_file.json".split(" ")
-        )
+        args = parse_arguments("foo.py evaluate_code -t 123 -n 1 config_file.json".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -199,20 +171,15 @@ class EvaluateCodeArgumentParserTest(TestCase):
 
     def test_evaluate_code_max_valid_parameters(self) -> None:
         args = parse_arguments(
-            "foo.py evaluate_code -t 123 config_file.json -w workspace "
-            "-n 2 -d 2021 11 15 -e 2021 11 24".split(" ")
+            "foo.py evaluate_code -t 123 config_file.json -w workspace " "-n 2 -d 2021 11 15 -e 2021 11 24".split(" ")
         )
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.workspace, Path("workspace"))
         self.assertEqual(args.homework_number, 2)
-        self.assertEqual(
-            args.date_last_homework, datetime.date.fromisoformat("2021-11-15")
-        )
-        self.assertEqual(
-            args.evaluation_date, datetime.date.fromisoformat("2021-11-24")
-        )
+        self.assertEqual(args.date_last_homework, datetime.date.fromisoformat("2021-11-15"))
+        self.assertEqual(args.evaluation_date, datetime.date.fromisoformat("2021-11-24"))
 
 
 class UploadFilesArgumentParserTest(TestCase):
@@ -224,9 +191,7 @@ class UploadFilesArgumentParserTest(TestCase):
         self.fs.create_dir("source")
 
     def test_upload_files_minimal_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py upload_files -t 123 -s source config_file.json".split(" ")
-        )
+        args = parse_arguments("foo.py upload_files -t 123 -s source config_file.json".split(" "))
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.source_path, Path("source"))
@@ -242,11 +207,7 @@ class CommitChangesArgumentParserTest(TestCase):
         self.fs.create_dir("source")
 
     def test_commit_changes_minimal_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py commit_changes -t 123 -s source -m message config_file.json".split(
-                " "
-            )
-        )
+        args = parse_arguments("foo.py commit_changes -t 123 -s source -m message config_file.json".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.gitlab_token, "123")
@@ -257,9 +218,7 @@ class CommitChangesArgumentParserTest(TestCase):
 
     def test_commit_changes_max_valid_parameters(self) -> None:
         args = parse_arguments(
-            "foo.py commit_changes -t 123 -s source -m message config_file.json -w workspace -k".split(
-                " "
-            )
+            "foo.py commit_changes -t 123 -s source -m message config_file.json -w workspace -k".split(" ")
         )
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
@@ -279,9 +238,7 @@ class AddUsersArgumentParserTest(TestCase):
         self.fs.create_file("student_group.csv")
 
     def test_add_users_minimal_valid_parameters(self) -> None:
-        args = parse_arguments(
-            "foo.py add_users -t 123 config_file.json student_group.csv".split(" ")
-        )
+        args = parse_arguments("foo.py add_users -t 123 config_file.json student_group.csv".split(" "))
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
         self.assertEqual(args.student_group_info_file.file_path, "student_group.csv")

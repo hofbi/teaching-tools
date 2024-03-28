@@ -52,9 +52,7 @@ class CommentTest(TestCase):
     def test_create_from_message_with_attachment_should_contain_message_and_one_attachment(
         self,
     ) -> None:
-        result = Comment.create(
-            42, "message with [attachment](/path/to/attachment.txt)", None
-        )
+        result = Comment.create(42, "message with [attachment](/path/to/attachment.txt)", None)
 
         self.assertEqual(42, result.issue_id)
         self.assertIn("message with ", result.message)

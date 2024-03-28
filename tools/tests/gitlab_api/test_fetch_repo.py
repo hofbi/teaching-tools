@@ -53,17 +53,11 @@ class FetchRepoTest(TestCase):
     def test_fetch_repos(self, mock_fetch_repo: MagicMock) -> None:
         mock_fetch_repo.return_value = Path("test")
         with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
-            repo_paths = fetch_repos(
-                self.workspace, self.student_repos_file, "my_gitlab_token"
-            )
+            repo_paths = fetch_repos(self.workspace, self.student_repos_file, "my_gitlab_token")
 
-        mock_gitlab.assert_called_once_with(
-            GITLAB_SERVER_URL, private_token="my_gitlab_token"
-        )
+        mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
         expected_calls = [
-            call(
-                GitRepo(self.workspace / str(student_repo["name"])), student_repo["id"]
-            )
+            call(GitRepo(self.workspace / str(student_repo["name"])), student_repo["id"])
             for student_repo in self.student_repos_file_content
         ]
         mock_fetch_repo.has_calls(expected_calls, any_order=True)

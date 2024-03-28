@@ -41,9 +41,7 @@ class EvaluationReportTest(unittest.TestCase):
     """Evaluation report test."""
 
     def setUp(self) -> None:
-        self.gitlab_project = GitlabProject(
-            Path("test"), GitlabProjectFake("https://test.com")
-        )
+        self.gitlab_project = GitlabProject(Path("test"), GitlabProjectFake("https://test.com"))
 
     def test_score_empty_results_zero(self) -> None:
         unit = EvaluationReport(self.gitlab_project, [])

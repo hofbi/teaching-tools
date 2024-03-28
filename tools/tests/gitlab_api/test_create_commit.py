@@ -26,20 +26,14 @@ class CreateCommitTest(TestCase):
     def test_create_gitlab_commit_data_with_all_files_from_empty_folder(self) -> None:
         self.assertDictEqual(
             {},
-            create_gitlab_commit_data_with_all_files_from(
-                self.input_dir, "Commit message"
-            ),
+            create_gitlab_commit_data_with_all_files_from(self.input_dir, "Commit message"),
         )
 
     def test_create_gitlab_commit_data_with_all_files_from_filled_folder(self) -> None:
         self.fs.create_file(self.input_dir / "README.md", contents="Initial readme")
-        self.fs.create_file(
-            self.input_dir / "include" / "header.h", contents="#define if while"
-        )
+        self.fs.create_file(self.input_dir / "include" / "header.h", contents="#define if while")
 
-        actions = create_gitlab_commit_data_with_all_files_from(
-            self.input_dir, "Initial commit"
-        )
+        actions = create_gitlab_commit_data_with_all_files_from(self.input_dir, "Initial commit")
 
         self.assertDictEqual(
             actions,
@@ -75,11 +69,8 @@ class CreateCommitTest(TestCase):
         with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
             upload_files(source_folder, student_repos_file, "my_gitlab_token")
 
-            mock_gitlab.assert_called_once_with(
-                GITLAB_SERVER_URL, private_token="my_gitlab_token"
-            )
+            mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
         expected_calls = [
-            call(source_folder, f"Add {source_folder}", student_repo_id)
-            for student_repo_id in [234, 567]
+            call(source_folder, f"Add {source_folder}", student_repo_id) for student_repo_id in [234, 567]
         ]
         mock_create_commit.has_calls(expected_calls, any_order=True)

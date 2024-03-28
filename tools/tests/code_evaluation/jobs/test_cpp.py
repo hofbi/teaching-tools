@@ -277,9 +277,12 @@ class CodeCoverageTestJobTest(TestCase):
 
     def test_parse_total_coverage(self) -> None:
         for coverage in [0, 30, 95]:
-            with self.subTest(coverage), patch(
-                "pathlib.Path.read_text",
-                MagicMock(return_value=coverage_file_content(coverage)),
+            with (
+                self.subTest(coverage),
+                patch(
+                    "pathlib.Path.read_text",
+                    MagicMock(return_value=coverage_file_content(coverage)),
+                ),
             ):
                 self.assertEqual(coverage, self.unit.parse_total_coverage(Path()))
 

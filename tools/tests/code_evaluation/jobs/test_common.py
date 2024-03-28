@@ -21,9 +21,7 @@ class EvaluationJobTest(unittest.TestCase):
     def test_simple_failing_job(self) -> None:
         unit = SimpleFailingJob()
         results = unit.run(Path())
-        self.assertListEqual(
-            [EvaluationResult("simple_fail", 0, "This caused the fail")], results
-        )
+        self.assertListEqual([EvaluationResult("simple_fail", 0, "This caused the fail")], results)
 
     def test_simple_passing_job(self) -> None:
         unit = SimplePassingJob()

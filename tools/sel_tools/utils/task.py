@@ -20,9 +20,7 @@ class Task:
         self.label = f"homework::{label}"
 
 
-def configure_tasks(
-    tasks: list[Task], due_date: date | None, homework_number: int
-) -> list[Task]:
+def configure_tasks(tasks: list[Task], due_date: date | None, homework_number: int) -> list[Task]:
     """Configure tasks."""
     for task in tasks:
         task.due_date = due_date
