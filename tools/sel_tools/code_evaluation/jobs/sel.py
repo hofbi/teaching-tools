@@ -28,9 +28,7 @@ class ExampleEvaluationJobFactory(EvaluationJobFactory):
     """Example Evaluation Job Factory."""
 
     @staticmethod
-    def create(
-        gitlab_projects: list[GitlabProject], homework_number: int
-    ) -> list[EvaluationJob]:
+    def create(gitlab_projects: list[GitlabProject], homework_number: int) -> list[EvaluationJob]:
         homework_evaluations_jobs_map = {
             1: [CleanRepoJob(), CMakeBuildJob(), ExampleJob()],
             2: [CleanRepoJob(), MakeTestJob(), CIStatusTestJob(gitlab_projects)],
