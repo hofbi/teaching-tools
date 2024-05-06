@@ -23,7 +23,7 @@ repos:
           - python
           - shell
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -56,7 +56,7 @@ repos:
           - mdformat-config
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.11.2
+    rev: v3.12.1
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
@@ -83,7 +83,7 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.2
+    rev: v18.1.4
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -99,7 +99,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+    rev: v0.4.3
     hooks:
       - id: ruff
       - id: ruff-format
@@ -112,7 +112,7 @@ repos:
           - flake8-bugbear  # Ruff does not implement all of bugbear
           - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
@@ -130,10 +130,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.0
+    rev: 0.28.2
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.19.0
+    rev: v1.21.0
     hooks:
       - id: typos
