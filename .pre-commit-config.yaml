@@ -23,7 +23,7 @@ repos:
           - python
           - shell
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -61,12 +61,11 @@ repos:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
         exclude: ^slides/homework
-  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.2.3
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.12.1
     hooks:
       - id: yamlfmt
-        args: [--mapping=2, --sequence=4, --offset=2, --implicit_start, --preserve-quotes]
-        exclude: (?x)( .gitlab-ci.yml | .clang-format | .clang-tidy )
+        exclude: (?x)( .clang-format | .clang-tidy )
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
     hooks:
@@ -83,7 +82,7 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.2
+    rev: v18.1.5
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -98,8 +97,8 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.4.4
     hooks:
       - id: ruff
       - id: ruff-format
@@ -112,12 +111,12 @@ repos:
           - flake8-bugbear  # Ruff does not implement all of bugbear
           - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.1.0
+    rev: v3.2.0
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -130,10 +129,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.0
+    rev: 0.28.3
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.19.0
+    rev: v1.21.0
     hooks:
       - id: typos

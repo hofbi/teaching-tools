@@ -2,7 +2,7 @@ allowLocalFiles: true
 options:
   looseYAML: false
   markdown:
-    breaks: true       # newlines in paragraphs are rendered as <br>
+    breaks: true  # newlines in paragraphs are rendered as <br>
 bespoke:
   progress: true
 output: ./build/

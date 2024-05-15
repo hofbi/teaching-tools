@@ -1,7 +1,6 @@
-version: '3'
 services:
   generate:
-    image: marpteam/marp-cli:v2.4.0
+    image: marpteam/marp-cli
     volumes:
       - ./:/home/marp/app
     environment:
@@ -9,7 +8,7 @@ services:
       - MARP_USER=""
     command: --input-dir ./lecture
   serve:
-    image: marpteam/marp-cli:v2.4.0
+    image: marpteam/marp-cli
     volumes:
       - ./:/home/marp/app
     environment:

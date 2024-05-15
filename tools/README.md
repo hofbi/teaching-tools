@@ -35,7 +35,7 @@ You can disable removal of solutions by setting flag `-k` or `--keep-solutions` 
 
 ## GitLab Project Creation
 
-Script [create_gitlab_projects.py](create_gitlab_projects.py) creates `-n`/`--homework-number` (default 1) repositories with contents from an export folder `-s`/`--source-path`, defaulting to `repository/export/homework`.
+Script [create_gitlab_projects.py](create_gitlab_projects.py) creates `-n`/`--homework-number` (default 1) repositories with contents from an export folder `-s`/`--source-path`, defaulting to `repository/export/homework` (same default location as for the [export files tool](../README.md#export-files) creating this bundle).
 The script also creates a config file in folder `-r` or `--repo-info-dir` (default `config`) to contain the names and IDs of the newly created repos.
 The json file's stem in that folder equals the `-g`/`--group-id`.
 Existing files with identical file names will be overwritten.

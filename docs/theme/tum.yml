@@ -10,4 +10,4 @@ header:
     right:
       content: $header-recto-right-content
 heading:
-  font-color: #3070b3
+  font-color: "#3070b3"
