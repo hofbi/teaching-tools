@@ -10,7 +10,7 @@ The lecture slides are generated from {url-slides}[markdown files].
 | Example | link:example/slide-deck.html[Dark] | link:example/slide-deck.pdf[Dark PDF] | link:example/slide-deck-light.html[Light] | link:example/slide-deck-light.pdf[Light PDF] | link:export/example.zip[ZIP] | link:export/example_solution.zip[ZIP]
 |===
 
-== Homeworks
+== Homework
 
 [NOTE]
 ====
