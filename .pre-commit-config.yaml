@@ -56,7 +56,7 @@ repos:
           - mdformat-config
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.11.2
+    rev: v3.12.2
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
@@ -97,8 +97,8 @@ repos:
       - id: cmake-lint
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.4.4
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.7
     hooks:
       - id: ruff
       - id: ruff-format
@@ -116,7 +116,7 @@ repos:
       - id: mypy
         args: [--python-version, '3.10']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.2.0
+    rev: v3.2.2
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -129,10 +129,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.3
+    rev: 0.28.4
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.21.0
+    rev: v1.22.0
     hooks:
       - id: typos
