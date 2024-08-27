@@ -20,7 +20,7 @@ def fetch_repos(workspace: Path, student_repos_file: Path, gitlab_token: str) ->
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     return [
         fetch_repo(
-            GitRepo(workspace / student_repo["name"], GIT_MAIN_BRANCH),
+            GitRepo(workspace / student_repo["name"], student_repo.get("branch", GIT_MAIN_BRANCH)),
             gitlab_instance.projects.get(student_repo["id"]),
         )
         for student_repo in tqdm(student_repos, desc="Fetching Repos")

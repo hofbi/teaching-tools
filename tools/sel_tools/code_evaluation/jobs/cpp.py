@@ -86,8 +86,7 @@ class CodeCoverageTestJob(EvaluationJob):
 
     def _run(self, repo_path: Path) -> int:
         coverage_file = repo_path.resolve() / HW_BUILD_FOLDER / "report.txt"
-        score = run_shell_command(f"gcovr -o {coverage_file}", repo_path)
-        if score == 0:
+        if (score := run_shell_command(f"gcovr -o {coverage_file}", repo_path)) == 0:
             self._comment = "Coverage failed"
             return score
         coverage = self.parse_total_coverage(coverage_file)

@@ -6,5 +6,6 @@ rules:
   truthy: disable
 
 ignore: |
+  .venv/
   venv/
   workspace/

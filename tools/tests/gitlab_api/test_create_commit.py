@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
@@ -55,7 +55,7 @@ class CreateCommitTest(TestCase):
             },
         )
 
-    @patch("sel_tools.gitlab_api.comment_issue.create_comment")
+    @patch("sel_tools.gitlab_api.create_commit.create_commit")
     def test_create_upload_files(self, mock_create_commit: MagicMock) -> None:
         student_repos_file = Path("student_repos.json")
         self.fs.create_file(
@@ -70,7 +70,5 @@ class CreateCommitTest(TestCase):
             upload_files(source_folder, student_repos_file, "my_gitlab_token")
 
             mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
-        expected_calls = [
-            call(source_folder, f"Add {source_folder}", student_repo_id) for student_repo_id in [234, 567]
-        ]
-        mock_create_commit.has_calls(expected_calls, any_order=True)
+
+        self.assertEqual(2, mock_create_commit.call_count)

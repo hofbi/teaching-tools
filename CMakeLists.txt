@@ -10,8 +10,7 @@ include(FetchContent)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CODE_COVERAGE ON)
   include(CodeCoverage)
-  add_code_coverage_all_targets(EXCLUDE /usr/* /Library/*
-                                ${PROJECT_BINARY_DIR}/_deps/*)
+  add_code_coverage_all_targets(EXCLUDE /usr/* ${PROJECT_BINARY_DIR}/_deps/*)
   add_custom_target(
     coverage
     DEPENDS ccov-all

@@ -1,6 +1,6 @@
 {
   "name": "Software Lab",
-  "image": "makeappdev/cpp-dev",
+  "image": "makeappdev/cpp-dev:24.04",
   "extensions": [
     "ms-vscode.cpptools-extension-pack",
     "eamodio.gitlens",

@@ -37,6 +37,10 @@ class GitRepo:
     def path(self) -> Path:
         return self.__path
 
+    @property
+    def branch(self) -> str:
+        return self.__branch
+
     def is_repo(self) -> bool:
         return (self.path / ".git").is_dir()
 

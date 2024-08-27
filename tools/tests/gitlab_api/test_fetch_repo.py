@@ -2,12 +2,12 @@
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
-from sel_tools.config import GITLAB_SERVER_URL
+from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
 from sel_tools.gitlab_api.fetch_repo import fetch_repo, fetch_repos
-from sel_tools.utils.repo import GitlabProject, GitRepo
+from sel_tools.utils.repo import GitlabProject
 
 
 class FetchRepoTest(TestCase):
@@ -18,8 +18,8 @@ class FetchRepoTest(TestCase):
         self.workspace = Path("workspace")
         self.student_repos_file = Path("student_repos.json")
         self.student_repos_file_content = [
-            {"id": 234, "name": "foo"},
-            {"id": 567, "name": "bar"},
+            {"id": 234, "name": "foo", "branch": "develop"},
+            {"id": 567, "name": "bar"},  # No branch specified
         ]
         self.fs.create_file(
             self.student_repos_file,
@@ -50,15 +50,29 @@ class FetchRepoTest(TestCase):
         self.assertEqual(GitlabProject(Path("test"), gitlab_project_mock), result)
 
     @patch("sel_tools.gitlab_api.fetch_repo.fetch_repo")
-    def test_fetch_repos(self, mock_fetch_repo: MagicMock) -> None:
+    def test_fetch_repos_without_branch_should_use_default_branch(self, mock_fetch_repo: MagicMock) -> None:
         mock_fetch_repo.return_value = Path("test")
         with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
             repo_paths = fetch_repos(self.workspace, self.student_repos_file, "my_gitlab_token")
 
         mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
-        expected_calls = [
-            call(GitRepo(self.workspace / str(student_repo["name"])), student_repo["id"])
-            for student_repo in self.student_repos_file_content
-        ]
-        mock_fetch_repo.has_calls(expected_calls, any_order=True)
-        self.assertListEqual(repo_paths, [Path("test"), Path("test")])
+        self.assertEqual(mock_fetch_repo.call_count, 2)
+
+        git_repo_arg = mock_fetch_repo.call_args_list[1][0][0]
+        self.assertEqual(git_repo_arg.branch, GIT_MAIN_BRANCH)
+        self.assertEqual(git_repo_arg.path, self.workspace / str(self.student_repos_file_content[1]["name"]))
+        self.assertEqual(2, len(repo_paths))
+
+    @patch("sel_tools.gitlab_api.fetch_repo.fetch_repo")
+    def test_fetch_repos_with_branch_should_use_specified_branch(self, mock_fetch_repo: MagicMock) -> None:
+        mock_fetch_repo.return_value = Path("test")
+        with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
+            repo_paths = fetch_repos(self.workspace, self.student_repos_file, "my_gitlab_token")
+
+        mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
+        self.assertEqual(mock_fetch_repo.call_count, 2)
+
+        git_repo_arg = mock_fetch_repo.call_args_list[0][0][0]
+        self.assertEqual(git_repo_arg.branch, "develop")
+        self.assertEqual(git_repo_arg.path, self.workspace / str(self.student_repos_file_content[0]["name"]))
+        self.assertEqual(2, len(repo_paths))

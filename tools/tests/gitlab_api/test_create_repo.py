@@ -25,8 +25,12 @@ class CreateRepoTest(TestCase):
         self.fs.create_dir(self.input_dir)
 
     def test_create_repos(self) -> None:
+        mock_project = MagicMock()
+        mock_project.default_branch = "master"
         mock_instance = MagicMock()
+        mock_instance.projects.create.return_value = mock_project
         mock_instance.groups.get.return_value = GitlabGroupFake("group")
+
         with patch("gitlab.Gitlab", MagicMock(return_value=mock_instance)) as mock_gitlab:
             student_repos, group_name = create_repos(
                 self.input_dir,
@@ -43,6 +47,8 @@ class CreateRepoTest(TestCase):
         for student_repo in student_repos:
             self.assertIn("name", student_repo)
             self.assertIn("id", student_repo)
+            self.assertIn("branch", student_repo)
+            self.assertEqual(student_repo["branch"], "master")
 
     def test_store_student_repo_info_to_config_file(self) -> None:
         repo_info_dir = Path("config")
@@ -63,6 +69,5 @@ class CreateRepoTest(TestCase):
                 "description": "Software Engineering Lab Homework Group 4",
                 "namespace_id": 3234,
                 "jobs_enabled": True,
-                "approvals_before_merge": 1,
             },
         )

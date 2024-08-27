@@ -3,3 +3,4 @@
 coverage
 identify
 pre-commit
+uv

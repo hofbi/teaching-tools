@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euxo pipefail
+
 sudo apt-get update
 sudo apt-get install -y \
     build-essential \
@@ -8,6 +10,8 @@ sudo apt-get install -y \
     cppcheck \
     iwyu \
     cmake \
+    llvm \
     lcov \
-    zip \
-    python3-pip
+    zip
+
+curl -LsSf https://astral.sh/uv/install.sh | sh

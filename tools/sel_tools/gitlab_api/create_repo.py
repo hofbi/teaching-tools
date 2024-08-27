@@ -27,7 +27,7 @@ def create_repos(
         configure_project(project)
         configure_main_branch(project)
         create_commit(source_folder, "Initial commit", project)
-        student_repos.append({"name": project.name, "id": project.id})
+        student_repos.append({"name": project.name, "id": project.id, "branch": project.default_branch})
 
     group = gitlab_instance.groups.get(group_id)
     return student_repos, group.path
@@ -58,7 +58,6 @@ def get_repo_settings(group_id: int, repo_base_name: str, repo_number: int) -> d
         "description": f"Software Engineering Lab Homework Group {repo_number}",
         "namespace_id": group_id,
         "jobs_enabled": True,
-        "approvals_before_merge": 1,
     }
 
 

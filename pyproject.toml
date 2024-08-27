@@ -38,7 +38,7 @@ max-line-length = 120
 
 [tool.pylint.MASTER]
 # Add files or directories to the blacklist. They should be base names, not paths.
-ignore = ["venv"]
+ignore = ["venv", ".venv"]
 
 [tool.pylint."MESSAGES CONTROL"]
 # Only show warnings with the listed confidence levels. Leave empty to show
