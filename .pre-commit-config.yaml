@@ -114,7 +114,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.2
+    rev: v0.6.3
     hooks:
       - id: ruff
       - id: ruff-format
@@ -127,12 +127,12 @@ repos:
           - flake8-bugbear  # Ruff does not implement all of bugbear
           - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.1
+    rev: v1.11.2
     hooks:
       - id: mypy
         args: [--python-version, '3.10']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.2.6
+    rev: v3.2.7
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -153,6 +153,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.23.7
+    rev: typos-dict-v0.11.27
     hooks:
       - id: typos
