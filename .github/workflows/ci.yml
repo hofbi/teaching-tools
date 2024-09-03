@@ -29,10 +29,9 @@ jobs:
           make coverage
           cd ..
       - uses: actions/upload-artifact@v4
-        if: ${{ matrix.compiler }} == 'clang'
         with:
           path: build/ccov/all-merged
-          name: artifacts-cpp
+          name: artifacts-cpp-${{ matrix.compiler }}
 
   python:
     runs-on: ubuntu-latest
@@ -43,6 +42,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
+        env:
+          UV_SYSTEM_PYTHON: 1
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv pip install -r requirements.txt
@@ -103,7 +104,7 @@ jobs:
           mv artifacts-slides/* public
           mv artifacts-docs/* public
           mkdir -p public/coverage
-          mv artifacts-cpp public/coverage/cpp
+          mv artifacts-cpp-clang public/coverage/cpp
           mv artifacts-python/ public/coverage/python
           mkdir -p public/export
           make package
