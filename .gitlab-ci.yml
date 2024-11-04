@@ -11,7 +11,7 @@ stages:
 
 .python_setup: &python_setup
   variables:
-    PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
+    UV_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/uv"
     PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
   before_script:
     - python -V
@@ -21,7 +21,7 @@ stages:
     - uv pip install --upgrade -r requirements.txt
   cache:
     paths:
-      - .cache/pip
+      - .cache/uv
       - .cache/pre-commit
       - .venv/
 
