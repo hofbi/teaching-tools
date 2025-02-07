@@ -133,7 +133,7 @@ more stuff;
         self.assertEqual(remove_lines_within_limiters_from_string(file_content), file_content)
 
     def test_file_with_inverted_block(self) -> None:
-        file_content = f"some\n{EXPORT_END}stuff and " f"some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
+        file_content = f"some\n{EXPORT_END}stuff and some\n{EXPORT_BEGIN}\nmore stuff;\n// comment\n"
         self.assertEqual(remove_lines_within_limiters_from_string(file_content), file_content)
 
     def test_remove_clang_tidy_comment_at_end_of_line(self) -> None:

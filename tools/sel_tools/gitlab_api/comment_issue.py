@@ -5,7 +5,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import gitlab
-from gitlab.v4.objects.projects import Project
+from gitlab.v4.objects import Project
 from tqdm import tqdm
 
 from sel_tools.config import GITLAB_SERVER_URL

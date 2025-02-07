@@ -13,3 +13,8 @@ HW_BUILD_FOLDER = "hw_build"
 GITLAB_SERVER_URL = "https://gitlab.lrz.de/"
 RUNNER_ID = 3666
 GIT_MAIN_BRANCH = "master"
+
+
+def get_branch_from_student_config(student_config: dict) -> str:
+    """Get branch from student config."""
+    return str(student_config.get("branch", GIT_MAIN_BRANCH))

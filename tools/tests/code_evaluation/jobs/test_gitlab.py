@@ -9,7 +9,7 @@ from sel_tools.utils.repo import GitlabProject
 
 
 class CIStatusTestJobTest(unittest.TestCase):
-    """Tests for CI statis job."""
+    """Tests for CI status job."""
 
     def __create_fake_project_with_status(self, path: Path, status: str) -> GitlabProject:
         project_mock = MagicMock()

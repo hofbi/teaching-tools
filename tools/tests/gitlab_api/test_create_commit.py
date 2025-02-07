@@ -26,14 +26,14 @@ class CreateCommitTest(TestCase):
     def test_create_gitlab_commit_data_with_all_files_from_empty_folder(self) -> None:
         self.assertDictEqual(
             {},
-            create_gitlab_commit_data_with_all_files_from(self.input_dir, "Commit message"),
+            create_gitlab_commit_data_with_all_files_from(self.input_dir, "Commit message", GIT_MAIN_BRANCH),
         )
 
     def test_create_gitlab_commit_data_with_all_files_from_filled_folder(self) -> None:
         self.fs.create_file(self.input_dir / "README.md", contents="Initial readme")
         self.fs.create_file(self.input_dir / "include" / "header.h", contents="#define if while")
 
-        actions = create_gitlab_commit_data_with_all_files_from(self.input_dir, "Initial commit")
+        actions = create_gitlab_commit_data_with_all_files_from(self.input_dir, "Initial commit", GIT_MAIN_BRANCH)
 
         self.assertDictEqual(
             actions,
@@ -51,6 +51,26 @@ class CreateCommitTest(TestCase):
                         "content": "#define if while",
                         "file_path": "include/header.h",
                     },
+                ],
+            },
+        )
+
+    def test_create_gitlab_commit_with_file_on_different_branch(self) -> None:
+        self.fs.create_file(self.input_dir / "README.md", contents="Initial readme")
+
+        actions = create_gitlab_commit_data_with_all_files_from(self.input_dir, "Initial commit", "other_branch")
+
+        self.assertDictEqual(
+            actions,
+            {
+                "branch": "other_branch",
+                "commit_message": "Initial commit",
+                "actions": [
+                    {
+                        "action": "create",
+                        "content": "Initial readme",
+                        "file_path": "README.md",
+                    }
                 ],
             },
         )

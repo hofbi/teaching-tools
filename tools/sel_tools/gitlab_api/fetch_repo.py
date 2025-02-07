@@ -5,10 +5,10 @@ import os
 from pathlib import Path
 
 import gitlab
-from gitlab.v4.objects.projects import Project
+from gitlab.v4.objects import Project
 from tqdm import tqdm
 
-from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
+from sel_tools.config import GITLAB_SERVER_URL, get_branch_from_student_config
 from sel_tools.utils.repo import GitlabProject, GitRepo
 
 
@@ -20,7 +20,7 @@ def fetch_repos(workspace: Path, student_repos_file: Path, gitlab_token: str) ->
     gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     return [
         fetch_repo(
-            GitRepo(workspace / student_repo["name"], student_repo.get("branch", GIT_MAIN_BRANCH)),
+            GitRepo(workspace / student_repo["name"], get_branch_from_student_config(student_repo)),
             gitlab_instance.projects.get(student_repo["id"]),
         )
         for student_repo in tqdm(student_repos, desc="Fetching Repos")

@@ -1,5 +1,4 @@
-"""Remove block(s) within delimiters defined in config file from file or multiline
-string."""
+"""Remove block(s) within delimiters defined in config file from file or multilinestring."""
 
 import re
 from pathlib import Path
@@ -23,8 +22,7 @@ class SolutionsRemoverVisitor(FileVisitor):
 
 
 def remove_lines_within_limiters_from_string(multiline_string: str) -> str:
-    """Remove block(s) within delimiters defined in config file from multiline
-    string."""
+    """Remove block(s) within delimiters defined in config file from multiline string."""
     minimal_length_between_markers_pattern = r"\n[\S ]*" + EXPORT_BEGIN + r".*?[\S ]*" + EXPORT_END
     return re.sub(minimal_length_between_markers_pattern, "", multiline_string, flags=re.DOTALL)
 

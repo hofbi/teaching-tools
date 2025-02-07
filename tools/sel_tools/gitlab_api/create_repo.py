@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 import gitlab
-from gitlab.v4.objects.projects import Project
+from gitlab.v4.objects import Project, ProjectProtectedBranch
 from tqdm import tqdm
 
 from sel_tools.config import AVATAR_PATH, GIT_MAIN_BRANCH, GITLAB_SERVER_URL, RUNNER_ID
@@ -25,9 +25,9 @@ def create_repos(
     for repo_number in tqdm(range(1, number_of_repos + 1), desc="Creating Student Repos"):
         project = gitlab_instance.projects.create(get_repo_settings(group_id, repo_base_name, repo_number))
         configure_project(project)
-        configure_main_branch(project)
-        create_commit(source_folder, "Initial commit", project)
-        student_repos.append({"name": project.name, "id": project.id, "branch": project.default_branch})
+        main_branch = configure_main_branch(project)
+        create_commit(source_folder, "Initial commit", main_branch.name, project)
+        student_repos.append({"name": project.name, "id": project.id, "branch": main_branch.name})
 
     group = gitlab_instance.groups.get(group_id)
     return student_repos, group.path
@@ -40,9 +40,9 @@ def configure_project(gitlab_project: Project) -> None:
     gitlab_project.save()
 
 
-def configure_main_branch(gitlab_project: Project) -> None:
+def configure_main_branch(gitlab_project: Project) -> ProjectProtectedBranch:
     """Configure main branch."""
-    gitlab_project.protectedbranches.create(
+    return gitlab_project.protectedbranches.create(
         {
             "name": GIT_MAIN_BRANCH,
             "merge_access_level": gitlab.const.DEVELOPER_ACCESS,

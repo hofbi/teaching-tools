@@ -186,7 +186,7 @@ def parse_arguments(arguments: list[str]) -> Namespace:
 
 
 def main() -> None:
-    """main."""
+    """Main."""
     args = parse_arguments(sys.argv)
     args.func(args)
 

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from gitlab.v4.objects.projects import Project
+from gitlab.v4.objects import Project
 
 from sel_tools.config import REPO_DIR
 

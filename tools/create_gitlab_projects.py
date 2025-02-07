@@ -27,7 +27,7 @@ def parse_arguments(arguments: list[str]) -> Namespace:
 
 
 def main() -> None:
-    """main."""
+    """Main."""
     arguments = parse_arguments(sys.argv)
     check_code_for_solutions_code(arguments.source_path, arguments.publish_solutions)
     student_repos, group_name = create_repos(

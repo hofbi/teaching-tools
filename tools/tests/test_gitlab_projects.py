@@ -171,7 +171,7 @@ class EvaluateCodeArgumentParserTest(TestCase):
 
     def test_evaluate_code_max_valid_parameters(self) -> None:
         args = parse_arguments(
-            "foo.py evaluate_code -t 123 config_file.json -w workspace " "-n 2 -d 2021 11 15 -e 2021 11 24".split(" ")
+            "foo.py evaluate_code -t 123 config_file.json -w workspace -n 2 -d 2021 11 15 -e 2021 11 24".split(" ")
         )
 
         self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")

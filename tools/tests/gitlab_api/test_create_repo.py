@@ -25,8 +25,10 @@ class CreateRepoTest(TestCase):
         self.fs.create_dir(self.input_dir)
 
     def test_create_repos(self) -> None:
+        mock_protected_branch = MagicMock()
+        mock_protected_branch.name = "master"
         mock_project = MagicMock()
-        mock_project.default_branch = "master"
+        mock_project.protectedbranches.create.return_value = mock_protected_branch
         mock_instance = MagicMock()
         mock_instance.projects.create.return_value = mock_project
         mock_instance.groups.get.return_value = GitlabGroupFake("group")

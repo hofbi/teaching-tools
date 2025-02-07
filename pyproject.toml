@@ -56,24 +56,53 @@ disable = [
 fix = true
 target-version = "py312"
 line-length = 120
+unsafe-fixes = true
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 120
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-  "A",
-  "ANN",
-  "ARG",
+  "A001",
+  "A002",
+  "A005",
+  "ANN001", # Type annotation
+  "ANN002",
+  "ANN003",
+  "ANN201", # Partially autofixable None return useful for mypy
+  "ANN202", # Partially autofixable, useful for mypy
+  "ANN204", # Partially autofixable, useful for mypy
+  "ANN205",
+  "ANN206",
+  "ANN401",
+  "ARG002",
+  "ARG004",
   "COM", # Done via formatter
-  "D",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D106",
+  "D107",
+  "D203", # Incompatible with D211
+  "D213", # Incompatible with D212
+  "D401",
+  "D417", # We don't want every argument to be documented
   "DTZ001", # TODO: Enable
   "E501", # Done via formatter
-  "FBT",
-  "FIX",
-  "INP",
+  "FBT001",
+  "FBT002",
+  "FBT003",
+  "FIX002",
+  "INP001",
   "ISC001", # Done via formatter
   "PERF203",
   "PT", # We don't use pytest here
   "S",
-  "T",
+  "T", # Keep print statements
   "TD"
 ]

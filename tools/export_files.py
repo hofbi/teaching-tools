@@ -23,7 +23,7 @@ def parse_arguments(arguments: list[str]) -> Namespace:
 
 
 def main() -> None:
-    """main."""
+    """Main."""
     arguments = parse_arguments(sys.argv)
 
     copy_item(arguments.source_path, arguments.output_dir)

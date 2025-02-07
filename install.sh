@@ -12,6 +12,7 @@ sudo apt-get install -y \
     cmake \
     llvm \
     lcov \
+    gdb \
     zip
 
 curl -LsSf https://astral.sh/uv/install.sh | sh

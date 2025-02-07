@@ -3,6 +3,7 @@
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
 from sel_tools.utils.repo import GitlabProject
+
 from tests.helper import SimplePassingJob
 
 

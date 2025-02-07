@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import git
-from gitlab.v4.objects.projects import Project
+from gitlab.v4.objects import Project
 
 from sel_tools.config import GIT_MAIN_BRANCH
 
