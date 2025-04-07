@@ -14,7 +14,7 @@ class ArgumentParserTest(TestCase):
         self.setUpPyfakefs()
 
     def test_minimum_parameter_set(self) -> None:
-        args = parse_arguments("foo.py my_base_name -g 5421 -t 123".split(" "))
+        args = parse_arguments(["foo.py", "my_base_name", "-g", "5421", "-t", "123"])
 
         self.assertEqual(args.repo_base_name, "my_base_name")
         self.assertEqual(args.group_id, 5421)
@@ -32,7 +32,21 @@ class ArgumentParserTest(TestCase):
         self.fs.create_dir("config_folder")
         self.fs.create_dir("output/homework")
         args = parse_arguments(
-            "foo.py swe -g 1245 -r config_folder -t 456 -n 4 -s output/homework --publish-solutions".split(" ")
+            [
+                "foo.py",
+                "swe",
+                "-g",
+                "1245",
+                "-r",
+                "config_folder",
+                "-t",
+                "456",
+                "-n",
+                "4",
+                "-s",
+                "output/homework",
+                "--publish-solutions",
+            ]
         )
 
         self.assertEqual(args.repo_base_name, "swe")
