@@ -15,7 +15,7 @@ class ArgumentParserTest(TestCase):
 
     def test_minimum_parameter_set(self) -> None:
         self.fs.create_dir("sources")
-        args = parse_arguments("foo.py sources".split(" "))
+        args = parse_arguments(["foo.py", "sources"])
 
         self.assertEqual(args.source_path, Path("sources"))
         self.assertEqual(args.output_dir, REPO_DIR / "export")
@@ -23,7 +23,7 @@ class ArgumentParserTest(TestCase):
 
     def test_maximum_parameter_set(self) -> None:
         self.fs.create_dir("sources")
-        args = parse_arguments("foo.py sources -o output -k".split(" "))
+        args = parse_arguments(["foo.py", "sources", "-o", "output", "-k"])
 
         self.assertEqual(args.source_path, Path("sources"))
         self.assertEqual(args.output_dir, Path("output"))
@@ -31,4 +31,4 @@ class ArgumentParserTest(TestCase):
 
     def test_non_existent_sources_folder(self) -> None:
         with self.assertRaises(NotADirectoryError):
-            parse_arguments("foo.py sources".split(" "))
+            parse_arguments(["foo.py", "sources"])
