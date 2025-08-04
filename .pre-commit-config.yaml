@@ -169,6 +169,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1
+    rev: v1.35.1
     hooks:
       - id: typos
