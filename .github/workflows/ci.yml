@@ -53,7 +53,7 @@ jobs:
         run: make coverage_reports
       - uses: actions/upload-artifact@v4
         with:
-          path: tools/htmlcov
+          path: htmlcov
           name: artifacts-python
 
   AsciiDoc:
