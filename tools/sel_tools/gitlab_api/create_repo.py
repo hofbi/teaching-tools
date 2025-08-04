@@ -63,10 +63,11 @@ def get_repo_settings(group_id: int, repo_base_name: str, repo_number: int) -> d
 
 def store_student_repo_info_to_config_file(
     repo_info_dir: Path, group_name: str, student_repo_infos: list[dict]
-) -> None:
+) -> Path:
     """Store repo infos into config file created from repo info dir and repo_base_name.
 
     Existing config files will be overwritten.
     """
     student_repos_file = repo_info_dir.joinpath(group_name).with_suffix(".json")
     student_repos_file.write_text(json.dumps(student_repo_infos, sort_keys=True, indent=2))
+    return student_repos_file

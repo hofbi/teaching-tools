@@ -7,16 +7,13 @@ SLIDE_FILES_LIGHT = $(call file_finder,-name slide-deck-light.md)
 
 .PHONY: test
 test:
-	cd tools && python3 -m unittest discover
+	pytest tools
 
 coverage:
-	cd tools && coverage run --source=. -m unittest discover
-	cd tools && coverage report -m
+	pytest --cov=tools --cov-config=tools/.coveragerc tools
 
-coverage_reports: coverage
-	cd tools && coverage xml
-	sed -i -e 's, filename=", filename="tools/,g' tools/coverage.xml
-	cd tools && coverage html
+coverage_reports:
+	pytest --cov=tools --cov-config=tools/.coveragerc --cov-report=xml --cov-report=html tools
 
 .PHONY: slides
 slides: light_theme_slides

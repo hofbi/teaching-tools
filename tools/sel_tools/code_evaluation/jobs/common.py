@@ -19,15 +19,16 @@ class EvaluationJob:
     def __init__(self, weight: int = 1) -> None:
         self.__weight: int = weight
         self._comment: str = ""
-        self._message: str = ""
 
     def run(self, repo_path: Path) -> list[EvaluationResult]:
         deps_results = [job.run(repo_path) for job in self.dependencies]
         print(f"\nRunning {self.name} on {repo_path}")
-        job_result_score = self._run(repo_path)
+        job_result_score = min(self._run(repo_path), self.max_run_score)
         return [
             *list(itertools.chain(*deps_results)),
-            EvaluationResult(self.name, self.__weight * job_result_score, self.comment),
+            EvaluationResult(
+                self.name, self.__weight * job_result_score, self.max_run_score * self.__weight, self.comment
+            ),
         ]
 
     @property
@@ -37,8 +38,12 @@ class EvaluationJob:
         raise NotImplementedError(msg)
 
     @property
+    def max_run_score(self) -> int:
+        return 1
+
+    @property
     def comment(self) -> str:
-        return self._comment
+        return f"{self.name}: {self._comment}" if self._comment else ""
 
     @property
     def dependencies(self) -> list["EvaluationJob"]:

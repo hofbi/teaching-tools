@@ -5,10 +5,8 @@ from argparse import Namespace
 
 from sel_tools.config import REPO_DIR
 from sel_tools.file_export.solutions_check import check_code_for_solutions_code
-from sel_tools.gitlab_api.create_repo import (
-    create_repos,
-    store_student_repo_info_to_config_file,
-)
+from sel_tools.gitlab_api.create_issue import EVALUATION_DASHBOARD_TASK, create_issues
+from sel_tools.gitlab_api.create_repo import create_repos, store_student_repo_info_to_config_file
 from sel_tools.utils.args import ArgumentParserFactory
 
 
@@ -37,7 +35,8 @@ def main() -> None:
         arguments.number_of_repos,
         arguments.gitlab_token,
     )
-    store_student_repo_info_to_config_file(arguments.repo_info_dir, group_name, student_repos)
+    config_path = store_student_repo_info_to_config_file(arguments.repo_info_dir, group_name, student_repos)
+    create_issues([EVALUATION_DASHBOARD_TASK], config_path, arguments.gitlab_token)
 
 
 if __name__ == "__main__":

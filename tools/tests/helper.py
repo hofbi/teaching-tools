@@ -66,6 +66,7 @@ class ComplexJob(EvaluationJob):
     """Test job."""
 
     name = "complex"
+    max_run_score = 3
     dependencies: ClassVar[list[EvaluationJob]] = [
         SimpleFailingJob(),
         SimplePassingJob(2),
@@ -73,6 +74,17 @@ class ComplexJob(EvaluationJob):
 
     def _run(self, repo_path: Path) -> int:
         return 3
+
+
+class OverMaxPassingJob(EvaluationJob):
+    """Test job."""
+
+    name = "over_max_pass"
+    max_run_score = 1
+
+    def _run(self, repo_path: Path) -> int:
+        """Return more than the max score."""
+        return 2
 
 
 @dataclass

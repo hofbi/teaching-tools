@@ -28,5 +28,5 @@ class CIStatusTestJob(EvaluationJob):
         if pipelines:
             return int(pipelines[0].status == "success")
 
-        self._comment = "No pipelines found"
+        self._comment = "No CI pipelines found. Do you have a `.gitlab-ci.yml` file?"
         return 0

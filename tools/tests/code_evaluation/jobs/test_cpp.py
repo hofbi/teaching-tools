@@ -10,7 +10,6 @@ from sel_tools.code_evaluation.jobs.cpp import (
     CMakeBuildJob,
     CodeCoverageTestJob,
     MakeTestJob,
-    OOPTestJob,
 )
 from sel_tools.config import CMAKE_MODULE_PATH, HW_BUILD_FOLDER
 from sel_tools.utils.config import CMAKELISTS_FILE_NAME
@@ -64,8 +63,8 @@ class CMakeBuildJobTest(TestCase):
         result = self.unit.run(self.repo_path)
         self.assertEqual(0, result[0].score)
         self.assertTrue(self.build_folder.is_dir())
-        self.assertNotIn("CMake", result[0].comment)
-        self.assertIn("Make", result[0].comment)
+        self.assertNotIn("CMake step failed", result[0].comment)
+        self.assertIn("Make step failed", result[0].comment)
 
     @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command")
     def test_call_with_cmake_options(self, mock: MagicMock) -> None:
@@ -83,21 +82,21 @@ class ClangTidyTestJobTest(TestCase):
         self.unit = ClangTidyTestJob()
         self.repo_path = Path("repo")
         self.build_folder = self.repo_path / HW_BUILD_FOLDER
-        self.fs.create_dir(CMAKE_MODULE_PATH)
+        self.fs.create_file(CMAKE_MODULE_PATH / "ClangTidy.cmake")
 
     @patch(
         "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
         MagicMock(return_value=1),
     )
+    @patch("git.Repo", MagicMock())
     def test_run_impl_success(self) -> None:
         cmake_list = self.repo_path / CMAKELISTS_FILE_NAME
         self.fs.create_file(cmake_list)
         result = self.unit.run(self.repo_path)
         self.assertEqual(1, result[0].score)
-        self.assertIn(
-            "include(ClangTidy)",
-            cmake_list.read_text(),
-        )
+        # This test only works because we mock git.Repo
+        # otherwise the test would fail because the file is restored
+        self.assertIn("include(ClangTidy)", cmake_list.read_text())
 
     @patch(
         "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
@@ -106,7 +105,7 @@ class ClangTidyTestJobTest(TestCase):
     def test_run_impl_fail_cmake_list_does_not_exist(self) -> None:
         result = self.unit.run(self.repo_path)
         self.assertEqual(0, result[0].score)
-        self.assertEqual("CMakeLists.txt not found", result[0].comment)
+        self.assertIn("CMakeLists.txt not found", result[0].comment)
 
 
 class MakeTestJobTest(TestCase):
@@ -152,87 +151,6 @@ class MakeTestJobTest(TestCase):
     def test_run_impl_with_some_console_output_should_return_0(self) -> None:
         result = self.unit.run(self.repo_path)
         self.assertEqual(1, result[-1].score)
-
-
-class OOPTestJobTest(TestCase):
-    """Tests for OOP test job."""
-
-    def setUp(self) -> None:
-        self.setUpPyfakefs()
-        self.unit = OOPTestJob()
-        self.repo_path = Path("repo")
-        self.oop_file = self.repo_path / "success.h"
-        self.non_oop_file = self.repo_path / "fail.h"
-
-    def __create_oop_file(self) -> None:
-        self.fs.create_file(self.oop_file, contents="\nclass Line")
-
-    def __create_non_oop_file(self) -> None:
-        self.fs.create_file(self.non_oop_file, contents="\nstruct Line")
-
-    def test_find_struct_usages_single_usage(self) -> None:
-        ccp_content = """
-struct Point {
-    double x{0.0};
-    double y{0.0};
-};
-"""
-        result = OOPTestJob.OOPVisitor.find_struct_usages(ccp_content)
-        self.assertEqual(1, result)
-
-    def test_find_struct_usages_no_usages(self) -> None:
-        ccp_content = """
-class Point
-{
-  public:
-    Point(double x, double y) noexcept;
-
-  private:
-    double x_{0.0};
-    double y_{0.0};
-"""
-        result = OOPTestJob.OOPVisitor.find_struct_usages(ccp_content)
-        self.assertEqual(0, result)
-
-    def test_find_struct_usages_no_usages_patterns(self) -> None:
-        ccp_content = """
-TEST_F(CircleTest, constructor_centerAndRadius)
-{
-    EXPECT_EQ(3, circle_.getRadius());
-    EXPECT_EQ(lmt::Point(1, 2), circle_.getCenter());
-}
-"""
-        result = OOPTestJob.OOPVisitor.find_struct_usages(ccp_content)
-        self.assertEqual(0, result)
-
-    def test_oop_visitor_no_files(self) -> None:
-        visitor = OOPTestJob.OOPVisitor()
-        self.assertTrue(visitor.is_oop)
-
-    def test_oop_visitor_one_oop_files(self) -> None:
-        self.__create_oop_file()
-        visitor = OOPTestJob.OOPVisitor()
-        visitor.visit_file(self.oop_file)
-        self.assertTrue(visitor.is_oop)
-
-    def test_oop_visitor_one_non_oop_files(self) -> None:
-        self.__create_oop_file()
-        self.__create_non_oop_file()
-        visitor = OOPTestJob.OOPVisitor()
-        visitor.visit_file(self.oop_file)
-        visitor.visit_file(self.non_oop_file)
-        self.assertFalse(visitor.is_oop)
-
-    def test_run_impl_fail(self) -> None:
-        self.__create_non_oop_file()
-        self.__create_oop_file()
-        result = self.unit.run(self.repo_path)
-        self.assertEqual(0, result[0].score)
-
-    def test_run_impl_success(self) -> None:
-        self.__create_oop_file()
-        result = self.unit.run(self.repo_path)
-        self.assertEqual(1, result[0].score)
 
 
 class CodeCoverageTestJobTest(TestCase):

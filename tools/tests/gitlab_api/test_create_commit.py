@@ -35,25 +35,27 @@ class CreateCommitTest(TestCase):
 
         actions = create_gitlab_commit_data_with_all_files_from(self.input_dir, "Initial commit", GIT_MAIN_BRANCH)
 
-        self.assertDictEqual(
-            actions,
-            {
-                "branch": GIT_MAIN_BRANCH,
-                "commit_message": "Initial commit",
-                "actions": [
-                    {
-                        "action": "create",
-                        "content": "Initial readme",
-                        "file_path": "README.md",
-                    },
-                    {
-                        "action": "create",
-                        "content": "#define if while",
-                        "file_path": "include/header.h",
-                    },
-                ],
-            },
+        self.assertEqual(actions["branch"], GIT_MAIN_BRANCH)
+        self.assertEqual(actions["commit_message"], "Initial commit")
+        self.assertEqual(len(actions["actions"]), 2)
+
+        actual_actions_sorted = sorted(actions["actions"], key=lambda x: x["file_path"])
+        expected_actions_sorted = sorted(
+            [
+                {
+                    "action": "create",
+                    "content": "Initial readme",
+                    "file_path": "README.md",
+                },
+                {
+                    "action": "create",
+                    "content": "#define if while",
+                    "file_path": "include/header.h",
+                },
+            ],
+            key=lambda x: x["file_path"],
         )
+        self.assertEqual(actual_actions_sorted, expected_actions_sorted)
 
     def test_create_gitlab_commit_with_file_on_different_branch(self) -> None:
         self.fs.create_file(self.input_dir / "README.md", contents="Initial readme")

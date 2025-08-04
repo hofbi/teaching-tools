@@ -65,7 +65,7 @@ Create gitlab issues in students' repositories from the homework slides.
 Call
 
 ```shell script
-python3 gitlab_projects.py create_issues config/demo.json --issue-md-slides ../slides/homework/example/slide-deck.md --homework-number 1 --gitlab-token your_token
+python3 gitlab_projects.py create_issues ../config/demo.json --issue-md-slides ../slides/homework/example/slide-deck.md --homework-number 1 --gitlab-token your_token
 ```
 
 to create issues for the first homework.
@@ -79,7 +79,7 @@ Comment and optionally close/reopen gitlab issues in the students' repositories.
 Call
 
 ```shell script
-python3 gitlab_projects.py comment_issues config/demo.json --issue-number 42 --message "comment text" --gitlab-token your_token
+python3 gitlab_projects.py comment_issue ../config/demo.json --issue-number 42 --message "comment text" --gitlab-token your_token
 ```
 
 to add a comment with _comment text_ to issue 42.
@@ -92,7 +92,7 @@ Call with `-s`/`--state-event` in `{close, reopen}`.
 Clone or pull all student repositories in the config file into workspace `-w`/`--workspace`.
 
 ```shell script
-python3 gitlab_projects.py fetch_code config/demo.json --gitlab-token your_token
+python3 gitlab_projects.py fetch_code ../config/demo.json --gitlab-token your_token
 ```
 
 ### Evaluate the student code
@@ -110,7 +110,7 @@ The date format is `YEAR MONTH DAY`, e.g. `-d 2020 1 31`
 Call
 
 ```shell script
-python3 gitlab_projects.py evaluate_code config/demo.json --homework-number 1 --gitlab-token your_token
+python3 gitlab_projects.py evaluate_code ../config/demo.json --homework-number 1 --gitlab-token your_token
 ```
 
 #### Define Evaluation Jobs
@@ -128,7 +128,7 @@ For any other more complex modification, see the [commit changes module](#commit
 Call
 
 ```shell script
-python3 gitlab_projects.py upload_files config/demo.json --source-path your_source --gitlab-token your_token
+python3 gitlab_projects.py upload_files ../config/demo.json --source-path your_source_repo_with_changes --gitlab-token your_token
 ```
 
 ### Commit changes to the student code
@@ -138,7 +138,7 @@ The changes are copied using the [file export module](#file-export).
 Clone or pull all student repositories in the config file into workspace `-w`/`--workspace`.
 
 ```shell script
-python3 gitlab_projects.py commit_changes config/demo.json --source-path your_source --gitlab-token your_token
+python3 gitlab_projects.py commit_changes ../config/demo.json --source-path your_source_repo_with_changes --gitlab-token your_token --message "Commit message"
 ```
 
 ### Add students to their respective repositories
@@ -146,5 +146,5 @@ python3 gitlab_projects.py commit_changes config/demo.json --source-path your_so
 Add students to their respective repositories by extracting the student groups from a csv file exported from the Moodle survey.
 
 ```shell script
-python3 gitlab_projects.py add_users config/demo.json student_group.csv --gitlab-token your_token
+python3 gitlab_projects.py add_users ../config/demo.json student_group.csv --gitlab-token your_token
 ```

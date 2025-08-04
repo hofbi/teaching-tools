@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from pyfakefs.fake_filesystem_unittest import TestCase
-from sel_tools.diff_creation.report import Diff, DiffReport, write_diff_reports
+from sel_tools.diff_creation.report import Diff, DiffReport, write_diff_reports, write_report_for_inactive_student_repos
 
 
 class ReportTest(TestCase):
@@ -37,6 +37,32 @@ class ReportTest(TestCase):
 
         self.assertTrue(Path("report/base.csv").exists())
         self.assertEqual(2, len(list(Path("report").glob("*.patch"))))
+
+    def test_write_report_for_inactive_student_repos__no_report__should_write_nothing(
+        self,
+    ) -> None:
+        self.fs.create_dir("report")
+
+        write_report_for_inactive_student_repos([], Path("report"))
+
+        self.assertFalse(Path("report", "inactive_student_repos.md").exists())
+
+    def test_write_report_for_inactive_student_repos__with_diffs__should_write_nothing(self) -> None:
+        self.fs.create_dir("report")
+
+        write_report_for_inactive_student_repos([DiffReport(Path("report", "repo"), [])], Path("report"))
+
+        self.assertTrue(Path("report", "inactive_student_repos.md").exists())
+        self.assertIn("repo", Path("report", "inactive_student_repos.md").read_text())
+
+    def test_write_report_for_inactive_student_repos__with_diffs__should_write_report(self) -> None:
+        self.fs.create_dir("report")
+
+        write_report_for_inactive_student_repos(
+            [DiffReport(Path("report", "repo"), [Diff("a", "a", "a", "a")])], Path("report")
+        )
+
+        self.assertFalse(Path("report", "inactive_student_repos.md").exists())
 
 
 class DiffReportTest(TestCase):
@@ -103,3 +129,31 @@ class DiffReportTest(TestCase):
         self.assertIn("+++a\n---b", self.path.joinpath("0-abc.patch").read_text())
         self.assertIn("+++a", self.path.joinpath("0-abc.html").read_text())
         self.assertIn("---b", self.path.joinpath("0-abc.html").read_text())
+
+    def test_write_diff_patches_with_unicode_surrogates_should_handle_gracefully(
+        self,
+    ) -> None:
+        problematic_patch = "+++a\n---b\n" + "\udce0\udce1\udce2"
+        unit = DiffReport(self.path, [Diff("def", "author", "unicode test", problematic_patch)])
+
+        unit.write_diff_patches()
+
+        patch_content = self.path.joinpath("0-def.patch").read_text()
+        self.assertIn("+++a", patch_content)
+        self.assertIn("---b", patch_content)
+        self.assertIsInstance(
+            patch_content, str, msg="Surrogate characters should be replaced, content should be readable"
+        )
+        html_content = self.path.joinpath("0-def.html").read_text()
+        self.assertIn("+++a", html_content)
+        self.assertIsInstance(html_content, str)
+
+    def test_has_diffs__empty_diffs__should_return_false(self) -> None:
+        unit = DiffReport(self.path, [])
+
+        self.assertFalse(unit.has_diffs)
+
+    def test_has_diffs__with_diffs__should_return_true(self) -> None:
+        unit = DiffReport(self.path, [Diff("a", "a", "a", "a"), Diff("b", "b", "b", "b")])
+
+        self.assertTrue(unit.has_diffs)

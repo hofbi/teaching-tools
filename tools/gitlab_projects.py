@@ -8,7 +8,7 @@ from sel_tools.code_evaluation.evaluate_code import evaluate_code
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
 from sel_tools.code_evaluation.report import write_evaluation_reports
 from sel_tools.diff_creation.create_diff import create_diff
-from sel_tools.diff_creation.report import write_diff_reports
+from sel_tools.diff_creation.report import write_diff_reports, write_report_for_inactive_student_repos
 from sel_tools.file_export.export_item import export_items
 from sel_tools.file_parsing.slide_parser import get_tasks_from_slides
 from sel_tools.gitlab_api.add_user import add_users
@@ -51,6 +51,7 @@ def edit_evaluate_code(args: Namespace) -> None:
         args.evaluation_date,
     )
     write_diff_reports(diff_reports, f"homework-{args.homework_number}-diff")
+    write_report_for_inactive_student_repos(diff_reports, args.workspace)
 
 
 def edit_upload_files(args: Namespace) -> None:

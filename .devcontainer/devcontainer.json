@@ -1,16 +1,44 @@
 {
   "name": "Software Lab",
-  "image": "makeappdev/cpp-dev:24.04",
-  "extensions": [
-    "ms-vscode.cpptools-extension-pack",
-    "eamodio.gitlens",
-    "redhat.vscode-xml",
-    "redhat.vscode-yaml",
-    "cheshirekow.cmake-format",
-    "yzhang.markdown-all-in-one",
-    "ms-azuretools.vscode-docker"
-  ],
-  "settings": {
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": false,
+      "installOhMyZshConfig": false
+      // Get your own dotfiles configured with
+      // https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "upgradePackages": true,
+      "packages": [
+        "build-essential",
+        "clang-format",
+        "clang-tidy",
+        "cppcheck",
+        "iwyu",
+        "cmake",
+        "llvm",
+        "libclang-rt-dev",
+        "lcov",
+        "gdb",
+        "zip"
+      ]
+    }
   },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+      }
+    }
+  }
 }

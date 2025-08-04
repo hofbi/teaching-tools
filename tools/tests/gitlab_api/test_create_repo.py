@@ -56,9 +56,8 @@ class CreateRepoTest(TestCase):
         repo_info_dir = Path("config")
         self.fs.create_dir(repo_info_dir)
 
-        store_student_repo_info_to_config_file(repo_info_dir, "group_name", [{"id": 1}, {"id": 2}])
+        config_file = store_student_repo_info_to_config_file(repo_info_dir, "group_name", [{"id": 1}, {"id": 2}])
 
-        config_file = repo_info_dir / "group_name.json"
         self.assertTrue(config_file.is_file())
         config_file_content = json.loads(config_file.read_text())
         self.assertListEqual(config_file_content, [{"id": 1}, {"id": 2}])

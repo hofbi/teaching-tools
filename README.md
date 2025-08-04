@@ -69,11 +69,19 @@ If you don't want to develop inside a docker container, you can install the depe
 ./install.sh
 
 # Create a python venv (optional)
-python3 -m venv venv
-source venv/bin/activate
+uv venv
+source .venv/bin/activate
 
 # Install python dependencies
-pip3 install -r requirements.txt
+uv pip install -r requirements.txt
+```
+
+### Export Files
+
+Run the following command to export the student homework project and all lecture samples using the [File Export](tools/README.md#file-export) module.
+
+```shell
+make package
 ```
 
 ### C++

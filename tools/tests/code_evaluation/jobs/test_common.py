@@ -12,7 +12,7 @@ from sel_tools.code_evaluation.jobs.common import (
 )
 from sel_tools.code_evaluation.report import EvaluationResult
 
-from tests.helper import ComplexJob, SimpleFailingJob, SimplePassingJob
+from tests.helper import ComplexJob, OverMaxPassingJob, SimpleFailingJob, SimplePassingJob
 
 
 class EvaluationJobTest(unittest.TestCase):
@@ -21,29 +21,34 @@ class EvaluationJobTest(unittest.TestCase):
     def test_simple_failing_job(self) -> None:
         unit = SimpleFailingJob()
         results = unit.run(Path())
-        self.assertListEqual([EvaluationResult("simple_fail", 0, "This caused the fail")], results)
+        self.assertListEqual([EvaluationResult("simple_fail", 0, 1, "simple_fail: This caused the fail")], results)
 
     def test_simple_passing_job(self) -> None:
         unit = SimplePassingJob()
         results = unit.run(Path())
-        self.assertListEqual([EvaluationResult("simple_pass", 1)], results)
+        self.assertListEqual([EvaluationResult("simple_pass", 1, 1)], results)
 
     def test_simple_passing_job_with_weight(self) -> None:
         unit = SimplePassingJob(3)
         results = unit.run(Path())
-        self.assertListEqual([EvaluationResult("simple_pass", 3)], results)
+        self.assertListEqual([EvaluationResult("simple_pass", 3, 3)], results)
 
     def test_complex_job(self) -> None:
         unit = ComplexJob()
         results = unit.run(Path())
         self.assertListEqual(
             [
-                EvaluationResult("simple_fail", 0, "This caused the fail"),
-                EvaluationResult("simple_pass", 2),
-                EvaluationResult("complex", 3),
+                EvaluationResult("simple_fail", 0, 1, "simple_fail: This caused the fail"),
+                EvaluationResult("simple_pass", 2, 2),
+                EvaluationResult("complex", 3, 3),
             ],
             results,
         )
+
+    def test_over_max_passing_job__score_should_not_be_more_than_max(self) -> None:
+        unit = OverMaxPassingJob()
+        results = unit.run(Path())
+        self.assertListEqual([EvaluationResult("over_max_pass", 1, 1)], results)
 
 
 class JobsTest(TestCase):

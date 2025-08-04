@@ -47,4 +47,4 @@ class CIStatusTestJobTest(unittest.TestCase):
 
         result = unit.run(Path("test"))
         self.assertEqual(0, result[0].score)
-        self.assertIn("No pipelines", result[0].comment)
+        self.assertIn("No CI pipelines found", result[0].comment)

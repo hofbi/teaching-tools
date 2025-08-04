@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 from typing import ClassVar
 
+import git
+
 from sel_tools.code_evaluation.jobs.common import (
     EvaluationJob,
     run_shell_command,
@@ -12,7 +14,7 @@ from sel_tools.code_evaluation.jobs.common import (
 from sel_tools.config import CMAKE_MODULE_PATH, HW_BUILD_FOLDER
 from sel_tools.file_export.copy_item import copy_item
 from sel_tools.utils.config import CMAKELISTS_FILE_NAME
-from sel_tools.utils.files import FileTree, FileVisitor, is_cpp
+from sel_tools.utils.files import FileTree, FileVisitor
 
 
 class CMakeBuildJob(EvaluationJob):
@@ -28,10 +30,10 @@ class CMakeBuildJob(EvaluationJob):
         build_folder = repo_path / HW_BUILD_FOLDER
         build_folder.mkdir(parents=True, exist_ok=True)
         if run_shell_command(f"cmake {self.__cmake_options} ..", build_folder) == 0:
-            self._comment = f"CMake step failed with option {self.__cmake_options}"
+            self._comment = f"CMake step failed with option {self.__cmake_options}: Make sure cmake .. passes."
             return 0
         if run_shell_command("make", build_folder) == 0:
-            self._comment = "Make step failed"
+            self._comment = "Make step failed: Make sure you build passes when calling make."
             return 0
         return 1
 
@@ -46,10 +48,10 @@ class MakeTestJob(EvaluationJob):
         build_folder = repo_path / HW_BUILD_FOLDER
         score, output = run_shell_command_with_output("make test", build_folder)
         if score != 0 and not output:
-            self._comment = "No tests registered"
+            self._comment = "No tests registered: Make sure you have tests registered in CMakeLists.txt."
             return 0
         if score != 0 and "No tests were found" in output:
-            self._comment = "No tests were found"
+            self._comment = "No tests were found: Make sure you have tests registered in CMakeLists.txt."
             return 0
         return score
 
@@ -87,10 +89,10 @@ class CodeCoverageTestJob(EvaluationJob):
     def _run(self, repo_path: Path) -> int:
         coverage_file = repo_path.resolve() / HW_BUILD_FOLDER / "report.txt"
         if (score := run_shell_command(f"gcovr -o {coverage_file}", repo_path)) == 0:
-            self._comment = "Coverage failed"
+            self._comment = "Coverage failed report generation failed."
             return score
         coverage = self.parse_total_coverage(coverage_file)
-        self._comment = f"Code coverage: {coverage}%"
+        self._comment = f"Code coverage: {coverage}%. We require at least {self.__min_coverage}%."
         return int(coverage > self.__min_coverage)
 
 
@@ -100,51 +102,25 @@ class ClangTidyTestJob(EvaluationJob):
     name = "Clang Tidy Check"
 
     def _run(self, repo_path: Path) -> int:
-        copy_item(CMAKE_MODULE_PATH, repo_path)
+        hw_cmake_module_path = repo_path / "hw_cmake"
+        hw_cmake_module_path.mkdir(parents=True, exist_ok=True)
+        copy_item(CMAKE_MODULE_PATH / "ClangTidy.cmake", hw_cmake_module_path / "ClangTidy.cmake")
         cmake_lists = repo_path / CMAKELISTS_FILE_NAME
 
         if not cmake_lists.exists():
-            self._comment = f"{CMAKELISTS_FILE_NAME} not found"
+            self._comment = (
+                f"{CMAKELISTS_FILE_NAME} not found: Make sure you project has a {CMAKELISTS_FILE_NAME} file."
+            )
             return 0
 
         content = cmake_lists.read_text()
         content += "\n"
-        content += f"list(APPEND CMAKE_MODULE_PATH ${{PROJECT_SOURCE_DIR}}/{CMAKE_MODULE_PATH.stem})\n"
+        content += f"list(APPEND CMAKE_MODULE_PATH ${{PROJECT_SOURCE_DIR}}/{hw_cmake_module_path.stem})\n"
         content += "include(ClangTidy)\n"
         cmake_lists.write_text(content)
-        return CMakeBuildJob().run(repo_path)[-1].score
-
-
-class OOPTestJob(EvaluationJob):
-    """Job for checking if all OOP is used."""
-
-    name = "OOP Check"
-
-    class OOPVisitor(FileVisitor):
-        """Check if given cpp files are OOP."""
-
-        def __init__(self) -> None:
-            self.__struct_usages: int = 0
-
-        @property
-        def is_oop(self) -> bool:
-            return self.__struct_usages == 0
-
-        def visit_file(self, file: Path) -> None:
-            if is_cpp(file):
-                cpp_content = file.read_text()
-                self.__struct_usages += self.find_struct_usages(cpp_content)
-
-        @staticmethod
-        def find_struct_usages(file_content: str) -> int:
-            # TODO this is probably a very weak check
-            # but we can improve in the future with more checks
-            return len(re.findall(r"\sstruct\s", file_content, re.DOTALL))
-
-    def _run(self, repo_path: Path) -> int:
-        oop_visitor = OOPTestJob.OOPVisitor()
-        FileTree(repo_path).accept(oop_visitor)
-        return int(oop_visitor.is_oop)
+        score = CMakeBuildJob().run(repo_path)[-1].score
+        git.Repo(repo_path).git.restore(".")  # Undo all changes
+        return score
 
 
 class CleanRepoJob(EvaluationJob):
@@ -199,9 +175,16 @@ class CleanRepoJob(EvaluationJob):
         file_tree.accept(clean_repo_visitor)
         file_tree.accept(source_file_count_visitor)
         if not clean_repo_visitor.is_clean:
-            self._message = "Build files committed"
+            self._comment = (
+                "We found build files committed to the repository. "
+                "Make sure that any files produced by the build system are not committed. "
+                "If you already have, make sure you remove them."
+            )
             return 0
         if not source_file_count_visitor.is_below_max_source_file_count:
-            self._message = "Committed to many third party source file"
+            self._comment = (
+                "We found too many third party source files committed to the repository. "
+                "Check if you really need them or if there is another way to include them."
+            )
             return 0
         return 1

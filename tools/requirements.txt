@@ -1,7 +1,11 @@
+cmake-format
 gcovr
 gitpython
 pandas
 pyfakefs
 Pygments
+pytest
+pytest-cov
+pytest-sugar
 python-gitlab
 tqdm

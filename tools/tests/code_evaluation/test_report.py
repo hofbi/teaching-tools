@@ -25,7 +25,7 @@ class ReportTest(TestCase):
         write_evaluation_reports([], "report")
         self.assertEqual(0, self.fs.get_disk_usage().used)
 
-    def test_write_evaluation_reports_for_one_item_should_write_json_and_md(
+    def test_write_evaluation_reports_for_one_item_should_write_json_and_mds(
         self,
     ) -> None:
         self.fs.create_dir("report")
@@ -35,6 +35,19 @@ class ReportTest(TestCase):
 
         self.assertTrue(Path("report/base.md").exists())
         self.assertTrue(Path("report/base.json").exists())
+        self.assertTrue(Path("report/base_students.md").exists())
+
+    def test_write_evaluation_reports_base_report_should_contain_more_than_student_report(
+        self,
+    ) -> None:
+        self.fs.create_dir("report")
+        gitlab_project = GitlabProject(Path("report"), GitlabProjectFake())
+
+        write_evaluation_reports([EvaluationReport(gitlab_project, [])], "base")
+
+        self.assertIn("Overall score:", Path("report/base.md").read_text())
+        self.assertIn("Overall score:", Path("report/base_students.md").read_text())
+        self.assertNotIn("## Student Section", Path("report/base_students.md").read_text())
 
 
 class EvaluationReportTest(unittest.TestCase):
@@ -46,36 +59,39 @@ class EvaluationReportTest(unittest.TestCase):
     def test_score_empty_results_zero(self) -> None:
         unit = EvaluationReport(self.gitlab_project, [])
         self.assertEqual(0, unit.score)
+        self.assertEqual(0, unit.max_score)
 
     def test_score_non_empty_results(self) -> None:
         unit = EvaluationReport(
             self.gitlab_project,
             [
-                EvaluationResult("one", 2),
-                EvaluationResult("two", 0),
-                EvaluationResult("three", 1),
+                EvaluationResult("one", 2, 2),
+                EvaluationResult("two", 0, 1),
+                EvaluationResult("three", 1, 1),
             ],
         )
         self.assertEqual(3, unit.score)
+        self.assertEqual(4, unit.max_score)
 
     def test_score_unique_score_counts(self) -> None:
         unit = EvaluationReport(
             self.gitlab_project,
             [
-                EvaluationResult("one", 1),
-                EvaluationResult("one", 1),
-                EvaluationResult("two", 1),
-                EvaluationResult("two", 0),
+                EvaluationResult("one", 1, 1),
+                EvaluationResult("one", 1, 1),
+                EvaluationResult("two", 1, 1),
+                EvaluationResult("two", 0, 1),
             ],
         )
         self.assertEqual(2, unit.score)
+        self.assertEqual(3, unit.max_score)
 
     def test_to_json(self) -> None:
         unit = EvaluationReport(
             self.gitlab_project,
             [
-                EvaluationResult("foo", 2),
-                EvaluationResult("bar", 0, comment="this caused the fail"),
+                EvaluationResult("foo", 2, 2),
+                EvaluationResult("bar", 0, 1, comment="this caused the fail"),
             ],
         )
         self.assertEqual(
@@ -84,9 +100,10 @@ class EvaluationReportTest(unittest.TestCase):
                     "repo_path": "test",
                     "url": "https://test.com",
                     "score": 2,
+                    "max_score": 3,
                     "results": [
-                        {"name": "foo", "score": 2, "comment": ""},
-                        {"name": "bar", "score": 0, "comment": "this caused the fail"},
+                        {"name": "foo", "score": 2, "max_score": 2, "comment": ""},
+                        {"name": "bar", "score": 0, "max_score": 1, "comment": "this caused the fail"},
                     ],
                 },
                 indent=4,
@@ -103,3 +120,19 @@ class EvaluationReportTest(unittest.TestCase):
         self.assertIn("https://test.com", md_report)
         self.assertIn("Overall:", md_report)
         self.assertIn('"results": []', md_report)
+        self.assertIn("Student Section", md_report)
+
+    def test_print_student_section(self) -> None:
+        unit = EvaluationReport(
+            self.gitlab_project,
+            [
+                EvaluationResult("foo", 2, 2),
+                EvaluationResult("bar", 0, 1, comment="this caused the fail"),
+            ],
+        )
+
+        student_section = unit.print_student_section()
+
+        self.assertIn("Overall score: 2/3", student_section)
+        self.assertIn("this caused the fail", student_section)
+        self.assertNotIn("foo", student_section)
