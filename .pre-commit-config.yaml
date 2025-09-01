@@ -19,7 +19,7 @@ repos:
     hooks:
       - id: sync-pre-commit-deps
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -54,11 +54,11 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/google/keep-sorted
-    rev: v0.6.1
+    rev: v0.7.1
     hooks:
       - id: keep-sorted
   - repo: https://github.com/hofbi/dev-tools
-    rev: 0.15.0
+    rev: 0.15.1
     hooks:
       - id: check-snake-case
       - id: check-no-dashes
@@ -110,7 +110,7 @@ repos:
     hooks:
       - id: toml-sort-fix
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v20.1.8
+    rev: v21.1.0
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -126,7 +126,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.7
+    rev: v0.12.11
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -144,7 +144,7 @@ repos:
       - id: mypy
         args: [--python-version, '3.12']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.3.7
+    rev: v3.3.8
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -161,14 +161,14 @@ repos:
     hooks:
       - id: shfmt
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
+    rev: v0.11.0.1
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.33.2
+    rev: 0.33.3
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.35.1
+    rev: v1
     hooks:
       - id: typos
