@@ -106,11 +106,11 @@ repos:
             docs/theme/tum.yml
           )
   - repo: https://github.com/pappasam/toml-sort
-    rev: v0.24.2
+    rev: v0.24.3
     hooks:
       - id: toml-sort-fix
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v21.1.0
+    rev: v21.1.2
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -126,7 +126,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.11
+    rev: v0.13.3
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -139,12 +139,12 @@ repos:
           - flake8-bugbear  # Ruff does not implement all of bugbear
           - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.17.1
+    rev: v1.18.2
     hooks:
       - id: mypy
         args: [--python-version, '3.12']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.3.8
+    rev: v3.3.9
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
@@ -165,10 +165,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.33.3
+    rev: 0.34.0
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.35.8
+    rev: v1.37.3
     hooks:
       - id: typos
