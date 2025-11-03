@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: keep-sorted
   - repo: https://github.com/hofbi/dev-tools
-    rev: 0.15.1
+    rev: 1.0.0
     hooks:
       - id: check-snake-case
       - id: check-no-dashes
@@ -67,7 +67,7 @@ repos:
       - id: check-shellscript-set-options
       - id: check-non-existing-and-duplicate-excludes
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.22
+    rev: 1.0.0
     hooks:
       - id: mdformat
         exclude: ^slides/
@@ -79,13 +79,13 @@ repos:
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
     # Stick to 3.11.2 until https://github.com/tcort/markdown-link-check/issues/457 is fixed
-    rev: v3.13.7
+    rev: v3.14.1
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
         exclude: ^slides/homework
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.20.0
     hooks:
       - id: yamlfmt
         exclude: |
@@ -126,7 +126,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.3
+    rev: v0.14.3
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -144,11 +144,11 @@ repos:
       - id: mypy
         args: [--python-version, '3.12']
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.3.9
+    rev: v4.0.2
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.20.0
+    rev: v3.21.0
     hooks:
       - id: pyupgrade
         args: [--py312-plus, --keep-runtime-typing]
@@ -165,10 +165,10 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.34.0
+    rev: 0.34.1
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.37.3
+    rev: v1
     hooks:
       - id: typos
