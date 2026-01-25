@@ -56,7 +56,7 @@ class EvaluationJob:
 
 
 def run_shell_command(command: str, cwd: Path) -> int:
-    """Run shell command."""
+    """Run shell command and return a score, not the exit code."""
     try:
         subprocess.check_call(command, shell=True, cwd=cwd)
     except subprocess.CalledProcessError:
@@ -65,7 +65,10 @@ def run_shell_command(command: str, cwd: Path) -> int:
 
 
 def run_shell_command_with_output(command: str, cwd: Path) -> tuple[int, str]:
-    """Run shell command and get the output."""
+    """Run shell command and get the output.
+
+    Return a score, not the exit code.
+    """
     try:
         data = subprocess.check_output(command, shell=True, cwd=cwd)
     except subprocess.CalledProcessError as ex:

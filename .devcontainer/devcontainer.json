@@ -26,12 +26,14 @@
         "gdb",
         "zip"
       ]
-    }
+    },
+    "ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {}
   },
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
         "eamodio.gitlens",
         "yzhang.markdown-all-in-one",
         "ms-azuretools.vscode-docker"

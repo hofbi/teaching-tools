@@ -5,14 +5,15 @@ from unittest.mock import MagicMock, patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.code_evaluation.jobs.cpp import (
+    CMAKE_MODULE_PATH,
+    HW_BUILD_FOLDER,
     ClangTidyTestJob,
     CleanRepoJob,
     CMakeBuildJob,
     CodeCoverageTestJob,
     MakeTestJob,
 )
-from sel_tools.config import CMAKE_MODULE_PATH, HW_BUILD_FOLDER
-from sel_tools.utils.config import CMAKELISTS_FILE_NAME
+from sel_tools.utils.files import CMAKELISTS_FILE_NAME
 
 
 def coverage_file_content(total_coverage: int) -> str:
@@ -161,34 +162,22 @@ class CodeCoverageTestJobTest(TestCase):
         self.unit = CodeCoverageTestJob()
         self.repo_path = Path("repo")
 
-    @patch(
-        "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
-        MagicMock(return_value=0),
-    )
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command_with_output", MagicMock(return_value=(1, "")))
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=0))
     def test_run_impl_failing_shell_command(self) -> None:
         result = self.unit.run(self.repo_path)
         self.assertEqual(0, result[-1].score)
 
-    @patch(
-        "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
-        MagicMock(return_value=1),
-    )
-    @patch(
-        "sel_tools.code_evaluation.jobs.cpp.CodeCoverageTestJob.parse_total_coverage",
-        MagicMock(return_value=95),
-    )
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command_with_output", MagicMock(return_value=(1, "")))
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=1))
+    @patch("sel_tools.code_evaluation.jobs.cpp.CodeCoverageTestJob.parse_total_coverage", MagicMock(return_value=95))
     def test_run_impl_success(self) -> None:
         result = self.unit.run(self.repo_path)
         self.assertEqual(1, result[-1].score)
 
-    @patch(
-        "sel_tools.code_evaluation.jobs.cpp.run_shell_command",
-        MagicMock(return_value=1),
-    )
-    @patch(
-        "sel_tools.code_evaluation.jobs.cpp.CodeCoverageTestJob.parse_total_coverage",
-        MagicMock(return_value=15),
-    )
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command_with_output", MagicMock(return_value=(1, "")))
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=1))
+    @patch("sel_tools.code_evaluation.jobs.cpp.CodeCoverageTestJob.parse_total_coverage", MagicMock(return_value=15))
     def test_run_impl_fail_below_coverage_limit(self) -> None:
         result = self.unit.run(self.repo_path)
         self.assertEqual(0, result[-1].score)
@@ -207,6 +196,20 @@ class CodeCoverageTestJobTest(TestCase):
     @patch("pathlib.Path.read_text", MagicMock(return_value=""))
     def test_parse_total_coverage_empty_file(self) -> None:
         self.assertEqual(0, self.unit.parse_total_coverage(Path()))
+
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command_with_output", MagicMock(return_value=(1, "")))
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command")
+    def test_gcovr_runs_from_build_folder_with_correct_options(self, mock_run_shell_command: MagicMock) -> None:
+        mock_run_shell_command.return_value = 1
+        self.fs.create_file(self.repo_path / HW_BUILD_FOLDER / "report.txt", contents=coverage_file_content(95))
+        self.unit.run(self.repo_path)
+        # gcovr should be called with correct options from build folder
+        gcovr_call = mock_run_shell_command.call_args_list[-1]
+        gcovr_cmd = gcovr_call.args[0]
+        gcovr_cwd = gcovr_call.args[1]
+        self.assertIn("--root", gcovr_cmd)
+        self.assertIn("--exclude _deps", gcovr_cmd)
+        self.assertEqual(self.repo_path / HW_BUILD_FOLDER, gcovr_cwd)
 
 
 class CleanRepoJobTest(TestCase):

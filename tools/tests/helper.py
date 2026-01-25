@@ -4,7 +4,6 @@ import shutil
 import unittest
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
 
 import git
 from sel_tools.code_evaluation.jobs.common import EvaluationJob
@@ -67,10 +66,13 @@ class ComplexJob(EvaluationJob):
 
     name = "complex"
     max_run_score = 3
-    dependencies: ClassVar[list[EvaluationJob]] = [
-        SimpleFailingJob(),
-        SimplePassingJob(2),
-    ]
+
+    @property
+    def dependencies(self) -> list[EvaluationJob]:
+        return [
+            SimpleFailingJob(),
+            SimplePassingJob(2),
+        ]
 
     def _run(self, repo_path: Path) -> int:
         return 3
@@ -91,6 +93,7 @@ class OverMaxPassingJob(EvaluationJob):
 class GitlabProjectFake:
     """Fake for the Gitlab Project Object."""
 
+    id: str = ""
     web_url: str = ""
 
 

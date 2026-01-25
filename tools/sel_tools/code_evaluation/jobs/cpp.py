@@ -2,7 +2,6 @@
 
 import re
 from pathlib import Path
-from typing import ClassVar
 
 import git
 
@@ -11,10 +10,12 @@ from sel_tools.code_evaluation.jobs.common import (
     run_shell_command,
     run_shell_command_with_output,
 )
-from sel_tools.config import CMAKE_MODULE_PATH, HW_BUILD_FOLDER
+from sel_tools.config import REPO_DIR
 from sel_tools.file_export.copy_item import copy_item
-from sel_tools.utils.config import CMAKELISTS_FILE_NAME
-from sel_tools.utils.files import FileTree, FileVisitor
+from sel_tools.utils.files import CMAKELISTS_FILE_NAME, FileTree, FileVisitor
+
+CMAKE_MODULE_PATH = REPO_DIR / "cmake"
+HW_BUILD_FOLDER = "hw_build"
 
 
 class CMakeBuildJob(EvaluationJob):
@@ -42,7 +43,14 @@ class MakeTestJob(EvaluationJob):
     """Job for running make test."""
 
     name = "Make Test"
-    dependencies: ClassVar[list[EvaluationJob]] = [CMakeBuildJob()]
+
+    def __init__(self, weight: int = 1, cmake_options: str = "") -> None:
+        super().__init__(weight)
+        self._cmake_options = cmake_options
+
+    @property
+    def dependencies(self) -> list[EvaluationJob]:
+        return [CMakeBuildJob(cmake_options=self._cmake_options)]
 
     def _run(self, repo_path: Path) -> int:
         build_folder = repo_path / HW_BUILD_FOLDER
@@ -62,18 +70,25 @@ class ClangFormatTestJob(EvaluationJob):
     name = "Clang Format Check"
 
     def _run(self, repo_path: Path) -> int:
-        return run_shell_command(
+        score = run_shell_command(
             rf"find . -type f -regex '.*\.\(cpp\|hpp\|cu\|c\|cc\|h\)' -not -path '*/{HW_BUILD_FOLDER}/*' "
             "| xargs clang-format --style=file -i --dry-run --Werror",
             repo_path,
         )
+        if score == 0:
+            self._comment = "Clang format check failed: Make sure you format your code according to the style guide."
+            return score
+        return 1
 
 
 class CodeCoverageTestJob(EvaluationJob):
     """Job for checking the code coverage."""
 
     name = "Code Coverage"
-    dependencies: ClassVar[list[EvaluationJob]] = [CMakeBuildJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
+
+    @property
+    def dependencies(self) -> list[EvaluationJob]:
+        return [MakeTestJob(cmake_options="-DCMAKE_BUILD_TYPE=Debug")]
 
     def __init__(self, weight: int = 1, min_coverage: int = 75) -> None:
         super().__init__(weight)
@@ -87,8 +102,10 @@ class CodeCoverageTestJob(EvaluationJob):
         return int(coverage.group(1)) if coverage else 0
 
     def _run(self, repo_path: Path) -> int:
-        coverage_file = repo_path.resolve() / HW_BUILD_FOLDER / "report.txt"
-        if (score := run_shell_command(f"gcovr -o {coverage_file}", repo_path)) == 0:
+        build_folder = repo_path / HW_BUILD_FOLDER
+        coverage_file = build_folder.resolve() / "report.txt"
+        gcovr_cmd = f"gcovr --root {repo_path.resolve()} --exclude _deps -o {coverage_file}"
+        if (score := run_shell_command(gcovr_cmd, build_folder)) == 0:
             self._comment = "Coverage failed report generation failed."
             return score
         coverage = self.parse_total_coverage(coverage_file)

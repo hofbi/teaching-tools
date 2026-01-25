@@ -50,6 +50,24 @@ class EvaluationJobTest(unittest.TestCase):
         results = unit.run(Path())
         self.assertListEqual([EvaluationResult("over_max_pass", 1, 1)], results)
 
+    def test_dependencies_should_not_be_shared_between_job_instances(self) -> None:
+        """Test that each job instance gets its own dependency instances.
+
+        When dependencies are defined as ClassVar, all job instances share the same
+        dependency objects. This can cause issues when dependencies have mutable state
+        (like _comment) that gets modified during execution.
+        """
+        job1 = ComplexJob()
+        job2 = ComplexJob()
+
+        # The dependencies should be different objects for each job instance
+        self.assertIsNot(
+            job1.dependencies[0],
+            job2.dependencies[0],
+            "Dependencies should not be shared between job instances. "
+            "Each job instance should have its own dependency instances to avoid shared mutable state.",
+        )
+
 
 class JobsTest(TestCase):
     """Test for jobs module."""

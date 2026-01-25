@@ -6,7 +6,7 @@ from pathlib import Path
 
 from sel_tools.code_evaluation.evaluate_code import evaluate_code
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
-from sel_tools.code_evaluation.report import write_evaluation_reports
+from sel_tools.code_evaluation.report import write_evaluation_report_for_student_comments, write_evaluation_reports
 from sel_tools.diff_creation.create_diff import create_diff
 from sel_tools.diff_creation.report import write_diff_reports, write_report_for_inactive_student_repos
 from sel_tools.file_export.export_item import export_items
@@ -16,8 +16,10 @@ from sel_tools.gitlab_api.comment_issue import comment_issues
 from sel_tools.gitlab_api.create_commit import commit_changes, upload_files
 from sel_tools.gitlab_api.create_issue import create_issues
 from sel_tools.gitlab_api.fetch_repo import fetch_repos
+from sel_tools.gitlab_api.instance import create_gitlab_instance
 from sel_tools.utils.args import ArgumentParserFactory
 from sel_tools.utils.comment import Comment
+from sel_tools.utils.student_config import read_student_repo_info_from_config_file
 from sel_tools.utils.task import configure_tasks
 
 
@@ -25,26 +27,43 @@ def edit_create_issues(args: Namespace) -> None:
     """Default action for create_issues subcommand."""
     tasks = get_tasks_from_slides(Path(args.issue_md_slides.name))
     tasks = configure_tasks(tasks, args.due_date, args.homework_number)
-    create_issues(tasks, Path(args.student_repo_info_file.name), args.gitlab_token)
+    create_issues(
+        tasks,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
 
 
 def edit_comment_issue(args: Namespace) -> None:
     """Default action for comment_issue subcommand."""
     comment = Comment.create(args.issue_number, args.message, args.state_event)
-    comment_issues(comment, Path(args.student_repo_info_file.name), args.gitlab_token)
+    comment_issues(
+        comment,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
 
 
 def edit_fetch_code(args: Namespace) -> None:
     """Default action for fetch_code subcommand."""
-    fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
+    fetch_repos(
+        args.workspace,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
 
 
 def edit_evaluate_code(args: Namespace) -> None:
     """Default action for evaluate_code subcommand."""
-    gitlab_projects = fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
+    gitlab_projects = fetch_repos(
+        args.workspace,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
     factory = EvaluationJobFactory.load_factory_from_file(args.job_factory)
     evaluation_reports = evaluate_code(factory, gitlab_projects, args.homework_number, args.evaluation_date)
     write_evaluation_reports(evaluation_reports, f"homework-{args.homework_number}-report")
+    write_evaluation_report_for_student_comments(evaluation_reports, args.workspace)
     diff_reports = create_diff(
         [project.local_path for project in gitlab_projects],
         args.date_last_homework,
@@ -56,12 +75,20 @@ def edit_evaluate_code(args: Namespace) -> None:
 
 def edit_upload_files(args: Namespace) -> None:
     """Default action for upload_files subcommand."""
-    upload_files(args.source_path, Path(args.student_repo_info_file.name), args.gitlab_token)
+    upload_files(
+        args.source_path,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
 
 
 def edit_commit_changes(args: Namespace) -> None:
     """Default action for commit_changes subcommand."""
-    gitlab_projects = fetch_repos(args.workspace, Path(args.student_repo_info_file.name), args.gitlab_token)
+    gitlab_projects = fetch_repos(
+        args.workspace,
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        create_gitlab_instance(args.gitlab_token),
+    )
     student_repos = [project.local_path for project in gitlab_projects]
     export_items(args.source_path, student_repos, args.keep_solutions)
     commit_changes(student_repos, args.message)
@@ -70,9 +97,9 @@ def edit_commit_changes(args: Namespace) -> None:
 def edit_add_users(args: Namespace) -> None:
     """Default action for add_users subcommand."""
     add_users(
-        Path(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
         Path(args.student_group_info_file.name),
-        args.gitlab_token,
+        create_gitlab_instance(args.gitlab_token),
     )
 
 

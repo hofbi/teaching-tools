@@ -1,14 +1,11 @@
 """Create gitlab issues from tasks."""
 
-import json
 from copy import deepcopy
-from pathlib import Path
 
 import gitlab
 from gitlab.v4.objects import Project
 from tqdm import tqdm
 
-from sel_tools.config import GITLAB_SERVER_URL
 from sel_tools.gitlab_api.attachments import (
     replace_file_paths_with_urls,
     upload_attachments,
@@ -31,10 +28,8 @@ Make sure you tag us via `@username`.""",
 )
 
 
-def create_issues(tasks: list[Task], student_repos_file: Path, gitlab_token: str) -> None:
+def create_issues(tasks: list[Task], student_repos: list[dict], gitlab_instance: gitlab.Gitlab) -> None:
     """Create gitlab issues from tasks for all student repos."""
-    gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
-    student_repos = json.loads(student_repos_file.read_text())
     for student_repo in tqdm(student_repos, desc="Creating issues in student repos"):
         student_homework_project = gitlab_instance.projects.get(student_repo["id"])
         for task in tasks:

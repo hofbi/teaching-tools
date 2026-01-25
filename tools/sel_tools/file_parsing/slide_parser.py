@@ -4,12 +4,11 @@ import re
 from pathlib import Path
 
 from sel_tools.config import REPO_DIR
-from sel_tools.file_parsing.config import (
-    DOCUMENTATION_PATTERN,
-    TASK_FOOTER_PATTERN,
-    TASK_HEADER_PATTERN,
-)
 from sel_tools.utils.task import Task
+
+TASK_HEADER_PATTERN = r"## (Task \d+ - [^\n]*)\n"
+TASK_FOOTER_PATTERN = r"---"
+DOCUMENTATION_PATTERN = r"## Documentation\n(.*)"
 
 
 def get_tasks_from_slides(slides_markdown_file: Path) -> list[Task]:

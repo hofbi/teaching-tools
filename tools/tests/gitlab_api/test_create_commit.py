@@ -1,11 +1,10 @@
 """Tests for gitlab repo creation."""
 
-import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
-from sel_tools.config import GIT_MAIN_BRANCH, GITLAB_SERVER_URL
+from sel_tools.config import GIT_MAIN_BRANCH
 from sel_tools.gitlab_api.create_commit import (
     create_gitlab_commit_data_with_all_files_from,
     upload_files,
@@ -79,18 +78,11 @@ class CreateCommitTest(TestCase):
 
     @patch("sel_tools.gitlab_api.create_commit.create_commit")
     def test_create_upload_files(self, mock_create_commit: MagicMock) -> None:
-        student_repos_file = Path("student_repos.json")
-        self.fs.create_file(
-            student_repos_file,
-            contents=json.dumps([{"id": 234, "name": ""}, {"id": 567, "name": ""}]),
-        )
+        student_repos = [{"id": 234, "name": ""}, {"id": 567, "name": ""}]
         source_folder = Path("source")
         self.fs.create_dir(source_folder)
         self.fs.create_file(source_folder / "test.txt")
 
-        with patch("gitlab.Gitlab", MagicMock(return_value=MagicMock())) as mock_gitlab:
-            upload_files(source_folder, student_repos_file, "my_gitlab_token")
-
-            mock_gitlab.assert_called_once_with(GITLAB_SERVER_URL, private_token="my_gitlab_token")
+        upload_files(source_folder, student_repos, MagicMock())
 
         self.assertEqual(2, mock_create_commit.call_count)

@@ -3,11 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
 
-from sel_tools.utils.config import (
-    CMAKE_FILE_ENDING,
-    CMAKELISTS_FILE_NAME,
-    CPP_FILE_ENDINGS,
-)
+CMAKELISTS_FILE_NAME = "CMakeLists.txt"
 
 
 class FileVisitor:
@@ -55,9 +51,9 @@ class FileTree:
 
 def is_cmake(file: Path) -> bool:
     """Return true if the file is a cmake file, otherwise false."""
-    return (file.name == CMAKELISTS_FILE_NAME) or (file.suffix == CMAKE_FILE_ENDING)
+    return (file.name == CMAKELISTS_FILE_NAME) or (file.suffix == ".cmake")
 
 
 def is_cpp(file: Path) -> bool:
     """Return true if the file is a cpp file, otherwise false."""
-    return file.suffix in CPP_FILE_ENDINGS
+    return file.suffix in [".cpp", ".h", ".hpp"]

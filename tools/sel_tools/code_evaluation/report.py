@@ -7,7 +7,7 @@ from typing import Any
 
 from sel_tools.utils.repo import GitlabProject
 
-MD_EVALUATION_REPORT = """# Homework Evaluation Report
+MD_EVALUATION_REPORT = """# {report_header}
 
 [Repo]({repo_url})
 
@@ -31,12 +31,20 @@ The content of this section and below of this sentence can be shared with the st
 
 """
 
-STUDENT_SECTION_TEMPLATE = """Overall score: {score}/{max_score}
+STUDENT_SECTION_TEMPLATE = """### {report_header}
+
+Overall score: {score}/{max_score}
 
 If available, below are a few notes about your code:
 Please note that not all of them are errors.
 
 {notes}
+"""
+
+COMMENTS_FOR_PROJECT_TEMPLATE = """## Comments for Project {project_id}
+
+{student_section}
+---
 """
 
 
@@ -54,9 +62,11 @@ class EvaluationResult:
 class EvaluationReport:
     """Evaluation report."""
 
-    def __init__(self, gitlab_project: GitlabProject, results: list[EvaluationResult]) -> None:
+    def __init__(self, gitlab_project: GitlabProject, homework_number: int, results: list[EvaluationResult]) -> None:
         self.repo_path = gitlab_project.local_path
+        self.project_id = gitlab_project.gitlab_project.id
         self.url = gitlab_project.gitlab_project.web_url
+        self.homework_number = homework_number
         self.score = sum(result.score for result in set(results))
         self.max_score = sum(result.max_score for result in set(results))
         self.results = results
@@ -72,16 +82,29 @@ class EvaluationReport:
 
         return json.dumps(self, cls=JsonEncoder, indent=4)
 
+    def print_report_header(self) -> str:
+        return f"Homework {self.homework_number} Evaluation Report"
+
     def to_md(self) -> str:
         return MD_EVALUATION_REPORT.format(
-            repo_url=self.url, evaluation_json=self.to_json(), student_section=self.print_student_section()
+            report_header=self.print_report_header(),
+            repo_url=self.url,
+            evaluation_json=self.to_json(),
+            student_section=self.print_student_section(),
         )
 
     def print_student_section(self) -> str:
         return STUDENT_SECTION_TEMPLATE.format(
+            report_header=self.print_report_header(),
             score=self.score,
             max_score=self.max_score,
             notes="\n".join(f"- {result.comment}" for result in self.results if result.comment),
+        )
+
+    def print_project_comments(self) -> str:
+        return COMMENTS_FOR_PROJECT_TEMPLATE.format(
+            project_id=self.project_id,
+            student_section=self.print_student_section(),
         )
 
 
@@ -90,5 +113,11 @@ def write_evaluation_reports(reports: list[EvaluationReport], report_base_name: 
     for report in reports:
         report_path = report.repo_path / report_base_name
         report_path.with_suffix(".md").write_text(report.to_md())
-        report_path.with_name(f"{report_base_name}_students.md").write_text(report.print_student_section())
         report_path.with_suffix(".json").write_text(report.to_json())
+
+
+def write_evaluation_report_for_student_comments(reports: list[EvaluationReport], workspace: Path) -> None:
+    """Write a single evaluation report with comments for the individual student projects."""
+    workspace.joinpath("evaluation_report_comments_for_students.md").write_text(
+        "\n".join(report.print_project_comments() for report in reports)
+    )

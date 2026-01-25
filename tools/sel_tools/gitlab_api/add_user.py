@@ -1,23 +1,19 @@
 """Add users to projects."""
 
-import json
 from pathlib import Path
 
 import gitlab
 
-from sel_tools.config import GITLAB_SERVER_URL
 from sel_tools.file_parsing.student_group_parser import (
     Student,
     get_student_groups_from_file,
 )
 
 
-def add_users(student_repos_file: Path, student_group_file: Path, gitlab_token: str) -> None:
+def add_users(student_repos: list[dict], student_group_file: Path, gitlab_instance: gitlab.Gitlab) -> None:
     """Add all students to repositories."""
-    gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     students = get_student_groups_from_file(student_group_file)
     students_found = find_gitlab_users_of_students(gitlab_instance, students)
-    student_repos = json.loads(student_repos_file.read_text())
     repo_from_group_id = {
         int(repo["name"].split("_")[-1]): gitlab_instance.projects.get(repo["id"]) for repo in student_repos
     }

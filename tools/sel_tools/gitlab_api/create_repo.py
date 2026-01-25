@@ -1,14 +1,15 @@
 """Create gitlab repos with contents of source folder."""
 
-import json
 from pathlib import Path
 
 import gitlab
 from gitlab.v4.objects import Project, ProjectProtectedBranch
 from tqdm import tqdm
 
-from sel_tools.config import AVATAR_PATH, GIT_MAIN_BRANCH, GITLAB_SERVER_URL, RUNNER_ID
+from sel_tools.config import GIT_MAIN_BRANCH, REPO_DIR, RUNNER_ID
 from sel_tools.gitlab_api.create_commit import create_commit
+
+AVATAR_PATH = REPO_DIR / "assets" / "repo-avatar.png"
 
 
 def create_repos(
@@ -16,11 +17,9 @@ def create_repos(
     repo_base_name: str,
     group_id: int,
     number_of_repos: int,
-    gitlab_token: str,
+    gitlab_instance: gitlab.Gitlab,
 ) -> tuple[list[dict], str]:
     """Create gitlab repos with contents of source folder."""
-    gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
-
     student_repos = []
     for repo_number in tqdm(range(1, number_of_repos + 1), desc="Creating Student Repos"):
         project = gitlab_instance.projects.create(get_repo_settings(group_id, repo_base_name, repo_number))
@@ -59,15 +58,3 @@ def get_repo_settings(group_id: int, repo_base_name: str, repo_number: int) -> d
         "namespace_id": group_id,
         "jobs_enabled": True,
     }
-
-
-def store_student_repo_info_to_config_file(
-    repo_info_dir: Path, group_name: str, student_repo_infos: list[dict]
-) -> Path:
-    """Store repo infos into config file created from repo info dir and repo_base_name.
-
-    Existing config files will be overwritten.
-    """
-    student_repos_file = repo_info_dir.joinpath(group_name).with_suffix(".json")
-    student_repos_file.write_text(json.dumps(student_repo_infos, sort_keys=True, indent=2))
-    return student_repos_file

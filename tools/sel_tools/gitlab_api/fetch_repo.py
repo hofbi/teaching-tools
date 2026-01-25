@@ -1,6 +1,5 @@
 """Clone or pull repos into a local workspace."""
 
-import json
 import os
 from pathlib import Path
 
@@ -8,16 +7,13 @@ import gitlab
 from gitlab.v4.objects import Project
 from tqdm import tqdm
 
-from sel_tools.config import GITLAB_SERVER_URL, get_branch_from_student_config
 from sel_tools.utils.repo import GitlabProject, GitRepo
+from sel_tools.utils.student_config import get_branch_from_student_config
 
 
-def fetch_repos(workspace: Path, student_repos_file: Path, gitlab_token: str) -> list[GitlabProject]:
+def fetch_repos(workspace: Path, student_repos: list[dict], gitlab_instance: gitlab.Gitlab) -> list[GitlabProject]:
     """Fetch the student repositories into the workspace."""
     workspace.mkdir(parents=True, exist_ok=True)
-
-    student_repos = json.loads(student_repos_file.read_text())
-    gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
     return [
         fetch_repo(
             GitRepo(workspace / student_repo["name"], get_branch_from_student_config(student_repo)),
@@ -29,7 +25,7 @@ def fetch_repos(workspace: Path, student_repos_file: Path, gitlab_token: str) ->
 
 def fetch_repo(repo: GitRepo, gitlab_project: Project) -> GitlabProject:
     """Clone or pull student repo."""
-    if os.environ.get("SEL_CI_MODE"):
+    if os.environ.get("CI"):  # This variable is set by the CI pipeline
         repo.fetch_from(gitlab_project.http_url_to_repo)
     elif repo.is_repo():
         repo.pull()

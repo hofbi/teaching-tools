@@ -1,6 +1,5 @@
 """Create Gitlab commit."""
 
-import json
 from functools import lru_cache
 from pathlib import Path
 
@@ -9,8 +8,8 @@ import gitlab
 from gitlab.v4.objects import Project
 from tqdm import tqdm
 
-from sel_tools.config import GITLAB_SERVER_URL, get_branch_from_student_config
 from sel_tools.utils.files import FileTree, FileVisitor
+from sel_tools.utils.student_config import get_branch_from_student_config
 
 
 def commit_changes(repo_paths: list[Path], message: str) -> None:
@@ -22,13 +21,11 @@ def commit_changes(repo_paths: list[Path], message: str) -> None:
         repo.git.push()
 
 
-def upload_files(source_folder: Path, student_repos_file: Path, gitlab_token: str) -> None:
+def upload_files(source_folder: Path, student_repos: list[dict], gitlab_instance: gitlab.Gitlab) -> None:
     """Upload new files from source folder via commit to the repository.
 
     For doing more than just adding new files refer to `commit_changes`
     """
-    gitlab_instance = gitlab.Gitlab(GITLAB_SERVER_URL, private_token=gitlab_token)
-    student_repos = json.loads(student_repos_file.read_text())
     for student_repo in tqdm(student_repos, desc="Uploading files"):
         student_homework_project = gitlab_instance.projects.get(student_repo["id"])
         create_commit(

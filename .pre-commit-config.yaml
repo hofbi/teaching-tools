@@ -78,14 +78,13 @@ repos:
           - mdformat-config
           - mdformat-toc
   - repo: https://github.com/tcort/markdown-link-check
-    # Stick to 3.11.2 until https://github.com/tcort/markdown-link-check/issues/457 is fixed
     rev: v3.14.2
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]
         exclude: ^slides/homework
   - repo: https://github.com/google/yamlfmt
-    rev: v0.20.0
+    rev: v0.21.0
     hooks:
       - id: yamlfmt
         exclude: |

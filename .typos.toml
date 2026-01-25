@@ -1,3 +1,2 @@
 [default.extend-words]
-# German Adresse
-Adresse = "Adresse"
+Adresse = "Adresse" # German Adresse

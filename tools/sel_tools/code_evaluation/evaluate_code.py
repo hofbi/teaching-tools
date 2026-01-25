@@ -22,7 +22,7 @@ def evaluate_code(
     """Evaluate code for given repositories and homework number."""
     evaluation_jobs = eval_job_factory.create(gitlab_projects, homework_number)
     return [
-        CodeEvaluator(evaluation_jobs, gitlab_project).evaluate(evaluation_date)
+        CodeEvaluator(evaluation_jobs, gitlab_project, homework_number).evaluate(evaluation_date)
         for gitlab_project in tqdm(gitlab_projects, desc=f"Evaluating Homework {homework_number}")
     ]
 
@@ -30,10 +30,11 @@ def evaluate_code(
 class CodeEvaluator:
     """Code evaluator class."""
 
-    def __init__(self, jobs: list[EvaluationJob], gitlab_project: GitlabProject) -> None:
+    def __init__(self, jobs: list[EvaluationJob], gitlab_project: GitlabProject, homework_number: int) -> None:
         # Perform a deepcopy to avoid artifact of old job runs
         self.__jobs = copy.deepcopy(jobs)
         self.__gitlab_project = gitlab_project
+        self.__homework_number = homework_number
         self.__repo = git.Repo(gitlab_project.local_path)
 
     def evaluate(self, evaluation_date: date | None) -> EvaluationReport:
@@ -42,6 +43,7 @@ class CodeEvaluator:
             self.__checkout_last_commit_before_eval_date(evaluation_date)
         return EvaluationReport(
             self.__gitlab_project,
+            self.__homework_number,
             list(itertools.chain(*[job.run(self.__gitlab_project.local_path) for job in self.__jobs])),
         )
 
