@@ -17,3 +17,11 @@ include::chapter/materials.adoc[]
 include::chapter/documentation.adoc[]
 
 :leveloffset: -1
+
+== Literature
+
+:leveloffset: +2
+
+include::literature/swe_book.adoc[]
+
+:leveloffset: -2

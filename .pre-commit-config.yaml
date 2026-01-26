@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: keep-sorted
   - repo: https://github.com/hofbi/dev-tools
-    rev: 1.0.0
+    rev: 1.2.0
     hooks:
       - id: check-snake-case
       - id: check-no-dashes
@@ -94,7 +94,7 @@ repos:
             .clang-format
           )
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.37.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         args: [--strict]
@@ -125,7 +125,7 @@ repos:
         additional_dependencies: [cmakelang]
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.10
+    rev: v0.14.14
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -168,6 +168,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.41.0
+    rev: v1.42.1
     hooks:
       - id: typos
