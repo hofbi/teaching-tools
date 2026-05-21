@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from sel_tools.utils.comment import ProjectCommentParser
 from sel_tools.utils.repo import GitlabProject
 
 MD_EVALUATION_REPORT = """# {report_header}
@@ -41,11 +42,14 @@ Please note that not all of them are errors.
 {notes}
 """
 
-COMMENTS_FOR_PROJECT_TEMPLATE = """## Comments for Project {project_id}
+COMMENTS_FOR_PROJECT_TEMPLATE = (
+    ProjectCommentParser.PROJECT_COMMENT_IDENTIFIER_PREFIX
+    + """ {project_id}
 
 {student_section}
 ---
 """
+)
 
 
 @dataclass(frozen=True)

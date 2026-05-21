@@ -1,7 +1,11 @@
 extends: default
 page:
-  margin: [3cm, 2cm, 2cm, 2cm]  # top right bottom left
-header:
+  margin:
+    - 3cm
+    - 2cm
+    - 2cm
+    - 2cm
+header: # top right bottom left
   height: 3cm
   recto:
     right:

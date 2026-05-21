@@ -42,11 +42,9 @@ class ArgumentParserTest(TestCase):
 
     def test_common_missing_config_file(self) -> None:
         for actions in ArgumentParserTest.SUB_COMMANDS:
-            with self.subTest(actions):
-                stderr = io.StringIO()
-                with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
-                    parse_arguments(f"foo.py {actions} -t 123 missing_config_file.json".split(" "))
-                self.assertTrue("can't open 'missing_config_file.json'" in stderr.getvalue())
+            io.StringIO()
+            with self.assertRaises(FileNotFoundError):
+                parse_arguments(f"foo.py {actions} -t 123 missing_config_file.json".split(" "))
 
     def test_common_missing_token(self) -> None:
         for actions in ArgumentParserTest.SUB_COMMANDS:
@@ -71,9 +69,9 @@ class CreateIssuesArgumentParserTest(TestCase):
             ["foo.py", "create_issues", "-t", "123", "config_file.json", "-i", "issue_slide.md", "-n", "1"]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
-        self.assertEqual(args.issue_md_slides.name, "issue_slide.md")
+        self.assertEqual(args.issue_md_slides, Path("issue_slide.md"))
         self.assertEqual(args.homework_number, 1)
         self.assertEqual(args.due_date, None)
 
@@ -96,17 +94,15 @@ class CreateIssuesArgumentParserTest(TestCase):
             ]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "12")
-        self.assertEqual(args.issue_md_slides.name, "issue_slide.md")
+        self.assertEqual(args.issue_md_slides, Path("issue_slide.md"))
         self.assertEqual(args.homework_number, 1)
         self.assertEqual(args.due_date, datetime.date.fromisoformat("2021-01-28"))
 
-    def test_create_issues_out_of_allowed_homework_number_range(self) -> None:
-        stderr = io.StringIO()
-        with self.assertRaises(SystemExit), contextlib.redirect_stderr(stderr):
+    def test_create_issues_from_not_existing_file(self) -> None:
+        with self.assertRaises(FileNotFoundError):
             parse_arguments(["foo.py", "create_issues", "-t", "123", "config_file.json", "-i", "not_there.md"])
-        self.assertIn("can't open 'not_there.md'", stderr.getvalue())
 
 
 class CommentIssuesArgumentParserTest(TestCase):
@@ -121,7 +117,7 @@ class CommentIssuesArgumentParserTest(TestCase):
             ["foo.py", "comment_issue", "-t", "123", "config_file.json", "-i", "42", "-m", "message"]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.issue_number, 42)
         self.assertEqual(args.message, "message")
@@ -132,7 +128,7 @@ class CommentIssuesArgumentParserTest(TestCase):
             ["foo.py", "comment_issue", "-t", "123", "config_file.json", "-i", "42", "-m", "message", "-s", "close"]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.issue_number, 42)
         self.assertEqual(args.message, "message")
@@ -143,7 +139,7 @@ class CommentIssuesArgumentParserTest(TestCase):
             ["foo.py", "comment_issue", "-t", "123", "config_file.json", "-i", "42", "-m", "message", "-s", "reopen"]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.issue_number, 42)
         self.assertEqual(args.message, "message")
@@ -161,14 +157,14 @@ class FetchCodeArgumentParserTest(TestCase):
     def test_fetch_code_minimal_valid_parameters(self) -> None:
         args = parse_arguments(["foo.py", "fetch_code", "-t", "123", "config_file.json"])
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.workspace, REPO_DIR / "workspace")
 
     def test_fetch_code_max_valid_parameters(self) -> None:
         args = parse_arguments(["foo.py", "fetch_code", "-t", "123", "config_file.json", "-w", "workspace"])
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.workspace, Path("workspace"))
 
@@ -184,7 +180,7 @@ class EvaluateCodeArgumentParserTest(TestCase):
     def test_evaluate_code_minimal_valid_parameters(self) -> None:
         args = parse_arguments(["foo.py", "evaluate_code", "-t", "123", "-n", "1", "config_file.json"])
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.workspace, REPO_DIR / "workspace")
         self.assertEqual(1, args.homework_number)
@@ -214,7 +210,7 @@ class EvaluateCodeArgumentParserTest(TestCase):
             ]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.workspace, Path("workspace"))
         self.assertEqual(args.homework_number, 2)
@@ -232,7 +228,7 @@ class UploadFilesArgumentParserTest(TestCase):
 
     def test_upload_files_minimal_valid_parameters(self) -> None:
         args = parse_arguments(["foo.py", "upload_files", "-t", "123", "-s", "source", "config_file.json"])
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.source_path, Path("source"))
 
@@ -251,7 +247,7 @@ class CommitChangesArgumentParserTest(TestCase):
             ["foo.py", "commit_changes", "-t", "123", "-s", "source", "-m", "message", "config_file.json"]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.source_path, Path("source"))
         self.assertEqual(args.message, "message")
@@ -276,7 +272,7 @@ class CommitChangesArgumentParserTest(TestCase):
             ]
         )
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
         self.assertEqual(args.gitlab_token, "123")
         self.assertEqual(args.source_path, Path("source"))
         self.assertEqual(args.message, "message")
@@ -295,6 +291,6 @@ class AddUsersArgumentParserTest(TestCase):
     def test_add_users_minimal_valid_parameters(self) -> None:
         args = parse_arguments(["foo.py", "add_users", "-t", "123", "config_file.json", "student_group.csv"])
 
-        self.assertEqual(args.student_repo_info_file.file_path, "config_file.json")
-        self.assertEqual(args.student_group_info_file.file_path, "student_group.csv")
+        self.assertEqual(args.student_repo_info_file, Path("config_file.json"))
+        self.assertEqual(args.student_group_info_file, Path("student_group.csv"))
         self.assertEqual(args.gitlab_token, "123")

@@ -7,13 +7,13 @@ SLIDE_FILES_LIGHT = $(call file_finder,-name slide-deck-light.md)
 
 .PHONY: test
 test:
-	pytest tools
+	uv run pytest
 
 coverage:
-	pytest --cov=tools --cov-config=tools/.coveragerc tools
+	uv run pytest --cov=tools --cov-config=tools/.coveragerc tools
 
 coverage_reports:
-	pytest --cov=tools --cov-config=tools/.coveragerc --cov-report=xml --cov-report=html tools
+	uv run pytest --cov=tools --cov-config=tools/.coveragerc --cov-report=xml --cov-report=html tools
 
 .PHONY: slides
 slides: light_theme_slides

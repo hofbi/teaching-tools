@@ -1,4 +1,5 @@
-default_stages: [pre-commit]
+default_stages:
+  - pre-commit
 
 ci:
   autoupdate_commit_msg: 'chore(deps): pre-commit.ci autoupdate'
@@ -36,6 +37,7 @@ repos:
         exclude: |
           (?x)^(
             .gitlab-ci.yml|
+            .clang-tidy|
             .clang-format
           )
       - id: debug-statements
@@ -51,38 +53,47 @@ repos:
             tools/tests/code_evaluation/jobs/modules/|
             tools/tests/helper.py
           )
-      - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/google/keep-sorted
     rev: v0.8.0
     hooks:
       - id: keep-sorted
   - repo: https://github.com/hofbi/dev-tools
-    rev: 1.7.0
+    rev: 1.11.0
     hooks:
+      - id: check-readme-md-consistency
       - id: check-snake-case
       - id: check-no-dashes
         exclude: ^slides/
       - id: check-number-of-lines-count
       - id: check-shellscript-set-options
       - id: check-non-existing-and-duplicate-excludes
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 1.0.0
+      - id: check-max-one-sentence-per-line
+        exclude: |
+          (?x)^(
+            slides
+          )
+  - repo: https://github.com/asottile/blacken-docs
+    rev: 1.20.0
     hooks:
-      - id: mdformat
+      - id: blacken-docs
+        args:
+          - --line-length=120
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.1.94
+    hooks:
+      - id: rumdl-fmt
         exclude: ^slides/
+        language: python # ensures that Renovate can update additional_dependencies
         additional_dependencies:
-          - mdformat-gfm
-          - mdformat-black
-          - mdformat-shfmt
-          - mdformat-config
-          - mdformat-toc
-  - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.14.2
-    hooks:
-      - id: markdown-link-check
-        args: ["--quiet", "--config", ".md-link-config.json"]
-        exclude: ^slides/homework
+          - shfmt-py==3.12.0.2
+          - clang-format==22.1.5
+      - id: rumdl
+        exclude: ^slides/
+        language: python # ensures that Renovate can update additional_dependencies
+        additional_dependencies:
+          - shuck-cli==0.0.40
+          - clang-format==22.1.5
   - repo: https://github.com/google/yamlfmt
     rev: v0.21.0
     hooks:
@@ -97,7 +108,8 @@ repos:
     rev: v1.38.0
     hooks:
       - id: yamllint
-        args: [--strict]
+        args:
+          - --strict
         exclude: |
           (?x)^(
             .clang-format|
@@ -109,7 +121,7 @@ repos:
     hooks:
       - id: toml-sort-fix
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v22.1.2
+    rev: v22.1.5
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
@@ -120,12 +132,14 @@ repos:
     rev: v0.6.13
     hooks:
       - id: cmake-format
-        additional_dependencies: [cmakelang]
+        additional_dependencies:
+          - cmakelang
       - id: cmake-lint
-        additional_dependencies: [cmakelang]
+        additional_dependencies:
+          - cmakelang
         exclude: cmake/.*
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.9
+    rev: v0.15.12
     hooks:
       - id: ruff-format
       - id: ruff-check
@@ -135,13 +149,14 @@ repos:
       - id: flake8
         additional_dependencies:
           - flake8-pyproject
-          - flake8-bugbear  # Ruff does not implement all of bugbear
-          - flake8-requirements  # Not yet implemented https://github.com/astral-sh/ruff/issues/4100
+          - flake8-bugbear # Ruff does not implement all of bugbear
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.0
+    rev: v2.1.0
     hooks:
       - id: mypy
-        args: [--python-version, '3.12']
+        args:
+          - --python-version
+          - '3.12'
   - repo: https://github.com/PyCQA/pylint
     rev: v4.0.5
     hooks:
@@ -150,24 +165,28 @@ repos:
     rev: v3.21.2
     hooks:
       - id: pyupgrade
-        args: [--py312-plus, --keep-runtime-typing]
+        args:
+          - --py312-plus
+          - --keep-runtime-typing
   - repo: https://github.com/MarcoGorelli/auto-walrus
     rev: 0.4.1
     hooks:
       - id: auto-walrus
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.13.0-1
+    rev: v3.13.1-1
     hooks:
       - id: shfmt
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1
+  - repo: https://github.com/ewhauser/shuck
+    rev: v0.0.40
     hooks:
-      - id: shellcheck
+      - id: shuck
+        args:
+          - "--fix"
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.1
+    rev: 0.37.2
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1.45.0
+    rev: v1.46.1
     hooks:
       - id: typos

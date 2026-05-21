@@ -1,7 +1,7 @@
 """Argparse helper module."""
 
 import copy
-from argparse import Action, ArgumentDefaultsHelpFormatter, ArgumentParser, FileType
+from argparse import Action, ArgumentDefaultsHelpFormatter, ArgumentParser
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -83,7 +83,7 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
     def add_student_repo_info_file(self) -> None:
         self.__parser.add_argument(
             "student_repo_info_file",
-            type=FileType("r"),
+            type=file_path,
             help="File which contains the student repositories info (name, id)",
         )
 
@@ -109,7 +109,7 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
         self.__parser.add_argument(
             "-i",
             "--issue-md-slides",
-            type=FileType("r"),
+            type=file_path,
             required=True,
             help="Path to the markdown slides used for creating the issues",
         )
@@ -245,6 +245,6 @@ class ArgumentParserFactory:  # pylint: disable=too-many-public-methods
     def add_student_group_info_file(self) -> None:
         self.__parser.add_argument(
             "student_group_info_file",
-            type=FileType("r"),
+            type=file_path,
             help="File which contains the student groups info",
         )

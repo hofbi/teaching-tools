@@ -1,7 +1,5 @@
 """Comment to gitlab issues."""
 
-from copy import deepcopy
-
 import gitlab
 from gitlab.v4.objects import Project
 from tqdm import tqdm
@@ -10,14 +8,20 @@ from sel_tools.gitlab_api.attachments import (
     replace_file_paths_with_urls,
     upload_attachments,
 )
-from sel_tools.utils.comment import Comment
+from sel_tools.utils.comment import Comment, ProjectCommentParser
 
 
 def comment_issues(comment: Comment, student_repos: list[dict], gitlab_instance: gitlab.Gitlab) -> None:
     """Comment to all issues from comment to student repos."""
-    for student_repo in tqdm(student_repos, desc="Commenting to issues"):
+    project_comment_parser = ProjectCommentParser(comment, [student_repo["id"] for student_repo in student_repos])
+    for student_repo in tqdm(
+        student_repos,
+        desc="Commenting same message to all issues"
+        if project_comment_parser.is_same_comment_for_all_projects
+        else "Commenting specific message to individual projects",
+    ):
         student_homework_project = gitlab_instance.projects.get(student_repo["id"])
-        create_comment(deepcopy(comment), student_homework_project)
+        create_comment(project_comment_parser.get_comment_for_project(student_repo["id"]), student_homework_project)
 
 
 def create_comment(comment: Comment, gitlab_project: Project) -> None:

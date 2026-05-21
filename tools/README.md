@@ -7,14 +7,14 @@ Tools to automatically run repeating processes.
 - [File Export](#file-export)
 - [GitLab Project Creation](#gitlab-project-creation)
 - [Working with the GitLab Projects](#working-with-the-gitlab-projects)
-  - [GitLab issue creation from homework slides](#gitlab-issue-creation-from-homework-slides)
-  - [Comment Gitlab issues and change their state](#comment-gitlab-issues-and-change-their-state)
-  - [Fetch the student code](#fetch-the-student-code)
-  - [Evaluate the student code](#evaluate-the-student-code)
+  - [GitLab Issue Creation from Homework Slides](#gitlab-issue-creation-from-homework-slides)
+  - [Comment Gitlab Issues and Change Their State](#comment-gitlab-issues-and-change-their-state)
+  - [Fetch the Student Code](#fetch-the-student-code)
+  - [Evaluate the Student Code](#evaluate-the-student-code)
     - [Define Evaluation Jobs](#define-evaluation-jobs)
-  - [Upload new files to the student code](#upload-new-files-to-the-student-code)
-  - [Commit changes to the student code](#commit-changes-to-the-student-code)
-  - [Add students to their respective repositories](#add-students-to-their-respective-repositories)
+  - [Upload New Files to the Student Code](#upload-new-files-to-the-student-code)
+  - [Commit Changes to the Student Code](#commit-changes-to-the-student-code)
+  - [Add Students to Their Respective Repositories](#add-students-to-their-respective-repositories)
 
 <!-- mdformat-toc end -->
 
@@ -22,7 +22,8 @@ Tools to automatically run repeating processes.
 
 Export files for student homework assignments and lecture templates.
 This removes all solution code at stores the output in a destination directory.
-You should have a file `.exportignore` (as defined by variable `EXPORT_IGNORE` in [sel_tools/file_export/config.py](sel_tools/file_export/config.py)) in your `source` folder, telling the function which file patterns to ignore.
+
+You should have a file `.exportignore` (as defined by variable `EXPORT_IGNORE` in [`sel_tools/file_export/config.py`](sel_tools/file_export/config.py)) in your `source` folder, telling the function which file patterns to ignore.
 Lines of `.exportignore` are forwarded to Python's `pathlib.Path.glob`, so the usual suspects such as `folder/*.cpp`, `**/*.cpp`, `folder/`, and `folder/specific_file.txt` work, similar to `.gitignore`.
 Paths in `.exportignore`'s are interpreted relative to its location.
 
@@ -30,88 +31,116 @@ Paths in `.exportignore`'s are interpreted relative to its location.
 python3 export_files.py source --output-dir destination
 ```
 
-Per default, file export removes solutions inside delimiters defined in [sel_tools/file_export/config.py](sel_tools/file_export/config.py).
+Per default, file export removes solutions inside delimiters defined in [`sel_tools/file_export/config.py`](sel_tools/file_export/config.py).
 You can disable removal of solutions by setting flag `-k` or `--keep-solutions` in the command above.
 
 ## GitLab Project Creation
 
-Script [create_gitlab_projects.py](create_gitlab_projects.py) creates `-n`/`--homework-number` (default 1) repositories with contents from an export folder `-s`/`--source-path`, defaulting to `repository/export/homework` (same default location as for the [export files tool](../README.md#export-files) creating this bundle).
-The script also creates a config file in folder `-r` or `--repo-info-dir` (default `config`) to contain the names and IDs of the newly created repos.
-The json file's stem in that folder equals the `-g`/`--group-id`.
-Existing files with identical file names will be overwritten.
-Call
+Script [`create_gitlab_projects.py`](create_gitlab_projects.py) creates `-n`/`--homework-number` (default 1) repositories with contents from an export folder `-s`/`--source-path`, defaulting to `//export/homework` (same default location as for the [export files tool](../README.md#export-files) creating this bundle).
 
-```shell script
+The script also creates a config file in folder `-r` or `--repo-info-dir` (default `//config`) to contain the names and IDs of the newly created repos.
+The json file's stem in that folder is named based on the `-g`/`--group-id` name.
+Existing files with identical file names will be overwritten.
+
+```shell
 python3 create_gitlab_projects.py repo_base_name -g group_id --gitlab-token your_token
 ```
 
-to create one repo under the GitLab group with ID `group_id` using your [private access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
+This will create `-n`/`--homework-number` repos under the GitLab group with ID `group_id`, create an initial commit with the source path content, configure settings, and [create a first issue](#gitlab-issue-creation-from-homework-slides) in each project as the Homework Evaluation Dashboard.
+
+Repo creation and configuration requires a [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 Make sure that the token has `api` scope.
 If your token cannot access the group and doesn't have project creation rights in the group, this script doesn't work.
 
 ## Working with the GitLab Projects
 
-```shell script
+```shell
 python3 gitlab_projects.py <action>
 ```
 
 See the sections below to get more information about the individual actions.
-All actions require your private access token as defined [above](#gitlab-project-creation) and the student's repositories json config file produced by [gitlab project creation](#gitlab-project-creation).
+All actions require your personal access token as defined [above](#gitlab-project-creation) and the student's repositories json config file produced by [gitlab project creation](#gitlab-project-creation).
 Point to this file always with the first positional argument of the command.
 
-### GitLab issue creation from homework slides
+### GitLab Issue Creation from Homework Slides
 
 Create gitlab issues in students' repositories from the homework slides.
 Call
 
-```shell script
+```shell
 python3 gitlab_projects.py create_issues ../config/demo.json --issue-md-slides ../slides/homework/example/slide-deck.md --homework-number 1 --gitlab-token your_token
 ```
 
 to create issues for the first homework.
+
 The markdown slides can contain attachments in format `[attachment text](/path/to/file/relative/to/repo/root)` with the leading `/` as indicator for the link.
-You can add optional parameter `-d`/`--due-date` to assign a due date to the issues created from one homework.
+You can add the optional parameter `-d`/`--due-date` to assign a due date to each issue created from one homework slide deck.
 It consumes a date in format `YEAR MONTH DAY`, e.g. `-d 2020 1 31`: you don't need to look out for leading zeros.
 
-### Comment Gitlab issues and change their state
+### Comment Gitlab Issues and Change Their State
 
 Comment and optionally close/reopen gitlab issues in the students' repositories.
 Call
 
-```shell script
+```shell
 python3 gitlab_projects.py comment_issue ../config/demo.json --issue-number 42 --message "comment text" --gitlab-token your_token
 ```
 
-to add a comment with _comment text_ to issue 42.
-You can also use `-m`/`--message` with a path to a markdown file containing the issue comment in the markdown file.
-Similar to the issue creation the message or markdown file can contain attachments with links to local files relative to the root project.
-Call with `-s`/`--state-event` in `{close, reopen}`.
+to add a comment with _comment text_ to issue 42. Call with `-s`/`--state-event` in `{close, reopen}`.
 
-### Fetch the student code
+You can also use `-m`/`--message` with a path to a markdown file for longer comments.
+The entire content of this file will be posted as a comment to every project's issue with `--issue-number`.
+Similar to the [issue creation](#gitlab-issue-creation-from-homework-slides), the message or markdown file can contain attachments with links to local files relative to the root project.
+
+For posting an individual message per project, the markdown file passed with `-m`/`--message` requires the following format:
+
+```markdown
+## Comments for Project 123
+
+my message for 123
+
+---
+
+## Comments for Project 456
+
+my message for 456
+
+---
+```
+
+`## Comments for Project` followed by the project ID `123` defines the start, `---` the end of the message.
+`my message for 123` is what will be posted as comment to project 123.
+
+### Fetch the Student Code
 
 Clone or pull all student repositories in the config file into workspace `-w`/`--workspace`.
 
-```shell script
+```shell
 python3 gitlab_projects.py fetch_code ../config/demo.json --gitlab-token your_token
 ```
 
-### Evaluate the student code
+### Evaluate the Student Code
 
-Clone or pull all student repositories in the config file into workspace `-w`/`--workspace`.
+[Clone or pull](#fetch-the-student-code) all student repositories in the config file into workspace `-w`/`--workspace`.
+
 Provide the path to your `EvaluationJobFactory` python module with `-j`/`--job-factory`.
 See how to [define evaluation jobs](#define-evaluation-jobs).
 By default the factory defined in [`sel.py`](sel_tools/code_evaluation/jobs/sel.py) is used.
+
 Provide a `-d`/`--date-last-homework` to additionally create a `git diff` patch file that shows the diff to the last homework.
 By default where no date is provided, no diff is created.
+
 Provide a `-e`/`--evaluation-date` to specify the evaluation deadline.
 Only commits before that date will be considered for the evaluation.
 By default where no date is provided, the latest commit will be used for the evaluation.
 The date format is `YEAR MONTH DAY`, e.g. `-d 2020 1 31`
-Call
 
-```shell script
+```shell
 python3 gitlab_projects.py evaluate_code ../config/demo.json --homework-number 1 --gitlab-token your_token
 ```
+
+This will create evaluation reports in json and markdown format with results and comments [defined by the evaluation jobs](#define-evaluation-jobs), patch files for every commit since the last homework, a csv overview with all commit hashes and commit messages, and a single evaluation to be shared with the students.
+The student evaluation report follows [the format to be automatically posted as comment to the Homework Evaluation Dashboard issue](#comment-gitlab-issues-and-change-their-state).
 
 #### Define Evaluation Jobs
 
@@ -120,31 +149,31 @@ See [`sel.py`](sel_tools/code_evaluation/jobs/sel.py) as an example to create yo
 1. Create a python file with a class that inherits from `EvaluationJobFactory`.
 1. Implement the `EvaluationJobFactory.create` method to return the evaluation jobs you want to use for the respective homework number.
 
-### Upload new files to the student code
+### Upload New Files to the Student Code
 
 Upload new files to the student code via a commit without cloning the repositories.
 This command is only for adding new files.
 For any other more complex modification, see the [commit changes module](#commit-changes-to-the-student-code).
-Call
 
-```shell script
+```shell
 python3 gitlab_projects.py upload_files ../config/demo.json --source-path your_source_repo_with_changes --gitlab-token your_token
 ```
 
-### Commit changes to the student code
+### Commit Changes to the Student Code
 
 Commit changes to the student code by fetching the repos, copying the content from a source repo, and committing the changes.
 The changes are copied using the [file export module](#file-export).
+
 Clone or pull all student repositories in the config file into workspace `-w`/`--workspace`.
 
-```shell script
+```shell
 python3 gitlab_projects.py commit_changes ../config/demo.json --source-path your_source_repo_with_changes --gitlab-token your_token --message "Commit message"
 ```
 
-### Add students to their respective repositories
+### Add Students to Their Respective Repositories
 
 Add students to their respective repositories by extracting the student groups from a csv file exported from the Moodle survey.
 
-```shell script
+```shell
 python3 gitlab_projects.py add_users ../config/demo.json student_group.csv --gitlab-token your_token
 ```

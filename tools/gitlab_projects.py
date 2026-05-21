@@ -2,7 +2,6 @@
 
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, Namespace
-from pathlib import Path
 
 from sel_tools.code_evaluation.evaluate_code import evaluate_code
 from sel_tools.code_evaluation.jobs.factory import EvaluationJobFactory
@@ -25,11 +24,11 @@ from sel_tools.utils.task import configure_tasks
 
 def edit_create_issues(args: Namespace) -> None:
     """Default action for create_issues subcommand."""
-    tasks = get_tasks_from_slides(Path(args.issue_md_slides.name))
+    tasks = get_tasks_from_slides(args.issue_md_slides)
     tasks = configure_tasks(tasks, args.due_date, args.homework_number)
     create_issues(
         tasks,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
 
@@ -39,7 +38,7 @@ def edit_comment_issue(args: Namespace) -> None:
     comment = Comment.create(args.issue_number, args.message, args.state_event)
     comment_issues(
         comment,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
 
@@ -48,7 +47,7 @@ def edit_fetch_code(args: Namespace) -> None:
     """Default action for fetch_code subcommand."""
     fetch_repos(
         args.workspace,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
 
@@ -57,7 +56,7 @@ def edit_evaluate_code(args: Namespace) -> None:
     """Default action for evaluate_code subcommand."""
     gitlab_projects = fetch_repos(
         args.workspace,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
     factory = EvaluationJobFactory.load_factory_from_file(args.job_factory)
@@ -77,7 +76,7 @@ def edit_upload_files(args: Namespace) -> None:
     """Default action for upload_files subcommand."""
     upload_files(
         args.source_path,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
 
@@ -86,7 +85,7 @@ def edit_commit_changes(args: Namespace) -> None:
     """Default action for commit_changes subcommand."""
     gitlab_projects = fetch_repos(
         args.workspace,
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
         create_gitlab_instance(args.gitlab_token),
     )
     student_repos = [project.local_path for project in gitlab_projects]
@@ -97,8 +96,8 @@ def edit_commit_changes(args: Namespace) -> None:
 def edit_add_users(args: Namespace) -> None:
     """Default action for add_users subcommand."""
     add_users(
-        read_student_repo_info_from_config_file(args.student_repo_info_file.name),
-        Path(args.student_group_info_file.name),
+        read_student_repo_info_from_config_file(args.student_repo_info_file),
+        args.student_group_info_file,
         create_gitlab_instance(args.gitlab_token),
     )
 
@@ -132,7 +131,7 @@ def parse_arguments(arguments: list[str]) -> Namespace:
     # Comment issues parser
     comment_issue_factory = factory.copy()
     comment_issue_factory.add_issue_number()
-    comment_issue_factory.add_message("Message or path to a .md file")
+    comment_issue_factory.add_message("Message as string or path to an `.md` file with the message")
     comment_issue_factory.add_state_event()
     parser_comment = subparsers.add_parser(
         "comment_issue",

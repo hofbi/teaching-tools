@@ -12,7 +12,7 @@ from sel_tools.code_evaluation.jobs.common import (
 )
 from sel_tools.config import REPO_DIR
 from sel_tools.file_export.copy_item import copy_item
-from sel_tools.utils.files import CMAKELISTS_FILE_NAME, FileTree, FileVisitor
+from sel_tools.utils.files import CMAKELISTS_FILE_NAME, FileTree, FileVisitor, is_cpp
 
 CMAKE_MODULE_PATH = REPO_DIR / "cmake"
 HW_BUILD_FOLDER = "hw_build"
@@ -70,6 +70,13 @@ class ClangFormatTestJob(EvaluationJob):
     name = "Clang Format Check"
 
     def _run(self, repo_path: Path) -> int:
+        clang_format_file = repo_path / ".clang-format"
+        if not clang_format_file.exists():
+            self._comment = (
+                "`.clang-format` not found: Add a `.clang-format` file so clang-format can apply the project style. "
+                "Common pitfall: naming the file `clang-format` without the leading dot."
+            )
+            return 0
         score = run_shell_command(
             rf"find . -type f -regex '.*\.\(cpp\|hpp\|cu\|c\|cc\|h\)' -not -path '*/{HW_BUILD_FOLDER}/*' "
             "| xargs clang-format --style=file -i --dry-run --Werror",
@@ -119,6 +126,13 @@ class ClangTidyTestJob(EvaluationJob):
     name = "Clang Tidy Check"
 
     def _run(self, repo_path: Path) -> int:
+        clang_tidy_file = repo_path / ".clang-tidy"
+        if not clang_tidy_file.exists():
+            self._comment = (
+                "`.clang-tidy` not found: Add a `.clang-tidy` file so clang-tidy can load checks. "
+                "Common pitfall: naming the file `clang-tidy` without the leading dot."
+            )
+            return 0
         hw_cmake_module_path = repo_path / "hw_cmake"
         hw_cmake_module_path.mkdir(parents=True, exist_ok=True)
         copy_item(CMAKE_MODULE_PATH / "ClangTidy.cmake", hw_cmake_module_path / "ClangTidy.cmake")
@@ -202,6 +216,44 @@ class CleanRepoJob(EvaluationJob):
             self._comment = (
                 "We found too many third party source files committed to the repository. "
                 "Check if you really need them or if there is another way to include them."
+            )
+            return 0
+        return 1
+
+
+class RelativeIncludeJob(EvaluationJob):
+    """Job for checking that no relative includes are used."""
+
+    name = "Relative Include Check"
+
+    class RelativeIncludeVisitor(FileVisitor):
+        """Detect relative #include directives using '..' path components."""
+
+        RELATIVE_INCLUDE_PATTERN = re.compile(r'#include\s+["<]\.\.?/')
+
+        def __init__(self) -> None:
+            self.__offending_files: list[Path] = []
+
+        @property
+        def offending_files(self) -> list[Path]:
+            return self.__offending_files
+
+        def visit_file(self, file: Path) -> None:
+            if not is_cpp(file):
+                return
+            content = file.read_text()
+            if self.RELATIVE_INCLUDE_PATTERN.search(content):
+                self.__offending_files.append(file)
+
+    def _run(self, repo_path: Path) -> int:
+        visitor = RelativeIncludeJob.RelativeIncludeVisitor()
+        FileTree(repo_path).accept(visitor)
+        if visitor.offending_files:
+            self._comment = (
+                'Relative includes (e.g. `#include "../include/foo.h"`) found in: '
+                + ", ".join(str(f) for f in visitor.offending_files)
+                + ".\nUse non-relative includes instead (e.g. `#include <foo.h>`) by "
+                + "providing the appropriate include directories in CMake."
             )
             return 0
         return 1

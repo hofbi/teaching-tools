@@ -7,11 +7,13 @@ from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.code_evaluation.jobs.cpp import (
     CMAKE_MODULE_PATH,
     HW_BUILD_FOLDER,
+    ClangFormatTestJob,
     ClangTidyTestJob,
     CleanRepoJob,
     CMakeBuildJob,
     CodeCoverageTestJob,
     MakeTestJob,
+    RelativeIncludeJob,
 )
 from sel_tools.utils.files import CMAKELISTS_FILE_NAME
 
@@ -83,6 +85,7 @@ class ClangTidyTestJobTest(TestCase):
         self.unit = ClangTidyTestJob()
         self.repo_path = Path("repo")
         self.build_folder = self.repo_path / HW_BUILD_FOLDER
+        self.fs.create_file(self.repo_path / ".clang-tidy")
         self.fs.create_file(CMAKE_MODULE_PATH / "ClangTidy.cmake")
 
     @patch(
@@ -107,6 +110,44 @@ class ClangTidyTestJobTest(TestCase):
         result = self.unit.run(self.repo_path)
         self.assertEqual(0, result[0].score)
         self.assertIn("CMakeLists.txt not found", result[0].comment)
+
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=1))
+    def test_run_impl_fail_missing_clang_tidy_file(self) -> None:
+        (self.repo_path / ".clang-tidy").unlink()
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(0, result[0].score)
+        self.assertIn("`.clang-tidy` not found", result[0].comment)
+        self.assertIn("Common pitfall", result[0].comment)
+
+
+class ClangFormatTestJobTest(TestCase):
+    """Tests for the clang-format test job."""
+
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+        self.unit = ClangFormatTestJob()
+        self.repo_path = Path("repo")
+        self.fs.create_file(self.repo_path / ".clang-format")
+
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=1))
+    def test_run_impl_fail_missing_clang_format_file(self) -> None:
+        (self.repo_path / ".clang-format").unlink()
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(0, result[0].score)
+        self.assertIn("`.clang-format` not found", result[0].comment)
+        self.assertIn("Common pitfall", result[0].comment)
+
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=1))
+    def test_run_impl_success(self) -> None:
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(1, result[0].score)
+        self.assertEqual("", result[0].comment)
+
+    @patch("sel_tools.code_evaluation.jobs.cpp.run_shell_command", MagicMock(return_value=0))
+    def test_run_impl_fail_formatting(self) -> None:
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(0, result[0].score)
+        self.assertIn("Clang format check failed", result[0].comment)
 
 
 class MakeTestJobTest(TestCase):
@@ -310,3 +351,56 @@ class CleanRepoJobTest(TestCase):
         self.__create_repo(self.clean_files)
         result = self.unit.run(self.repo_path)
         self.assertEqual(1, result[0].score)
+
+
+class RelativeIncludeJobTest(TestCase):
+    """Tests for relative include check."""
+
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+        self.unit = RelativeIncludeJob()
+        self.repo_path = Path("repo")
+
+    def test_visitor_no_relative_include_returns_no_offending_files(self) -> None:
+        visitor = RelativeIncludeJob.RelativeIncludeVisitor()
+        visitor.visit_file(
+            Path(self.fs.create_file(self.repo_path / "main.cpp", contents="#include <gtest/gtest.h>\n").path)
+        )
+        self.assertEqual([], visitor.offending_files)
+
+    def test_visitor_with_relative_include_returns_offending_file(self) -> None:
+        visitor = RelativeIncludeJob.RelativeIncludeVisitor()
+        cpp_file = Path(self.fs.create_file(self.repo_path / "main.cpp", contents='#include "../include/foo.h"\n').path)
+        visitor.visit_file(cpp_file)
+        self.assertEqual([cpp_file], visitor.offending_files)
+
+    def test_visitor_with_current_dir_relative_include_returns_offending_file(self) -> None:
+        visitor = RelativeIncludeJob.RelativeIncludeVisitor()
+        cpp_file = Path(self.fs.create_file(self.repo_path / "main.cpp", contents='#include "./foo/bar.h"\n').path)
+        visitor.visit_file(cpp_file)
+        self.assertEqual([cpp_file], visitor.offending_files)
+
+    def test_visitor_skips_non_cpp_files(self) -> None:
+        visitor = RelativeIncludeJob.RelativeIncludeVisitor()
+        visitor.visit_file(
+            Path(self.fs.create_file(self.repo_path / "CMakeLists.txt", contents='#include "../foo"\n').path)
+        )
+        self.assertEqual([], visitor.offending_files)
+
+    def test_run_no_relative_includes_should_pass(self) -> None:
+        self.fs.create_file(
+            self.repo_path / "src" / "main.cpp", contents="#include <angle.h>\n#include <gtest/gtest.h>\n"
+        )
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(1, result[0].score)
+        self.assertEqual("", result[0].comment)
+
+    def test_run_with_relative_include_should_fail(self) -> None:
+        self.fs.create_file(
+            self.repo_path / "test" / "angle_test.cpp",
+            contents='#include "../include/angle.h"\n#include <gtest/gtest.h>\n',
+        )
+        result = self.unit.run(self.repo_path)
+        self.assertEqual(0, result[0].score)
+        self.assertIn("Relative include", result[0].comment)
+        self.assertIn("angle_test.cpp", result[0].comment)

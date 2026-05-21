@@ -23,6 +23,6 @@ def store_student_repo_info_to_config_file(
     return student_repos_file
 
 
-def read_student_repo_info_from_config_file(config_file: Path | str) -> list[dict]:
+def read_student_repo_info_from_config_file(config_file: Path) -> list[dict]:
     """Read student repo info from config file."""
     return json.loads(Path(config_file).read_text())  # type: ignore[no-any-return]

@@ -1,8 +1,31 @@
-[tool.docformatter]
-in-place = true
-recursive = true
-wrap-summaries = 88
-wrap-descriptions = 81
+[build-system]
+requires = ["uv_build>=0.10.0,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "sel-tools"
+version = "0.0.0"
+description = ""
+readme = "README.md"
+authors = [
+  {name = "Markus Hofbauer"}
+]
+requires-python = ">=3.12"
+dependencies = [
+  "coverage",
+  "prek",
+  "cmake-format",
+  "gcovr",
+  "gitpython",
+  "pandas",
+  "pyfakefs",
+  "Pygments",
+  "pytest",
+  "pytest-cov",
+  "pytest-sugar",
+  "python-gitlab",
+  "tqdm"
+]
 
 [tool.flake8]
 max-line-length = 120
@@ -50,6 +73,11 @@ disable = [
   "unspecified-encoding",
   "fixme",
   "too-few-public-methods"
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tools/tests"
 ]
 
 [tool.ruff]
@@ -106,3 +134,6 @@ ignore = [
   "T", # Keep print statements
   "TD"
 ]
+
+[tool.uv.build-backend]
+module-root = "tools" # required to avoid the "src" layout, which is the default for uv_build

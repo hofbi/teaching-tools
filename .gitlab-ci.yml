@@ -19,17 +19,16 @@ spec:
   except:
     - schedules
 
-.python_setup: &python_setup
+.python_setup:
   variables:
     UV_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/uv"
-    PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
+    PREK_HOME: "${CI_PROJECT_DIR}/.cache/prek"
   image: makeappdev/cpp-dev:24.04
   before_script:
     - python -V
     - pipx install uv
-    - uv venv
+    - uv sync --locked
     - source .venv/bin/activate
-    - uv pip install --upgrade -r requirements.txt
 
 .cpp_build:
   extends: .no_schedule
@@ -47,7 +46,7 @@ pre-commit_checks:
     - .no_schedule
     - .python_setup
   script:
-    - pre-commit run --all-files --show-diff-on-failure
+    - prek run --all-files --show-diff-on-failure
 
 cpp_build_test_gcc:
   extends: .cpp_build
@@ -153,6 +152,11 @@ student_code_evaluation:
         --homework-number $[[ inputs.homework_number ]]
         --date-last-homework $[[ inputs.last_homework_date ]]
         --workspace $[[ inputs.workspace ]]
+    # Posting to issue 1 as this is expected to be the Homework Evaluation Dashboard
+    - python3 tools/gitlab_projects.py comment_issue $[[ inputs.repo_info_file ]]
+        --gitlab-token $GITLAB_TOKEN_POST
+        --issue-number 1
+        --message $[[ inputs.workspace ]]/evaluation_report_comments_for_students.md
     - cat $[[ inputs.workspace ]]/inactive_student_repos.md || true
   artifacts:
     paths:
