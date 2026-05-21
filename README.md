@@ -31,7 +31,8 @@ If you use our tools or templates please cite our [paper](https://www.researchga
 
 ## Documents
 
-Create documents locally. This requires a [docker](https://docs.docker.com/get-docker/) and [docker compose](https://docs.docker.com/compose/install/) installation.
+Create documents locally.
+This requires a [docker](https://docs.docker.com/get-docker/) and [docker compose](https://docs.docker.com/compose/install/) installation.
 
 ### Slides
 
@@ -94,7 +95,7 @@ make                # Build
 make test           # Run Tests
 ```
 
-### pre-commit git hooks
+### Pre-Commit Git Hooks
 
 #### Setup
 
