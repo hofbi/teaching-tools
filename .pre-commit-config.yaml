@@ -177,7 +177,7 @@ repos:
     hooks:
       - id: shfmt
   - repo: https://github.com/ewhauser/shuck
-    rev: v0.0.41
+    rev: v0.0.40
     hooks:
       - id: shuck
         args:
@@ -187,6 +187,6 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/crate-ci/typos
-    rev: v1
+    rev: v1.47.0
     hooks:
       - id: typos
