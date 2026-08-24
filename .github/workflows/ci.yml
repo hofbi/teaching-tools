@@ -9,7 +9,6 @@ on:
       - master
 
 jobs:
-
   cpp:
     runs-on: ubuntu-latest
     container: makeappdev/cpp-dev:26.04
@@ -19,7 +18,7 @@ jobs:
           - compiler: gcc
           - compiler: clang
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build ${{ matrix.compiler }}
         run: |
           "use_${{ matrix.compiler }}.sh"
@@ -38,13 +37,15 @@ jobs:
   python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install uv and set the Python version
-        uses: astral-sh/setup-uv@v8.1.0
+        uses: astral-sh/setup-uv@v9.0.0
         with:
           python-version: "3.12"
       - name: Install dependencies
         run: uv sync --locked
+      - name: Run prek
+        run: SKIP=no-commit-to-branch uvx prek run --all-files --show-diff-on-failure --color=always
       - name: Tests
         run: make test
       - name: Coverage
@@ -60,7 +61,7 @@ jobs:
     steps:
       - name: Install rsync
         run: apk add rsync
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build
         run: |
           cd docs
@@ -75,7 +76,7 @@ jobs:
   slides:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build
         run: |
           mkdir -p build && chmod -R 0777 build
@@ -93,7 +94,7 @@ jobs:
       - slides
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v8
       - name: Prepare Deploy
