@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import gitlab
+import gitlab.const
 
 from sel_tools.file_parsing.student_group_parser import (
     Student,
@@ -38,7 +39,8 @@ def add_students_to_repos(students: list[Student], repo_from_group_id: dict) -> 
         repo = repo_from_group_id[student.group_id]
         repo.members.create(
             {
-                "user_id": student.gitlab_user.id,
+                # Students had to provide their ID and sign up so their account should exist
+                "user_id": student.gitlab_user.id,  # ty: ignore[unresolved-attribute]
                 "access_level": gitlab.const.DEVELOPER_ACCESS,
             }
         )

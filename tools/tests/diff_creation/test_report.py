@@ -14,7 +14,7 @@ class ReportTest(TestCase):
 
     def test_write_diff_reports_for_empty_list_should_write_nothing(self) -> None:
         write_diff_reports([], "report")
-        self.assertEqual(0, self.fs.get_disk_usage().used)
+        self.assertEqual(0, self.fs.get_disk_usage().used)  # ty: ignore[unresolved-attribute]
 
     def test_write_diff_reports_for_one_item_without_diffs_should_write_csv_only(
         self,
@@ -107,7 +107,7 @@ class DiffReportTest(TestCase):
 
         unit.write_diff_patches()
 
-        self.assertEqual(0, self.fs.get_disk_usage().used)
+        self.assertEqual(0, self.fs.get_disk_usage().used)  # ty: ignore[unresolved-attribute]
 
     def test_write_diff_patches_for_two_diffs_should_write_2_patches_and_2_html(
         self,

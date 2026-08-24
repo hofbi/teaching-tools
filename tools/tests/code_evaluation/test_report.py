@@ -24,7 +24,7 @@ class ReportTest(TestCase):
 
     def test_write_evaluation_reports_for_empty_list_should_write_nothing(self) -> None:
         write_evaluation_reports([], "report")
-        self.assertEqual(0, self.fs.get_disk_usage().used)
+        self.assertEqual(0, self.fs.get_disk_usage().used)  # ty: ignore[unresolved-attribute]
 
     def test_write_evaluation_reports_for_one_item_should_write_json_and_mds(
         self,

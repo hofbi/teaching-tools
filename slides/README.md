@@ -1,8 +1,10 @@
 # Lecture Slides
 
+We use [Marp](https://marp.app) to generate the slides from markdown using the [TUM Marp Template](https://github.com/hofbi/tum-marp-template).
+
 ## Setup
 
-We use [Marp](https://marp.app) to generate the slides from markdown using the [TUM Marp Template](https://github.com/hofbi/tum-marp-template). Follow the setup on their [website](https://github.com/marp-team/marp-cli) or use our `docker compose.yml`.
+Follow the setup on their [website](https://github.com/marp-team/marp-cli) or use our `docker compose.yml` which uses <https://hub.docker.com/r/marpteam/marp-cli>.
 
 ## Build
 

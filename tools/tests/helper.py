@@ -108,7 +108,7 @@ class GitlabGroupFake:
 class GitlabUserFake:
     """Fake for the Gitlab User Object."""
 
-    id: str = ""  # pylint: disable=invalid-name
+    id: str = ""
     email: str = ""
     name: str = ""
 
@@ -117,7 +117,7 @@ class GitlabUserFake:
 class GitlabUserManagerFake:
     """Fake for the Gitlab User Manager Object."""
 
-    user_list: list[GitlabUserFake]  # pylint: disable=E0601
+    user_list: list[GitlabUserFake]
 
     def list(self, search: str = "") -> list[GitlabUserFake]:
         return [user for user in self.user_list if search in user.email] if search else []

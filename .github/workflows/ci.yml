@@ -12,7 +12,7 @@ jobs:
 
   cpp:
     runs-on: ubuntu-latest
-    container: makeappdev/cpp-dev:24.04
+    container: makeappdev/cpp-dev:26.04
     strategy:
       matrix:
         include:

@@ -17,7 +17,7 @@ class Student:
     last_name: str
     mail_addr: str
     choice: str
-    gitlab_user: User = None
+    gitlab_user: User | None = None
 
     @property
     def name(self) -> str:

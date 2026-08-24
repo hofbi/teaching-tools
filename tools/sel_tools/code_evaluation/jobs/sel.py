@@ -33,4 +33,4 @@ class ExampleEvaluationJobFactory(EvaluationJobFactory):
             1: [CleanRepoJob(), CMakeBuildJob(), ExampleJob()],
             2: [CleanRepoJob(), MakeTestJob(), CIStatusTestJob(gitlab_projects)],
         }
-        return homework_evaluations_jobs_map[homework_number]
+        return homework_evaluations_jobs_map[homework_number]  # ty: ignore[invalid-return-type]

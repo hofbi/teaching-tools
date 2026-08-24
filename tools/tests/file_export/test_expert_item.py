@@ -45,11 +45,11 @@ class ExportFilesTest(TestCase):
         self.assertEqual("", Path("foo/empty.txt").read_text())
 
     def test_export_items_empty_repo_list_nothing_exported(self) -> None:
-        disk_usage_before = self.fs.get_disk_usage().used
+        disk_usage_before = self.fs.get_disk_usage().used  # ty: ignore[unresolved-attribute]
 
         export_items(self.exported_item, [], False)
 
-        self.assertEqual(disk_usage_before, self.fs.get_disk_usage().used)
+        self.assertEqual(disk_usage_before, self.fs.get_disk_usage().used)  # ty: ignore[unresolved-attribute]
 
     def test_export_items_two_repos_correctly_exported(self) -> None:
         self.fs.create_dir("repo1")

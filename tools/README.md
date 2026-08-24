@@ -86,7 +86,8 @@ Call
 python3 gitlab_projects.py comment_issue ../config/demo.json --issue-number 42 --message "comment text" --gitlab-token your_token
 ```
 
-to add a comment with _comment text_ to issue 42. Call with `-s`/`--state-event` in `{close, reopen}`.
+to add a comment with _comment text_ to issue 42.
+Call with `-s`/`--state-event` in `{close, reopen}`.
 
 You can also use `-m`/`--message` with a path to a markdown file for longer comments.
 The entire content of this file will be posted as a comment to every project's issue with `--issue-number`.

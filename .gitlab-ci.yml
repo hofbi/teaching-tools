@@ -23,7 +23,7 @@ spec:
   variables:
     UV_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/uv"
     PREK_HOME: "${CI_PROJECT_DIR}/.cache/prek"
-  image: makeappdev/cpp-dev:24.04
+  image: makeappdev/cpp-dev:26.04
   before_script:
     - python -V
     - pipx install uv
@@ -32,7 +32,7 @@ spec:
 
 .cpp_build:
   extends: .no_schedule
-  image: makeappdev/cpp-dev:24.04
+  image: makeappdev/cpp-dev:26.04
   script:
     - mkdir -p build
     - cd build
@@ -70,7 +70,7 @@ slides:
   before_script:
     - apk add --no-cache --update docker make curl && rm -rf /var/cache/apk/*
     - mkdir -p ~/.docker/cli-plugins/
-    - curl -SL https://github.com/docker/compose/releases/download/v2.39.2/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+    - curl -SL https://github.com/docker/compose/releases/download/v5.2.0/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
     - chmod +x ~/.docker/cli-plugins/docker-compose
     - docker compose --version
   script:
@@ -112,7 +112,7 @@ python_tests:
 
 pages:
   extends: .no_schedule
-  image: makeappdev/cpp-dev:24.04
+  image: makeappdev/cpp-dev:26.04
   needs:
     - cpp_build_test_clang
     - python_tests

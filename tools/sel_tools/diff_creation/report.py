@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 from pygments import highlight
-from pygments.formatters import HtmlFormatter
+from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.diff import DiffLexer
 
 MD_WARNING_REPORT = """# Inactive Student Repositories

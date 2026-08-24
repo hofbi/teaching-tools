@@ -18,6 +18,8 @@ readability*,
 -bugprone-easily-swappable-parameters,
 -readability-identifier-length,
 -readability-suspicious-call-argument,
+-misc-use-internal-linkage,
+-readability-math-missing-parentheses,
 '
 
 WarningsAsErrors: '*'

@@ -11,7 +11,7 @@ from sel_tools.utils.files import FileTree
 def export_items(source: Path, repo_paths: list[Path], keep_solutions: bool) -> None:
     """Export all files of source into every repo."""
     for repo in repo_paths:
-        # TODO maybe we need to make the repo clean
+        # noqa(TD): TODO maybe we need to make the repo clean
         copy_item(source, repo)
         visit_exported_item(repo, keep_solutions)
 

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-import gitlab
+import gitlab.const
 from gitlab.v4.objects import Project, ProjectProtectedBranch
 from tqdm import tqdm
 

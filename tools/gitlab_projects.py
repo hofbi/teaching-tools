@@ -104,8 +104,6 @@ def edit_add_users(args: Namespace) -> None:
 
 def parse_arguments(arguments: list[str]) -> Namespace:
     """Parse CLI arguments."""
-    # pylint: disable=too-many-locals
-
     parser = ArgumentParserFactory.default_parser(__doc__).parser
     subparsers = parser.add_subparsers(title="actions", dest="actions", help="sub-command help", required=True)
 

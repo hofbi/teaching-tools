@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, call
 
-import gitlab
+import gitlab.const
 from pyfakefs.fake_filesystem_unittest import TestCase
 from sel_tools.file_parsing.student_group_parser import Student
 from sel_tools.gitlab_api.add_user import (
@@ -35,7 +35,7 @@ class AddUserTest(TestCase):
 
     def _create_student_with_gitlab_user(self, student_dict: dict, gl_user: GitlabUserFake) -> Student:
         student = Student.from_dict(student_dict)
-        student.gitlab_user = gl_user
+        student.gitlab_user = gl_user  # ty: ignore[invalid-assignment]
         return student
 
     def setUp(self) -> None:
