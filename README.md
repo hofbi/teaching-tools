@@ -53,8 +53,6 @@ make docs
 
 ## Development
 
-### Dependencies
-
 To be able to build and execute code, either do the development in the docker container [makeappdev/cpp-dev](https://hub.docker.com/r/makeappdev/cpp-dev), which is made easy in Visual Studio Code:
 
 1. Ensure that Docker is installed and running on your machine
@@ -69,12 +67,10 @@ If you don't want to develop inside a docker container, you can install the depe
 # Install apt packages
 ./install.sh
 
-# Create a python venv (optional)
+# Create a python venv and install python dependencies
 uv venv
+uv sync --locked
 source .venv/bin/activate
-
-# Install python dependencies
-uv pip install -r requirements.txt
 ```
 
 ### Export Files
@@ -97,24 +93,25 @@ make test           # Run Tests
 
 ### Pre-Commit Git Hooks
 
+We use [pre-commit](https://pre-commit.com/) or [prek](https://github.com/j178/prek) to manage our git pre-commit hooks.
+
 #### Setup
 
-We use [pre-commit](https://pre-commit.com/) to manage our git pre-commit hooks.
-`pre-commit` is automatically installed from `requirements.txt`.
+`prek` is automatically installed from `uv.lock`.
 To set it up, call
 
 ```sh
 git config --unset-all core.hooksPath # may fail if you don't have any hooks set, but that's ok
-pre-commit install --overwrite
+prek install --overwrite
 ```
 
 #### Usage
 
-With `pre-commit`, you don't use your linters/formatters directly anymore, but through `pre-commit`:
+With `prek`, you don't use your linters/formatters directly anymore, but through `prek`:
 
 ```sh
-pre-commit run --file path/to/file1.cpp tools/second_file.py  # run on specific file(s)
-pre-commit run --all-files  # run on all files tracked by git
-pre-commit run --from-ref origin/master --to-ref HEAD  # run on all files changed on current branch, compared to master
-pre-commit run <hook_id> --file <path_to_file>  # run specific hook on specific file
+prek run --file path/to/file1.cpp tools/second_file.py  # run on specific file(s)
+prek run --all-files  # run on all files tracked by git
+prek run --from-ref origin/master --to-ref HEAD  # run on all files changed on current branch, compared to master
+prek run <hook_id> --file <path_to_file>  # run specific hook on specific file
 ```
