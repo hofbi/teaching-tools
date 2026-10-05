@@ -100,8 +100,6 @@ For posting an individual message per project, the markdown file passed with `-m
 
 my message for 123
 
----
-
 ## Comments for Project 456
 
 my message for 456

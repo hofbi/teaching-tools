@@ -10,8 +10,8 @@ enabled = true
 on-missing-tool-binary = "fail"
 
 [code-block-tools.languages]
-shell = {format = ["shuck:format"]}
-cpp = {lint = ["clang-format"], format = ["clang-format"]}
+shell = { format = ["shuck:format"] }
+cpp = { lint = ["clang-format"], format = ["clang-format"] }
 
 [code-block-tools.languages.markdown]
 lint = ["rumdl"]

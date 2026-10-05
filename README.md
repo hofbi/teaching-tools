@@ -1,9 +1,6 @@
 # Teaching Tools
 
-[![Actions Status](https://github.com/hofbi/teaching-tools/workflows/CI/badge.svg)](https://github.com/hofbi/teaching-tools)
-[![Actions Status](https://github.com/hofbi/teaching-tools/workflows/CodeQL/badge.svg)](https://github.com/hofbi/teaching-tools)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/hofbi/teaching-tools/master.svg)](https://results.pre-commit.ci/latest/github/hofbi/teaching-tools/master)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Actions Status](https://github.com/hofbi/teaching-tools/workflows/CI/badge.svg)](https://github.com/hofbi/teaching-tools) [![Actions Status](https://github.com/hofbi/teaching-tools/workflows/CodeQL/badge.svg)](https://github.com/hofbi/teaching-tools) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/hofbi/teaching-tools/master.svg)](https://results.pre-commit.ci/latest/github/hofbi/teaching-tools/master) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Teaching tools created for the [Software Engineering Lab](https://www.ei.tum.de/en/lmt/teaching/software-engineering-laboratory/).
 
